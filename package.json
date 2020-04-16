@@ -1,0 +1,44 @@
+{
+  "name": "@eik/service",
+  "version": "1.0.0",
+  "description": "Eik REST API as a standalone HTTP service",
+  "main": "./lib/server.js",
+  "scripts": {
+    "start": "node ./lib/server.js",
+    "test": "tap test/**/*.js",
+    "test:snapshots:update": "tap test/**/*.js --snapshot",
+    "lint:fix": "eslint --fix .",
+    "lint": "eslint ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eik-lib/service.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/eik-lib/service/issues"
+  },
+  "homepage": "https://github.com/eik-lib/service#readme",
+  "dependencies": {
+    "@eik/core": "1.0.0-alpha.13",
+    "convict": "5.2.0",
+    "fastify": "2.13.1",
+    "fastify-cors": "3.0.3",
+    "fastify-jwt": "1.3.1",
+    "js-yaml": "3.13.1",
+    "pino": "6.2.0"
+  },
+  "devDependencies": {
+    "eslint": "6.8.0",
+    "eslint-config-airbnb-base": "14.1.0",
+    "eslint-config-prettier": "6.10.1",
+    "eslint-plugin-import": "2.20.2",
+    "eslint-plugin-prettier": "3.1.3",
+    "form-data": "3.0.0",
+    "node-fetch": "2.6.0",
+    "prettier": "2.0.2",
+    "tap": "14.10.7",
+    "unique-slug": "2.0.2"
+  }
+}
