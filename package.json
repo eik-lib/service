@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/eik-lib/service#readme",
   "dependencies": {
-    "@eik/core": "1.0.0-alpha.13",
+    "@eik/core": "1.0.0-alpha.14",
     "convict": "5.2.0",
     "fastify": "2.13.1",
     "fastify-cors": "3.0.3",
