@@ -4,12 +4,12 @@ const FormData = require('form-data');
 const { test } = require('tap');
 const fetch = require('node-fetch');
 
-const Server = require('../../services/fastify');
-const Sink = require('../../lib/sinks/test');
+const Server = require("..");
+const Sink = require('../node_modules/@eik/core/lib/sinks/test');
 
 test('auth - authenticate - legal "key" value', async (t) => {
     const sink = new Sink();
-    const service = new Server({ customSink: sink, port: 0, logger: false });
+    const service = new Server({ customSink: sink });
     const address = await service.start();
 
     const formData = new FormData();

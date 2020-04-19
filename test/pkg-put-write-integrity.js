@@ -6,8 +6,8 @@ const { join } = require('path');
 const fetch = require('node-fetch');
 const tap = require('tap');
 
-const Server = require('../../services/fastify');
-const Sink = require('../../lib/sinks/test');
+const Server = require("..");
+const Sink = require('../node_modules/@eik/core/lib/sinks/test');
 
 // Ignore the timestamp for "created" field in the snapshots
 tap.cleanSnapshot = (s) => {
@@ -48,7 +48,7 @@ tap.test('Sink is slow and irregular - Writing medium sized package', async t =>
     const formData = new FormData();
     formData.append(
         'package',
-        createReadStream(join(__dirname, '../../fixtures/archive.tgz')),
+        createReadStream(join(__dirname, '../fixtures/archive.tgz')),
     );
 
     const res = await fetch(`${address}/pkg/frazz/2.1.4`, {
@@ -82,13 +82,12 @@ tap.test('Sink is slow and irregular - Writing small sized package', async t => 
     const formData = new FormData();
     formData.append(
         'package',
-        createReadStream(join(__dirname, '../../fixtures/archive-small.tgz')),
+        createReadStream(join(__dirname, '../fixtures/archive-small.tgz')),
     );
 
     const res = await fetch(`${address}/pkg/brazz/7.1.3`, {
         method: 'PUT',
         body: formData,
-        // headers: formData.getHeaders(),
         headers: { ...headers, ...formData.getHeaders()},
     });
 
@@ -117,7 +116,7 @@ tap.test('Sink is slow to construct writer - Writing medium sized package', asyn
     const formData = new FormData();
     formData.append(
         'package',
-        createReadStream(join(__dirname, '../../fixtures/archive.tgz')),
+        createReadStream(join(__dirname, '../fixtures/archive.tgz')),
     );
 
     const res = await fetch(`${address}/pkg/frazz/2.1.4`, {
@@ -151,7 +150,7 @@ tap.test('Sink is slow to construct writer - Writing small sized package', async
     const formData = new FormData();
     formData.append(
         'package',
-        createReadStream(join(__dirname, '../../fixtures/archive-small.tgz')),
+        createReadStream(join(__dirname, '../fixtures/archive-small.tgz')),
     );
 
     const res = await fetch(`${address}/pkg/brazz/7.1.3`, {

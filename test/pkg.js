@@ -6,10 +6,10 @@ const path = require('path');
 const tap = require('tap');
 const fs = require('fs');
 
-const Server = require('../../services/fastify');
-const Sink = require('../../lib/sinks/test');
+const Server = require("..");
+const Sink = require('../node_modules/@eik/core/lib/sinks/test');
 
-const FIXTURE_PKG = path.resolve(__dirname, '../../fixtures/archive.tgz');
+const FIXTURE_PKG = path.resolve(__dirname, '../fixtures/archive.tgz');
 
 // Ignore the timestamp for "created" field in the snapshots
 tap.cleanSnapshot = (s) => {
@@ -19,7 +19,7 @@ tap.cleanSnapshot = (s) => {
 
 tap.beforeEach(async (done, t) => {
     const sink = new Sink();
-    const service = new Server({ customSink: sink, port: 0, logger: false });
+    const service = new Server({ customSink: sink });
     const address = await service.start();
 
     const formData = new FormData();

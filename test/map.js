@@ -6,14 +6,14 @@ const fetch = require('node-fetch');
 const path = require('path');
 const fs = require('fs');
 
-const Server = require('../../services/fastify');
-const Sink = require('../../lib/sinks/test');
+const Server = require("..");
+const Sink = require('../node_modules/@eik/core/lib/sinks/test');
 
-const FIXTURE_MAP = path.resolve(__dirname, '../../fixtures/import-map.json');
+const FIXTURE_MAP = path.resolve(__dirname, '../fixtures/import-map.json');
 
 beforeEach(async (done, t) => {
     const sink = new Sink();
-    const service = new Server({ customSink: sink, port: 0, logger: false });
+    const service = new Server({ customSink: sink });
     const address = await service.start();
 
     const formData = new FormData();

@@ -7,12 +7,16 @@
     "eik-server": "./bin/eik-server.js"
   },
   "scripts": {
-    "start": "node ./lib/server.js",
-    "test": "tap test/**/*.js",
-    "test:snapshots:update": "tap test/**/*.js --snapshot",
+    "start": "node . | pino-pretty",
+    "test": "HTTP_PORT=0 LOG_LEVEL=fatal tap test/**/*.js",
+    "test:snapshots:update": "HTTP_PORT=0 LOG_LEVEL=fatal tap test/**/*.js --snapshot",
     "lint:fix": "eslint --fix .",
     "lint": "eslint ."
   },
+  "files": [
+    "lib",
+    "bin"
+  ],
   "repository": {
     "type": "git",
     "url": "git@github.com:eik-lib/service.git"
@@ -24,7 +28,7 @@
   },
   "homepage": "https://github.com/eik-lib/service#readme",
   "dependencies": {
-    "@eik/core": "1.0.0-alpha.13",
+    "@eik/core": "1.0.0-alpha.14",
     "convict": "5.2.0",
     "fastify": "2.13.1",
     "fastify-cors": "3.0.3",
@@ -42,6 +46,7 @@
     "node-fetch": "2.6.0",
     "prettier": "2.0.2",
     "tap": "14.10.7",
+    "pino-pretty": "^4.0.0",
     "unique-slug": "2.0.2"
   }
 }
