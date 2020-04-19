@@ -46,7 +46,7 @@
     "node-fetch": "2.6.0",
     "prettier": "2.0.2",
     "tap": "14.10.7",
-    "pino-pretty": "^4.0.0",
+    "pino-pretty": "4.0.0",
     "unique-slug": "2.0.2"
   }
 }
