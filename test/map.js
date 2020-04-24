@@ -1,9 +1,10 @@
 'use strict';
 
-const { test, beforeEach, afterEach } = require('tap');
 const FormData = require('form-data');
+const fastify = require('fastify');
 const fetch = require('node-fetch');
 const path = require('path');
+const tap = require('tap');
 const fs = require('fs');
 
 const Server = require("..");
@@ -11,10 +12,16 @@ const Sink = require('../node_modules/@eik/core/lib/sinks/test');
 
 const FIXTURE_MAP = path.resolve(__dirname, '../fixtures/import-map.json');
 
-beforeEach(async (done, t) => {
+tap.beforeEach(async (done, t) => {
     const sink = new Sink();
     const service = new Server({ customSink: sink });
-    const address = await service.start();
+
+    const app = fastify({
+        ignoreTrailingSlash: true,
+    });
+    app.register(service.api());
+
+    const address = await app.listen(0, 'localhost');
 
     const formData = new FormData();
     formData.append('key', 'change_me');
@@ -29,20 +36,20 @@ beforeEach(async (done, t) => {
     const headers = { 'Authorization': `Bearer ${token}` };
 
     t.context = { // eslint-disable-line no-param-reassign
-        service,
         address,
         headers,
+        app,
     };
 
     done();
 });
 
-afterEach(async (done, t) => {
-    await t.context.service.stop();
+tap.afterEach(async (done, t) => {
+    await t.context.app.close();
     done();
 });
 
-test('import-map - no auth token on PUT - scoped', async (t) => {
+tap.test('import-map - no auth token on PUT - scoped', async (t) => {
     const { address } = t.context;
 
     const formData = new FormData();
@@ -59,7 +66,7 @@ test('import-map - no auth token on PUT - scoped', async (t) => {
     t.equals(uploaded.status, 401, 'on PUT of map, server should respond with a 401 Unauthorized');
 });
 
-test('import-map - no auth token on PUT - non scoped', async (t) => {
+tap.test('import-map - no auth token on PUT - non scoped', async (t) => {
     const { address } = t.context;
 
     const formData = new FormData();
@@ -76,7 +83,7 @@ test('import-map - no auth token on PUT - non scoped', async (t) => {
     t.equals(uploaded.status, 401, 'on PUT of map, server should respond with a 401 Unauthorized');
 });
 
-test('import-map - put map -> get map - scoped successfully uploaded', async (t) => {
+tap.test('import-map - put map -> get map - scoped successfully uploaded', async (t) => {
     const { headers, address } = t.context;
 
     const formData = new FormData();
@@ -104,7 +111,7 @@ test('import-map - put map -> get map - scoped successfully uploaded', async (t)
     t.matchSnapshot(downloadedResponse, 'on GET of map, response should match snapshot');
 });
 
-test('import-map - put map -> get map - non scoped successfully uploaded', async (t) => {
+tap.test('import-map - put map -> get map - non scoped successfully uploaded', async (t) => {
     const { headers, address } = t.context;
 
     const formData = new FormData();
@@ -132,7 +139,7 @@ test('import-map - put map -> get map - non scoped successfully uploaded', async
     t.matchSnapshot(downloadedResponse, 'on GET of map, response should match snapshot');
 });
 
-test('import-map - get map versions - scoped', async (t) => {
+tap.test('import-map - get map versions - scoped', async (t) => {
     const { headers, address } = t.context;
 
     // PUT map on server
@@ -175,7 +182,7 @@ test('import-map - get map versions - scoped', async (t) => {
     t.matchSnapshot(downloadedResponse, 'on GET of map versions, response should match snapshot');
 });
 
-test('import-map - get map versions - non scoped', async (t) => {
+tap.test('import-map - get map versions - non scoped', async (t) => {
     const { headers, address } = t.context;
 
     // PUT map on server

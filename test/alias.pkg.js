@@ -1,7 +1,7 @@
 'use strict';
 
-// const { test, beforeEach, afterEach } = require('tap');
 const FormData = require('form-data');
+const fastify = require('fastify');
 const fetch = require('node-fetch');
 const path = require('path');
 const tap = require('tap');
@@ -21,7 +21,13 @@ tap.cleanSnapshot = (s) => {
 tap.beforeEach(async (done, t) => {
     const sink = new Sink();
     const service = new Server({ customSink: sink });
-    const address = await service.start();
+
+    const app = fastify({
+        ignoreTrailingSlash: true,
+    });
+    app.register(service.api());
+
+    const address = await app.listen(0, 'localhost');
 
     const formData = new FormData();
     formData.append('key', 'change_me');
@@ -36,16 +42,16 @@ tap.beforeEach(async (done, t) => {
     const headers = { 'Authorization': `Bearer ${token}` };
 
     t.context = { // eslint-disable-line no-param-reassign
-        service,
         address,
         headers,
+        app,
     };
 
     done();
 });
 
 tap.afterEach(async (done, t) => {
-    await t.context.service.stop();
+    await t.context.app.close();
     done();
 });
 

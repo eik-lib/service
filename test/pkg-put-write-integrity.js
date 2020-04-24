@@ -3,6 +3,7 @@
 const { createReadStream } = require('fs');
 const FormData = require('form-data');
 const { join } = require('path');
+const fastify = require('fastify');
 const fetch = require('node-fetch');
 const tap = require('tap');
 
@@ -40,8 +41,14 @@ tap.test('Sink is slow and irregular - Writing medium sized package', async t =>
         return Math.floor(Math.random() * max) + min;
     };
 
-    const service = new Server({ customSink: sink, logger: false, port: 0 });
-    const address = await service.start();
+    const service = new Server({ customSink: sink });
+
+    const app = fastify({
+        ignoreTrailingSlash: true,
+    });
+    app.register(service.api());
+
+    const address = await app.listen(0, 'localhost');
 
     const headers = await authentication(address);
 
@@ -60,7 +67,7 @@ tap.test('Sink is slow and irregular - Writing medium sized package', async t =>
     const obj = await res.json();
     t.matchSnapshot(obj, 'on GET of package, response should match snapshot');
 
-    await service.stop();
+    await app.close();
 });
 
 tap.test('Sink is slow and irregular - Writing small sized package', async t => {
@@ -74,8 +81,14 @@ tap.test('Sink is slow and irregular - Writing small sized package', async t => 
         return Math.floor(Math.random() * max) + min;
     };
 
-    const service = new Server({ customSink: sink, logger: false, port: 0 });
-    const address = await service.start();
+    const service = new Server({ customSink: sink });
+
+    const app = fastify({
+        ignoreTrailingSlash: true,
+    });
+    app.register(service.api());
+
+    const address = await app.listen(0, 'localhost');
 
     const headers = await authentication(address);
 
@@ -94,7 +107,7 @@ tap.test('Sink is slow and irregular - Writing small sized package', async t => 
     const obj = await res.json();
     t.matchSnapshot(obj, 'on GET of package, response should match snapshot');
 
-    await service.stop();
+    await app.close();
 });
 
 tap.test('Sink is slow to construct writer - Writing medium sized package', async t => {
@@ -108,8 +121,14 @@ tap.test('Sink is slow to construct writer - Writing medium sized package', asyn
         return Math.floor(Math.random() * max) + min;
     };
 
-    const service = new Server({ customSink: sink, logger: false, port: 0 });
-    const address = await service.start();
+    const service = new Server({ customSink: sink });
+
+    const app = fastify({
+        ignoreTrailingSlash: true,
+    });
+    app.register(service.api());
+
+    const address = await app.listen(0, 'localhost');
 
     const headers = await authentication(address);
 
@@ -128,7 +147,7 @@ tap.test('Sink is slow to construct writer - Writing medium sized package', asyn
     const obj = await res.json();
     t.matchSnapshot(obj, 'on GET of package, response should match snapshot');
 
-    await service.stop();
+    await app.close();
 });
 
 tap.test('Sink is slow to construct writer - Writing small sized package', async t => {
@@ -142,8 +161,14 @@ tap.test('Sink is slow to construct writer - Writing small sized package', async
         return Math.floor(Math.random() * max) + min;
     };
 
-    const service = new Server({ customSink: sink, logger: false, port: 0 });
-    const address = await service.start();
+    const service = new Server({ customSink: sink });
+
+    const app = fastify({
+        ignoreTrailingSlash: true,
+    });
+    app.register(service.api());
+
+    const address = await app.listen(0, 'localhost');
 
     const headers = await authentication(address);
 
@@ -162,5 +187,5 @@ tap.test('Sink is slow to construct writer - Writing small sized package', async
     const obj = await res.json();
     t.matchSnapshot(obj, 'on GET of package, response should match snapshot');
 
-    await service.stop();
+    await app.close();
 });
