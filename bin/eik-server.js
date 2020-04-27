@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 const fastify = require('fastify');
-const config = require('../lib/config');
 const Eik = require("..");
 
 const run = async () => {
@@ -11,11 +10,11 @@ const run = async () => {
         ignoreTrailingSlash: true,
         modifyCoreObjects: false,
         trustProxy: true,
-        http2: config.get('http.http2'),
+        http2: eik.config.get('http.http2'),
     });
 
     app.register(eik.api());
 
-    await app.listen(config.get('http.port'), config.get('http.address'));
+    await app.listen(eik.config.get('http.port'), eik.config.get('http.address'));
 }
 run();
