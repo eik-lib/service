@@ -1,9 +1,10 @@
 'use strict';
 
-const { test, beforeEach, afterEach } = require('tap');
 const FormData = require('form-data');
+const fastify = require('fastify');
 const fetch = require('node-fetch');
 const path = require('path');
+const tap = require('tap');
 const fs = require('fs');
 
 const Server = require("..");
@@ -12,10 +13,16 @@ const Sink = require('../node_modules/@eik/core/lib/sinks/test');
 const FIXTURE_MAP = path.resolve(__dirname, '../fixtures/import-map.json');
 const FIXTURE_MAP_B = path.resolve(__dirname, '../fixtures/import-map-b.json');
 
-beforeEach(async (done, t) => {
+tap.beforeEach(async (done, t) => {
     const sink = new Sink();
     const service = new Server({ customSink: sink });
-    const address = await service.start();
+
+    const app = fastify({
+        ignoreTrailingSlash: true,
+    });
+    app.register(service.api());
+
+    const address = await app.listen(0, 'localhost');
 
     const formData = new FormData();
     formData.append('key', 'change_me');
@@ -30,20 +37,20 @@ beforeEach(async (done, t) => {
     const headers = { 'Authorization': `Bearer ${token}` };
 
     t.context = { // eslint-disable-line no-param-reassign
-        service,
         address,
         headers,
+        app,
     };
 
     done();
 });
 
-afterEach(async (done, t) => {
-    await t.context.service.stop();
+tap.afterEach(async (done, t) => {
+    await t.context.app.close();
     done();
 });
 
-test('alias map - no auth token on PUT - scoped', async (t) => {
+tap.test('alias map - no auth token on PUT - scoped', async (t) => {
     const { address } = t.context;
 
     // PUT alias on server
@@ -59,7 +66,7 @@ test('alias map - no auth token on PUT - scoped', async (t) => {
     t.equals(alias.status, 401, 'on PUT of alias, server should respond with a 401 Unauthorized');
 });
 
-test('alias map - no auth token on PUT - non scoped', async (t) => {
+tap.test('alias map - no auth token on PUT - non scoped', async (t) => {
     const { address } = t.context;
 
     // PUT alias on server
@@ -75,7 +82,7 @@ test('alias map - no auth token on PUT - non scoped', async (t) => {
     t.equals(alias.status, 401, 'on PUT of alias, server should respond with a 401 Unauthorized');
 });
 
-test('alias map - no auth token on POST - scoped', async (t) => {
+tap.test('alias map - no auth token on POST - scoped', async (t) => {
     const { address } = t.context;
 
     // POST alias on server
@@ -91,7 +98,7 @@ test('alias map - no auth token on POST - scoped', async (t) => {
     t.equals(alias.status, 401, 'on POST of alias, server should respond with a 401 Unauthorized');
 });
 
-test('alias map - no auth token on POST - non scoped', async (t) => {
+tap.test('alias map - no auth token on POST - non scoped', async (t) => {
     const { address } = t.context;
 
     // PUT alias on server
@@ -107,7 +114,7 @@ test('alias map - no auth token on POST - non scoped', async (t) => {
     t.equals(alias.status, 401, 'on POST of alias, server should respond with a 401 Unauthorized');
 });
 
-test('alias map - no auth token on DELETE - scoped', async (t) => {
+tap.test('alias map - no auth token on DELETE - scoped', async (t) => {
     const { address } = t.context;
 
     // DELETE alias on server
@@ -119,7 +126,7 @@ test('alias map - no auth token on DELETE - scoped', async (t) => {
     t.equals(alias.status, 401, 'on POST of alias, server should respond with a 401 Unauthorized');
 });
 
-test('alias map - no auth token on POST - non scoped', async (t) => {
+tap.test('alias map - no auth token on POST - non scoped', async (t) => {
     const { address } = t.context;
 
     // PUT alias on server
@@ -131,7 +138,7 @@ test('alias map - no auth token on POST - non scoped', async (t) => {
     t.equals(alias.status, 401, 'on POST of alias, server should respond with a 401 Unauthorized');
 });
 
-test('alias map - put alias, then get map through alias - scoped', async (t) => {
+tap.test('alias map - put alias, then get map through alias - scoped', async (t) => {
     const { headers, address } = t.context;
 
     // PUT map on server
@@ -182,7 +189,7 @@ test('alias map - put alias, then get map through alias - scoped', async (t) => 
     t.matchSnapshot(downloadedResponse, 'on GET of file, response should match snapshot');
 });
 
-test('alias map - put alias, then get map through alias - non scoped', async (t) => {
+tap.test('alias map - put alias, then get map through alias - non scoped', async (t) => {
     const { headers, address } = t.context;
 
     // PUT map on server
@@ -233,7 +240,7 @@ test('alias map - put alias, then get map through alias - non scoped', async (t)
     t.matchSnapshot(downloadedResponse, 'on GET of file, response should match snapshot');
 });
 
-test('alias map - put alias, then update alias, then get map through alias - scoped', async (t) => {
+tap.test('alias map - put alias, then update alias, then get map through alias - scoped', async (t) => {
     const { headers, address } = t.context;
 
     // PUT maps on server
@@ -284,7 +291,7 @@ test('alias map - put alias, then update alias, then get map through alias - sco
     t.equals(aliasResponseB.imports.fuzz, 'http://localhost:4001/finn/pkg/fuzz/v9', 'on POST of alias, alias should redirect to set "version"');
 });
 
-test('alias map - put alias, then update alias, then get map through alias - non scoped', async (t) => {
+tap.test('alias map - put alias, then update alias, then get map through alias - non scoped', async (t) => {
     const { headers, address } = t.context;
 
     // PUT maps on server
@@ -335,7 +342,7 @@ test('alias map - put alias, then update alias, then get map through alias - non
     t.equals(aliasResponseB.imports.fuzz, 'http://localhost:4001/finn/pkg/fuzz/v9', 'on POST of alias, alias should redirect to set "version"');
 });
 
-test('alias map - put alias, then delete alias, then get map through alias - scoped', async (t) => {
+tap.test('alias map - put alias, then delete alias, then get map through alias - scoped', async (t) => {
     const { headers, address } = t.context;
 
     // PUT map on server
@@ -383,7 +390,7 @@ test('alias map - put alias, then delete alias, then get map through alias - sco
     t.equals(errored.status, 404, 'on GET of map through deleted alias, server should respond with a 404 Not Found');
 });
 
-test('alias map - put alias, then delete alias, then get map through alias - non scoped', async (t) => {
+tap.test('alias map - put alias, then delete alias, then get map through alias - non scoped', async (t) => {
     const { headers, address } = t.context;
 
     // PUT map on server

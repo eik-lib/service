@@ -1,7 +1,8 @@
 'use strict';
 
-const { test } = require('tap');
+const fastify = require('fastify');
 const fetch = require('node-fetch');
+const tap = require('tap');
 
 const Server = require("..");
 const Sink = require('../node_modules/@eik/core/lib/sinks/test');
@@ -10,10 +11,16 @@ const Sink = require('../node_modules/@eik/core/lib/sinks/test');
 // Package GET
 //
 
-test('ETag - pkg:get - ETag and "If-None-Match" is matching', async t => {
+tap.test('ETag - pkg:get - ETag and "If-None-Match" is matching', async t => {
     const sink = new Sink();
     const service = new Server({ customSink: sink });
-    const address = await service.start();
+
+    const app = fastify({
+        ignoreTrailingSlash: true,
+    });
+    app.register(service.api());
+
+    const address = await app.listen(0, 'localhost');
 
     const url = `${address}/pkg/fuzz/8.4.1/main/index.js`;
     sink.set('/local/pkg/fuzz/8.4.1/main/index.js', 'hello world');
@@ -39,13 +46,19 @@ test('ETag - pkg:get - ETag and "If-None-Match" is matching', async t => {
     t.equals(resB.status, 304, 'second response should respond with http status 304');
     t.equals(bodyB, '', 'second response should respond with empty contents');
 
-    await service.stop();
+    await app.close();
 });
 
-test('ETag - pkg:get - ETag and "If-None-Match" is NOT matching', async t => {
+tap.test('ETag - pkg:get - ETag and "If-None-Match" is NOT matching', async t => {
     const sink = new Sink();
     const service = new Server({ customSink: sink, port: 0, logger: false });
-    const address = await service.start();
+
+    const app = fastify({
+        ignoreTrailingSlash: true,
+    });
+    app.register(service.api());
+
+    const address = await app.listen(0, 'localhost');
 
     const url = `${address}/pkg/fuzz/8.4.1/main/index.js`;
     sink.set('/local/pkg/fuzz/8.4.1/main/index.js', 'hello world');
@@ -71,13 +84,19 @@ test('ETag - pkg:get - ETag and "If-None-Match" is NOT matching', async t => {
     t.equals(resB.status, 200, 'second response should respond with http status 200');
     t.equals(bodyB, 'hello world', 'second response should respond with file contents');
 
-    await service.stop();
+    await app.close();
 });
 
-test('ETag - pkg:get - "If-None-Match" is NOT set on request', async t => {
+tap.test('ETag - pkg:get - "If-None-Match" is NOT set on request', async t => {
     const sink = new Sink();
     const service = new Server({ customSink: sink, port: 0, logger: false });
-    const address = await service.start();
+
+    const app = fastify({
+        ignoreTrailingSlash: true,
+    });
+    app.register(service.api());
+
+    const address = await app.listen(0, 'localhost');
 
     const url = `${address}/pkg/fuzz/8.4.1/main/index.js`;
     sink.set('/local/pkg/fuzz/8.4.1/main/index.js', 'hello world');
@@ -100,10 +119,10 @@ test('ETag - pkg:get - "If-None-Match" is NOT set on request', async t => {
     t.equals(resB.status, 200, 'second response should respond with http status 200');
     t.equals(bodyB, 'hello world', 'second response should respond with file contents');
 
-    await service.stop();
+    await app.close();
 });
 /*
-test('ETag - pkg:get - ETags is configured to not be set', async t => {
+tap.test('ETag - pkg:get - ETags is configured to not be set', async t => {
     const sink = new Sink();
     const service = new Server({ customSink: sink, port: 0, config: { etag: false }, logger: false });
     const address = await service.start();
@@ -140,10 +159,16 @@ test('ETag - pkg:get - ETags is configured to not be set', async t => {
 // Package LOG
 //
 
-test('ETag - pkg:log - ETag and "If-None-Match" is matching', async t => {
+tap.test('ETag - pkg:log - ETag and "If-None-Match" is matching', async t => {
     const sink = new Sink();
     const service = new Server({ customSink: sink, port: 0, logger: false });
-    const address = await service.start();
+
+    const app = fastify({
+        ignoreTrailingSlash: true,
+    });
+    app.register(service.api());
+
+    const address = await app.listen(0, 'localhost');
 
     const url = `${address}/pkg/fuzz/8.4.1`;
     sink.set('/local/pkg/fuzz/8.4.1.package.json', 'hello world');
@@ -170,13 +195,19 @@ test('ETag - pkg:log - ETag and "If-None-Match" is matching', async t => {
     t.equals(resB.status, 304, 'second response should respond with http status 304');
     t.equals(bodyB, '', 'second response should respond with empty contents');
 
-    await service.stop();
+    await app.close();
 });
 
-test('ETag - pkg:log - ETag and "If-None-Match" is NOT matching', async t => {
+tap.test('ETag - pkg:log - ETag and "If-None-Match" is NOT matching', async t => {
     const sink = new Sink();
     const service = new Server({ customSink: sink, port: 0, logger: false });
-    const address = await service.start();
+
+    const app = fastify({
+        ignoreTrailingSlash: true,
+    });
+    app.register(service.api());
+
+    const address = await app.listen(0, 'localhost');
 
     const url = `${address}/pkg/fuzz/8.4.1`;
     sink.set('/local/pkg/fuzz/8.4.1.package.json', 'hello world');
@@ -202,13 +233,19 @@ test('ETag - pkg:log - ETag and "If-None-Match" is NOT matching', async t => {
     t.equals(resB.status, 200, 'second response should respond with http status 200');
     t.equals(bodyB, 'hello world', 'second response should respond with file contents');
 
-    await service.stop();
+    await app.close();
 });
 
-test('ETag - pkg:log - "If-None-Match" is NOT set on request', async t => {
+tap.test('ETag - pkg:log - "If-None-Match" is NOT set on request', async t => {
     const sink = new Sink();
     const service = new Server({ customSink: sink, port: 0, logger: false });
-    const address = await service.start();
+
+    const app = fastify({
+        ignoreTrailingSlash: true,
+    });
+    app.register(service.api());
+
+    const address = await app.listen(0, 'localhost');
 
     const url = `${address}/pkg/fuzz/8.4.1`;
     sink.set('/local/pkg/fuzz/8.4.1.package.json', 'hello world');
@@ -231,10 +268,10 @@ test('ETag - pkg:log - "If-None-Match" is NOT set on request', async t => {
     t.equals(resB.status, 200, 'second response should respond with http status 200');
     t.equals(bodyB, 'hello world', 'second response should respond with file contents');
 
-    await service.stop();
+    await app.close();
 });
 /*
-test('ETag - pkg:log - ETags is configured to not be set', async t => {
+tap.test('ETag - pkg:log - ETags is configured to not be set', async t => {
     const sink = new Sink();
     const service = new Server({ customSink: sink, port: 0, config: { etag: false }, logger: false });
     const address = await service.start();
@@ -271,10 +308,16 @@ test('ETag - pkg:log - ETags is configured to not be set', async t => {
 // Map GET
 //
 
-test('ETag - map:get - ETag and "If-None-Match" is matching', async t => {
+tap.test('ETag - map:get - ETag and "If-None-Match" is matching', async t => {
     const sink = new Sink();
     const service = new Server({ customSink: sink, port: 0, logger: false });
-    const address = await service.start();
+
+    const app = fastify({
+        ignoreTrailingSlash: true,
+    });
+    app.register(service.api());
+
+    const address = await app.listen(0, 'localhost');
 
     const url = `${address}/map/buzz/4.2.2`;
     sink.set('/local/map/buzz/4.2.2.import-map.json', 'hello world');
@@ -301,13 +344,19 @@ test('ETag - map:get - ETag and "If-None-Match" is matching', async t => {
     t.equals(resB.status, 304, 'second response should respond with http status 304');
     t.equals(bodyB, '', 'second response should respond with empty contents');
 
-    await service.stop();
+    await app.close();
 });
 
-test('ETag - map:get - ETag and "If-None-Match" is NOT matching', async t => {
+tap.test('ETag - map:get - ETag and "If-None-Match" is NOT matching', async t => {
     const sink = new Sink();
     const service = new Server({ customSink: sink, port: 0, logger: false });
-    const address = await service.start();
+
+    const app = fastify({
+        ignoreTrailingSlash: true,
+    });
+    app.register(service.api());
+
+    const address = await app.listen(0, 'localhost');
 
     const url = `${address}/map/buzz/4.2.2`;
     sink.set('/local/map/buzz/4.2.2.import-map.json', 'hello world');
@@ -333,13 +382,19 @@ test('ETag - map:get - ETag and "If-None-Match" is NOT matching', async t => {
     t.equals(resB.status, 200, 'second response should respond with http status 200');
     t.equals(bodyB, 'hello world', 'second response should respond with file contents');
 
-    await service.stop();
+    await app.close();
 });
 
-test('ETag - map:get - "If-None-Match" is NOT set on request', async t => {
+tap.test('ETag - map:get - "If-None-Match" is NOT set on request', async t => {
     const sink = new Sink();
     const service = new Server({ customSink: sink, port: 0, logger: false });
-    const address = await service.start();
+
+    const app = fastify({
+        ignoreTrailingSlash: true,
+    });
+    app.register(service.api());
+
+    const address = await app.listen(0, 'localhost');
 
     const url = `${address}/map/buzz/4.2.2`;
     sink.set('/local/map/buzz/4.2.2.import-map.json', 'hello world');
@@ -362,10 +417,10 @@ test('ETag - map:get - "If-None-Match" is NOT set on request', async t => {
     t.equals(resB.status, 200, 'second response should respond with http status 200');
     t.equals(bodyB, 'hello world', 'second response should respond with file contents');
 
-    await service.stop();
+    await app.close();
 });
 /*
-test('ETag - map:get - ETags is configured to not be set', async t => {
+tap.test('ETag - map:get - ETags is configured to not be set', async t => {
     const sink = new Sink();
     const service = new Server({ customSink: sink, port: 0, config: { etag: false }, logger: false });
     const address = await service.start();
