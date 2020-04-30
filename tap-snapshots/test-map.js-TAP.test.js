@@ -11,6 +11,7 @@ exports[`test/map.js TAP import-map - get map versions - non scoped > on GET of 
 Object {
   "name": "buzz",
   "org": "local",
+  "type": "map",
   "versions": Array [
     Array [
       5,
@@ -34,6 +35,7 @@ exports[`test/map.js TAP import-map - get map versions - scoped > on GET of map 
 Object {
   "name": "@cuz/buzz",
   "org": "local",
+  "type": "map",
   "versions": Array [
     Array [
       5,
