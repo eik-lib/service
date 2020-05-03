@@ -520,7 +520,70 @@ tap.test('cache-control - alias NPM package - scoped', async (t) => {
     t.equals(deleted.headers.get('cache-control'), 'no-store', 'should be "no-cache"');
 });
 
-tap.test('cache-control - alias NPM package - non-scoped', async (t) => {
+tap.test('cache-control - alias map - non-scoped', async (t) => {
+    const { headers, address } = t.context;
+
+    const formDataA = new FormData();
+    formDataA.append('map', fs.createReadStream(FIXTURE_MAP));
+
+    const formDataB = new FormData();
+    formDataB.append('map', fs.createReadStream(FIXTURE_MAP));
+
+    // PUT maps on server
+    await fetch(`${address}/map/buzz/4.2.2`, {
+        method: 'PUT',
+        body: formDataA,
+        headers: { ...headers, ...formDataA.getHeaders()},
+        redirect: 'manual',
+    });
+
+    await fetch(`${address}/map/buzz/4.4.2`, {
+        method: 'PUT',
+        body: formDataB,
+        headers: { ...headers, ...formDataB.getHeaders()},
+        redirect: 'manual',
+    });
+
+    // PUT alias on server
+    const aliasFormData = new FormData();
+    aliasFormData.append('version', '4.2.2');
+
+    const alias = await fetch(`${address}/map/buzz/v4`, {
+        method: 'PUT',
+        body: aliasFormData,
+        headers: { ...headers, ...aliasFormData.getHeaders()},
+        redirect: 'manual',
+    });
+    t.equals(alias.headers.get('cache-control'), 'no-store', 'should be "no-store"');
+
+    // GET alias from server
+    const redirect = await fetch(`${address}/map/buzz/v4`, {
+        method: 'GET',
+        redirect: 'manual',
+    });
+    t.equals(redirect.headers.get('cache-control'), 'public, max-age=1200', 'should be "public, max-age=1200"');
+
+    // POST alias on server
+    const aliasFormDataB = new FormData();
+    aliasFormDataB.append('version', '4.4.2');
+
+    const updated = await fetch(`${address}/map/buzz/v4`, {
+        method: 'POST',
+        body: aliasFormDataB,
+        headers: { ...headers, ...aliasFormDataB.getHeaders()},
+        redirect: 'manual',
+    });
+    t.equals(updated.headers.get('cache-control'), 'no-store', 'should be "no-store"');
+
+    // DELETE alias on server
+    const deleted = await fetch(`${address}/map/buzz/v4`, {
+        method: 'DELETE',
+        headers,
+    });
+    t.equals(deleted.headers.get('cache-control'), 'no-store', 'should be "no-cache"');
+});
+
+tap.test('cache-control - alias map - scoped', async (t) => {
     const { headers, address } = t.context;
 
     const formDataA = new FormData();
