@@ -175,7 +175,7 @@ tap.test('alias map - put alias, then get map through alias - scoped', async (t)
         redirect: 'manual',
     });
 
-    t.equals(redirect.status, 303, 'on GET of map through alias, server should respond with a 303 redirect');
+    t.equals(redirect.status, 307, 'on GET of map through alias, server should respond with a 307 redirect');
     t.equals(redirect.headers.get('location'), `${address}/map/@cuz/fuzz/8.4.1`, 'on GET of map through alias, server should respond with a location header');
 
     // GET map from server
@@ -226,7 +226,7 @@ tap.test('alias map - put alias, then get map through alias - non scoped', async
         redirect: 'manual',
     });
 
-    t.equals(redirect.status, 303, 'on GET of map through alias, server should respond with a 303 redirect');
+    t.equals(redirect.status, 307, 'on GET of map through alias, server should respond with a 307 redirect');
     t.equals(redirect.headers.get('location'), `${address}/map/fuzz/8.4.1`, 'on GET of map through alias, server should respond with a location header');
 
     // GET file from server
