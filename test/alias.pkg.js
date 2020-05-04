@@ -178,7 +178,7 @@ tap.test('alias package - put alias, then get file overview through alias - scop
         redirect: 'manual',
     });
 
-    t.equals(redirect.status, 303, 'on GET of file through alias, server should respond with a 303 redirect');
+    t.equals(redirect.status, 307, 'on GET of file through alias, server should respond with a 307 redirect');
     t.equals(redirect.headers.get('location'), `${address}/pkg/@cuz/fuzz/8.4.1`, 'on GET of file through alias, server should respond with a location header');
 
     // GET file from server
@@ -229,7 +229,7 @@ tap.test('alias package - put alias, then get file overview through alias - non 
         redirect: 'manual',
     });
 
-    t.equals(redirect.status, 303, 'on GET of file through alias, server should respond with a 303 redirect');
+    t.equals(redirect.status, 307, 'on GET of file through alias, server should respond with a 307 redirect');
     t.equals(redirect.headers.get('location'), `${address}/pkg/fuzz/8.4.1`, 'on GET of file through alias, server should respond with a location header');
 
     // GET file from server
@@ -280,7 +280,7 @@ tap.test('alias package - put alias, then get file through alias - scoped', asyn
         redirect: 'manual',
     });
 
-    t.equals(redirect.status, 303, 'on GET of file through alias, server should respond with a 303 redirect');
+    t.equals(redirect.status, 307, 'on GET of file through alias, server should respond with a 307 redirect');
     t.equals(redirect.headers.get('location'), `${address}/pkg/@cuz/fuzz/8.4.1/main/index.js`, 'on GET of file through alias, server should respond with a location header');
 
     // GET file from server
@@ -331,7 +331,7 @@ tap.test('alias package - put alias, then get file through alias - non scoped', 
         redirect: 'manual',
     });
 
-    t.equals(redirect.status, 303, 'on GET of file through alias, server should respond with a 303 redirect');
+    t.equals(redirect.status, 307, 'on GET of file through alias, server should respond with a 307 redirect');
     t.equals(redirect.headers.get('location'), `${address}/pkg/fuzz/8.4.1/main/index.js`, 'on GET of file through alias, server should respond with a location header');
 
     // GET file from server
