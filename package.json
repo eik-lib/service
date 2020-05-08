@@ -30,7 +30,7 @@
   },
   "homepage": "https://github.com/eik-lib/service#readme",
   "dependencies": {
-    "@eik/core": "1.0.0-alpha.17",
+    "@eik/core": "1.0.0-alpha.18",
     "http-errors": "1.7.3",
     "convict": "5.2.0",
     "fastify": "3.0.0-rc.1",
