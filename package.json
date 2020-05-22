@@ -32,7 +32,7 @@
   "dependencies": {
     "@eik/core": "1.0.0-alpha.18",
     "convict": "6.0.0",
-    "fastify": "3.0.0-rc.2",
+    "fastify": "3.0.0-rc.3",
     "fastify-compress": "3.0.0",
     "fastify-cors": "4.0.0",
     "fastify-jwt": "2.1.0",
