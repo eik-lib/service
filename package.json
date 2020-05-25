@@ -38,7 +38,7 @@
     "fastify-jwt": "2.1.0",
     "http-errors": "1.7.3",
     "js-yaml": "3.14.0",
-    "pino": "6.2.1"
+    "pino": "6.3.0"
   },
   "devDependencies": {
     "eslint": "7.1.0",
