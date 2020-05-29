@@ -15,6 +15,12 @@ const run = async () => {
 
     app.register(eik.api());
 
+    try {
+        await eik.health();
+    } catch (error) {
+        // Do accept errors
+    }
+
     await app.listen(eik.config.get('http.port'), eik.config.get('http.address'));
 }
 run();
