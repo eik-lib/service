@@ -1,3 +1,10 @@
+## [1.0.5](https://github.com/eik-lib/service/compare/v1.0.4...v1.0.5) (2020-06-29)
+
+
+### Bug Fixes
+
+* **deps:** update dependency http-errors to v1.8.0 ([f9cade4](https://github.com/eik-lib/service/commit/f9cade4f48efc24ae6c666047a08b84cbe8ec0f0))
+
 ## [1.0.4](https://github.com/eik-lib/service/compare/v1.0.3...v1.0.4) (2020-06-26)
 
 
