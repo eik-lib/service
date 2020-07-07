@@ -1,3 +1,10 @@
+## [1.0.13](https://github.com/eik-lib/service/compare/v1.0.12...v1.0.13) (2020-07-07)
+
+
+### Bug Fixes
+
+* **deps:** update dependency fastify-compress to v3.2.1 ([864dd65](https://github.com/eik-lib/service/commit/864dd650e63ac21f0fcf176de584575e85f27179))
+
 ## [1.0.12](https://github.com/eik-lib/service/compare/v1.0.11...v1.0.12) (2020-07-07)
 
 
