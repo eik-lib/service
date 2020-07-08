@@ -1,3 +1,10 @@
+## [1.0.15](https://github.com/eik-lib/service/compare/v1.0.14...v1.0.15) (2020-07-08)
+
+
+### Bug Fixes
+
+* Use new Content Type Parser function signature ([914f092](https://github.com/eik-lib/service/commit/914f0922f9e03ec2bffae738d768cc5a022f8be3))
+
 ## [1.0.14](https://github.com/eik-lib/service/compare/v1.0.13...v1.0.14) (2020-07-07)
 
 
