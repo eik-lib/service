@@ -3,19 +3,29 @@
     "config:base",
     "group:linters"
   ],
-  "packageRules": [{
-    "depTypeList": ["dependencies"],
-    "automerge": true,
-    "major": {
-      "automerge": false
+  "packageRules": [
+    {
+      "depTypeList": ["dependencies"],
+      "automerge": true,
+      "major": {
+        "automerge": false
+      }
+    },
+    {
+      "depTypeList": ["devDependencies"],
+      "schedule": ["before 4am on monday"],
+      "automerge": true,
+      "major": {
+        "automerge": false
+      }
+    },
+    {
+      "groupName": "semantic release packages",
+      "packagePatterns": ["^@semantic-release/"]
+    },
+    {
+      "groupName": "fastify packages",
+      "packagePatterns": ["^fastify"]
     }
-  },
-  {
-    "depTypeList": ["devDependencies"],
-    "schedule": ["before 4am on monday"],
-    "automerge": true,
-    "major": {
-      "automerge": false
-    }
-  }]
+  ]
 }
