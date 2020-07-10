@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/eik-lib/service/compare/v1.0.15...v1.1.0) (2020-07-10)
+
+
+### Features
+
+* Collect sink metrics ([21909f3](https://github.com/eik-lib/service/commit/21909f3d11a28aeaddc4d395f850b1b8f2736b6f))
+
 ## [1.0.15](https://github.com/eik-lib/service/compare/v1.0.14...v1.0.15) (2020-07-08)
 
 
