@@ -1,3 +1,10 @@
+## [1.1.13](https://github.com/eik-lib/service/compare/v1.1.12...v1.1.13) (2020-08-13)
+
+
+### Bug Fixes
+
+* Log errors during load of configuration ([e485e39](https://github.com/eik-lib/service/commit/e485e39b4cdd935ec7ae3c53d80f00310271fa9e))
+
 ## [1.1.12](https://github.com/eik-lib/service/compare/v1.1.11...v1.1.12) (2020-08-06)
 
 
