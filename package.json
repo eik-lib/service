@@ -57,7 +57,7 @@
     "form-data": "3.0.0",
     "node-fetch": "2.6.1",
     "pino-pretty": "4.2.1",
-    "prettier": "2.1.1",
+    "prettier": "2.1.2",
     "semantic-release": "17.1.1",
     "tap": "14.10.8",
     "unique-slug": "2.0.2"
