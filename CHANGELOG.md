@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/eik-lib/service/compare/v1.1.32...v1.2.0) (2020-10-27)
+
+
+### Features
+
+* Set custom 404 handler ([b57c9f8](https://github.com/eik-lib/service/commit/b57c9f84b2c31e3fa85ebe209a88424044bced3a))
+
 ## [1.1.32](https://github.com/eik-lib/service/compare/v1.1.31...v1.1.32) (2020-10-19)
 
 
