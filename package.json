@@ -32,7 +32,7 @@
   },
   "homepage": "https://github.com/eik-lib/service#readme",
   "dependencies": {
-    "@eik/core": "1.1.7",
+    "@eik/core": "1.1.8",
     "convict": "6.0.0",
     "fastify": "3.9.1",
     "fastify-compress": "3.4.0",
