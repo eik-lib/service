@@ -4,9 +4,9 @@
   "description": "Eik REST API as a standalone HTTP service",
   "main": "./lib/main.js",
   "bin": {
-    "eik-server": "./bin/eik-server.js",
-    "eik-service": "./bin/eik-server.js",
-    "@eik/service": "./bin/eik-server.js"
+    "eik-server": "bin/eik-server.js",
+    "eik-service": "bin/eik-server.js",
+    "service": "bin/eik-server.js"
   },
   "scripts": {
     "start": "node ./bin/eik-server.js | pino-pretty",
@@ -51,7 +51,7 @@
     "@semantic-release/release-notes-generator": "9.0.1",
     "eslint": "7.15.0",
     "eslint-config-airbnb-base": "14.2.1",
-    "eslint-config-prettier": "6.15.0",
+    "eslint-config-prettier": "7.0.0",
     "eslint-plugin-import": "2.22.1",
     "eslint-plugin-prettier": "3.3.0",
     "form-data": "3.0.0",
