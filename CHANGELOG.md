@@ -1,3 +1,10 @@
+## [1.2.18](https://github.com/eik-lib/service/compare/v1.2.17...v1.2.18) (2021-01-04)
+
+
+### Bug Fixes
+
+* Use yaml.load() ([77f7268](https://github.com/eik-lib/service/commit/77f7268055feea52b43e72fee8bf857e6a904b63))
+
 ## [1.2.17](https://github.com/eik-lib/service/compare/v1.2.16...v1.2.17) (2021-01-04)
 
 
