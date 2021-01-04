@@ -1,3 +1,10 @@
+## [1.2.17](https://github.com/eik-lib/service/compare/v1.2.16...v1.2.17) (2021-01-04)
+
+
+### Bug Fixes
+
+* **deps:** update dependency js-yaml to v4 ([45d59fc](https://github.com/eik-lib/service/commit/45d59fc9a91e385731ef20ed030e9dd2cf714d33))
+
 ## [1.2.16](https://github.com/eik-lib/service/compare/v1.2.15...v1.2.16) (2020-12-31)
 
 
