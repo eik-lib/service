@@ -40,7 +40,7 @@
     "fastify-jwt": "2.2.0",
     "http-errors": "1.8.0",
     "js-yaml": "4.0.0",
-    "pino": "6.9.0"
+    "pino": "6.10.0"
   },
   "devDependencies": {
     "@semantic-release/changelog": "5.0.1",
