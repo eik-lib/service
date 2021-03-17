@@ -1,3 +1,10 @@
+## [1.2.45](https://github.com/eik-lib/service/compare/v1.2.44...v1.2.45) (2021-03-17)
+
+
+### Bug Fixes
+
+* Make JWT expire time configurable ([5568993](https://github.com/eik-lib/service/commit/5568993ffd5190e0abb31a25cf001ea47c12ddc2))
+
 ## [1.2.44](https://github.com/eik-lib/service/compare/v1.2.43...v1.2.44) (2021-03-12)
 
 
