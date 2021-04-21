@@ -10,8 +10,8 @@
   },
   "scripts": {
     "start": "node ./bin/eik-server.js | pino-pretty",
-    "test": "LOG_LEVEL=fatal tap test/**/*.js",
-    "test:snapshots:update": "LOG_LEVEL=fatal tap test/**/*.js --snapshot",
+    "test": "LOG_LEVEL=fatal tap --no-check-coverage",
+    "test:snapshots:update": "LOG_LEVEL=fatal tap --snapshot",
     "lint:fix": "eslint --fix .",
     "lint": "eslint ."
   },
@@ -59,7 +59,7 @@
     "pino-pretty": "4.7.1",
     "prettier": "2.2.1",
     "semantic-release": "17.4.2",
-    "tap": "14.11.0",
+    "tap": "15.0.4",
     "unique-slug": "2.0.2"
   }
 }
