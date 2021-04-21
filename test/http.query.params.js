@@ -19,7 +19,7 @@ tap.cleanSnapshot = (s) => {
     return s.replace(regex, '"created": -1,');
 };
 
-tap.beforeEach(async (done, t) => {
+tap.beforeEach(async (t) => {
     const sink = new Sink();
     const service = new Server({ customSink: sink });
 
@@ -47,13 +47,10 @@ tap.beforeEach(async (done, t) => {
         headers,
         app,
     };
-
-    done();
 });
 
-tap.afterEach(async (done, t) => {
+tap.afterEach(async (t) => {
     await t.context.app.close();
-    done();
 });
 
 tap.test('query params - package', async (t) => {
@@ -75,7 +72,7 @@ tap.test('query params - package', async (t) => {
         method: 'GET',
     });
 
-    t.equals(downloaded.status, 200, 'on GET of file, server should respond with 200 ok');
+    t.equal(downloaded.status, 200, 'on GET of file, server should respond with 200 ok');
 });
 
 tap.test('query params - NPM package', async (t) => {
@@ -97,7 +94,7 @@ tap.test('query params - NPM package', async (t) => {
         method: 'GET',
     });
 
-    t.equals(downloaded.status, 200, 'on GET of file, server should respond with 200 ok');
+    t.equal(downloaded.status, 200, 'on GET of file, server should respond with 200 ok');
 });
 
 tap.test('query params - map', async (t) => {
@@ -119,5 +116,5 @@ tap.test('query params - map', async (t) => {
         method: 'GET',
     });
 
-    t.equals(downloaded.status, 200, 'on GET of file, server should respond with 200 ok');
+    t.equal(downloaded.status, 200, 'on GET of file, server should respond with 200 ok');
 });

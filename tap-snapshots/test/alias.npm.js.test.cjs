@@ -4,9 +4,7 @@
  * Re-generate by setting TAP_SNAPSHOT=1 and running tests.
  * Make sure to inspect the output below.  Do not ignore changes!
  */
-
 'use strict'
-
 exports[`test/alias.npm.js TAP alias package - put alias, then get file overview through alias - non scoped > on GET of file, response should match snapshot 1`] = `
 Object {
   "author": Object {

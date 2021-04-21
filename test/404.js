@@ -28,8 +28,8 @@ tap.test('404 - POST request to non existing pathname', async (t) => {
         headers: formData.getHeaders(),
     });
   
-    t.equals(response.status, 404, 'server should respond with a 404 Not found');
-    t.equals(response.headers.get('cache-control'), 'no-store', 'should contain "cache-control" set to "no-store"');
+    t.equal(response.status, 404, 'server should respond with a 404 Not found');
+    t.equal(response.headers.get('cache-control'), 'no-store', 'should contain "cache-control" set to "no-store"');
 
     await app.close();
 });
@@ -47,8 +47,8 @@ tap.test('404 - GET request to non existing pathname', async (t) => {
 
     const response = await fetch(`${address}/non/existent`);
   
-    t.equals(response.status, 404, 'server should respond with a 404 Not found');
-    t.equals(response.headers.get('cache-control'), 'no-store', 'should contain "cache-control" set to "no-store"');
+    t.equal(response.status, 404, 'server should respond with a 404 Not found');
+    t.equal(response.headers.get('cache-control'), 'no-store', 'should contain "cache-control" set to "no-store"');
 
     await app.close();
 });

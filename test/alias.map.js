@@ -13,7 +13,7 @@ const Sink = require('../node_modules/@eik/core/lib/sinks/test');
 const FIXTURE_MAP = path.resolve(__dirname, '../fixtures/import-map.json');
 const FIXTURE_MAP_B = path.resolve(__dirname, '../fixtures/import-map-b.json');
 
-tap.beforeEach(async (done, t) => {
+tap.beforeEach(async (t) => {
     const sink = new Sink();
     const service = new Server({ customSink: sink });
 
@@ -41,13 +41,10 @@ tap.beforeEach(async (done, t) => {
         headers,
         app,
     };
-
-    done();
 });
 
-tap.afterEach(async (done, t) => {
+tap.afterEach(async (t) => {
     await t.context.app.close();
-    done();
 });
 
 tap.test('alias map - no auth token on PUT - scoped', async (t) => {
@@ -63,7 +60,7 @@ tap.test('alias map - no auth token on PUT - scoped', async (t) => {
         headers: aliasFormData.getHeaders(),
     });
 
-    t.equals(alias.status, 401, 'on PUT of alias, server should respond with a 401 Unauthorized');
+    t.equal(alias.status, 401, 'on PUT of alias, server should respond with a 401 Unauthorized');
 });
 
 tap.test('alias map - no auth token on PUT - non scoped', async (t) => {
@@ -79,7 +76,7 @@ tap.test('alias map - no auth token on PUT - non scoped', async (t) => {
         headers: aliasFormData.getHeaders(),
     });
 
-    t.equals(alias.status, 401, 'on PUT of alias, server should respond with a 401 Unauthorized');
+    t.equal(alias.status, 401, 'on PUT of alias, server should respond with a 401 Unauthorized');
 });
 
 tap.test('alias map - no auth token on POST - scoped', async (t) => {
@@ -95,7 +92,7 @@ tap.test('alias map - no auth token on POST - scoped', async (t) => {
         headers: aliasFormData.getHeaders(),
     });
 
-    t.equals(alias.status, 401, 'on POST of alias, server should respond with a 401 Unauthorized');
+    t.equal(alias.status, 401, 'on POST of alias, server should respond with a 401 Unauthorized');
 });
 
 tap.test('alias map - no auth token on POST - non scoped', async (t) => {
@@ -111,7 +108,7 @@ tap.test('alias map - no auth token on POST - non scoped', async (t) => {
         headers: aliasFormData.getHeaders(),
     });
 
-    t.equals(alias.status, 401, 'on POST of alias, server should respond with a 401 Unauthorized');
+    t.equal(alias.status, 401, 'on POST of alias, server should respond with a 401 Unauthorized');
 });
 
 tap.test('alias map - no auth token on DELETE - scoped', async (t) => {
@@ -123,7 +120,7 @@ tap.test('alias map - no auth token on DELETE - scoped', async (t) => {
         method: 'DELETE',
     });
 
-    t.equals(alias.status, 401, 'on POST of alias, server should respond with a 401 Unauthorized');
+    t.equal(alias.status, 401, 'on POST of alias, server should respond with a 401 Unauthorized');
 });
 
 tap.test('alias map - no auth token on POST - non scoped', async (t) => {
@@ -135,7 +132,7 @@ tap.test('alias map - no auth token on POST - non scoped', async (t) => {
         method: 'DELETE',
     });
 
-    t.equals(alias.status, 401, 'on POST of alias, server should respond with a 401 Unauthorized');
+    t.equal(alias.status, 401, 'on POST of alias, server should respond with a 401 Unauthorized');
 });
 
 tap.test('alias map - put alias, then get map through alias - scoped', async (t) => {
@@ -152,8 +149,8 @@ tap.test('alias map - put alias, then get map through alias - scoped', async (t)
         redirect: 'manual',
     });
 
-    t.equals(uploaded.status, 303, 'on PUT of map, server should respond with a 303 redirect');
-    t.equals(uploaded.headers.get('location'), `${address}/map/@cuz/fuzz/8.4.1`, 'on PUT of map, server should respond with a location header');
+    t.equal(uploaded.status, 303, 'on PUT of map, server should respond with a 303 redirect');
+    t.equal(uploaded.headers.get('location'), `${address}/map/@cuz/fuzz/8.4.1`, 'on PUT of map, server should respond with a location header');
 
     // PUT alias on server
     const aliasFormData = new FormData();
@@ -166,8 +163,8 @@ tap.test('alias map - put alias, then get map through alias - scoped', async (t)
         redirect: 'manual',
     });
 
-    t.equals(alias.status, 303, 'on PUT of alias, server should respond with a 303 redirect');
-    t.equals(alias.headers.get('location'), `${address}/map/@cuz/fuzz/v8`, 'on PUT of alias, server should respond with a location header');
+    t.equal(alias.status, 303, 'on PUT of alias, server should respond with a 303 redirect');
+    t.equal(alias.headers.get('location'), `${address}/map/@cuz/fuzz/v8`, 'on PUT of alias, server should respond with a location header');
 
     // GET map through alias from server
     const redirect = await fetch(alias.headers.get('location'), {
@@ -175,8 +172,8 @@ tap.test('alias map - put alias, then get map through alias - scoped', async (t)
         redirect: 'manual',
     });
 
-    t.equals(redirect.status, 302, 'on GET of map through alias, server should respond with a 302 redirect');
-    t.equals(redirect.headers.get('location'), `${address}/map/@cuz/fuzz/8.4.1`, 'on GET of map through alias, server should respond with a location header');
+    t.equal(redirect.status, 302, 'on GET of map through alias, server should respond with a 302 redirect');
+    t.equal(redirect.headers.get('location'), `${address}/map/@cuz/fuzz/8.4.1`, 'on GET of map through alias, server should respond with a location header');
 
     // GET map from server
     const downloaded = await fetch(redirect.headers.get('location'), {
@@ -185,7 +182,7 @@ tap.test('alias map - put alias, then get map through alias - scoped', async (t)
 
     const downloadedResponse = await downloaded.json();
 
-    t.equals(downloaded.status, 200, 'on GET of map, server should respond with 200 ok');
+    t.equal(downloaded.status, 200, 'on GET of map, server should respond with 200 ok');
     t.matchSnapshot(downloadedResponse, 'on GET of file, response should match snapshot');
 });
 
@@ -203,8 +200,8 @@ tap.test('alias map - put alias, then get map through alias - non scoped', async
         redirect: 'manual',
     });
 
-    t.equals(uploaded.status, 303, 'on PUT of map, server should respond with a 303 redirect');
-    t.equals(uploaded.headers.get('location'), `${address}/map/fuzz/8.4.1`, 'on PUT of map, server should respond with a location header');
+    t.equal(uploaded.status, 303, 'on PUT of map, server should respond with a 303 redirect');
+    t.equal(uploaded.headers.get('location'), `${address}/map/fuzz/8.4.1`, 'on PUT of map, server should respond with a location header');
 
     // PUT alias on server
     const aliasFormData = new FormData();
@@ -217,8 +214,8 @@ tap.test('alias map - put alias, then get map through alias - non scoped', async
         redirect: 'manual',
     });
 
-    t.equals(alias.status, 303, 'on PUT of alias, server should respond with a 303 redirect');
-    t.equals(alias.headers.get('location'), `${address}/map/fuzz/v8`, 'on PUT of alias, server should respond with a location header');
+    t.equal(alias.status, 303, 'on PUT of alias, server should respond with a 303 redirect');
+    t.equal(alias.headers.get('location'), `${address}/map/fuzz/v8`, 'on PUT of alias, server should respond with a location header');
 
     // GET file through alias from server
     const redirect = await fetch(alias.headers.get('location'), {
@@ -226,8 +223,8 @@ tap.test('alias map - put alias, then get map through alias - non scoped', async
         redirect: 'manual',
     });
 
-    t.equals(redirect.status, 302, 'on GET of map through alias, server should respond with a 302 redirect');
-    t.equals(redirect.headers.get('location'), `${address}/map/fuzz/8.4.1`, 'on GET of map through alias, server should respond with a location header');
+    t.equal(redirect.status, 302, 'on GET of map through alias, server should respond with a 302 redirect');
+    t.equal(redirect.headers.get('location'), `${address}/map/fuzz/8.4.1`, 'on GET of map through alias, server should respond with a location header');
 
     // GET file from server
     const downloaded = await fetch(redirect.headers.get('location'), {
@@ -236,7 +233,7 @@ tap.test('alias map - put alias, then get map through alias - non scoped', async
 
     const downloadedResponse = await downloaded.json();
 
-    t.equals(downloaded.status, 200, 'on GET of map, server should respond with 200 ok');
+    t.equal(downloaded.status, 200, 'on GET of map, server should respond with 200 ok');
     t.matchSnapshot(downloadedResponse, 'on GET of file, response should match snapshot');
 });
 
@@ -274,7 +271,7 @@ tap.test('alias map - put alias, then update alias, then get map through alias -
 
     const aliasResponseA = await aliasA.json();
 
-    t.equals(aliasResponseA.imports.fuzz, 'http://localhost:4001/finn/pkg/fuzz/v8', 'on PUT of alias, alias should redirect to set "version"');
+    t.equal(aliasResponseA.imports.fuzz, 'http://localhost:4001/finn/pkg/fuzz/v8', 'on PUT of alias, alias should redirect to set "version"');
 
     // POST alias on server
     const aliasFormDataB = new FormData();
@@ -288,7 +285,7 @@ tap.test('alias map - put alias, then update alias, then get map through alias -
 
     const aliasResponseB = await aliasB.json();
 
-    t.equals(aliasResponseB.imports.fuzz, 'http://localhost:4001/finn/pkg/fuzz/v9', 'on POST of alias, alias should redirect to set "version"');
+    t.equal(aliasResponseB.imports.fuzz, 'http://localhost:4001/finn/pkg/fuzz/v9', 'on POST of alias, alias should redirect to set "version"');
 });
 
 tap.test('alias map - put alias, then update alias, then get map through alias - non scoped', async (t) => {
@@ -325,7 +322,7 @@ tap.test('alias map - put alias, then update alias, then get map through alias -
 
     const aliasResponseA = await aliasA.json();
 
-    t.equals(aliasResponseA.imports.fuzz, 'http://localhost:4001/finn/pkg/fuzz/v8', 'on PUT of alias, alias should redirect to set "version"');
+    t.equal(aliasResponseA.imports.fuzz, 'http://localhost:4001/finn/pkg/fuzz/v8', 'on PUT of alias, alias should redirect to set "version"');
 
     // POST alias on server
     const aliasFormDataB = new FormData();
@@ -339,7 +336,7 @@ tap.test('alias map - put alias, then update alias, then get map through alias -
 
     const aliasResponseB = await aliasB.json();
 
-    t.equals(aliasResponseB.imports.fuzz, 'http://localhost:4001/finn/pkg/fuzz/v9', 'on POST of alias, alias should redirect to set "version"');
+    t.equal(aliasResponseB.imports.fuzz, 'http://localhost:4001/finn/pkg/fuzz/v9', 'on POST of alias, alias should redirect to set "version"');
 });
 
 tap.test('alias map - put alias, then delete alias, then get map through alias - scoped', async (t) => {
@@ -356,8 +353,8 @@ tap.test('alias map - put alias, then delete alias, then get map through alias -
         redirect: 'manual',
     });
 
-    t.equals(uploaded.status, 303, 'on PUT of map, server should respond with a 303 redirect');
-    t.equals(uploaded.headers.get('location'), `${address}/map/@cuz/fuzz/8.4.1`, 'on PUT of map, server should respond with a location header');
+    t.equal(uploaded.status, 303, 'on PUT of map, server should respond with a 303 redirect');
+    t.equal(uploaded.headers.get('location'), `${address}/map/@cuz/fuzz/8.4.1`, 'on PUT of map, server should respond with a location header');
 
     // PUT alias on server
     const aliasFormData = new FormData();
@@ -371,7 +368,7 @@ tap.test('alias map - put alias, then delete alias, then get map through alias -
 
     const aliasResponse = await alias.json();
 
-    t.equals(aliasResponse.imports.fuzz, 'http://localhost:4001/finn/pkg/fuzz/v8', 'on PUT of alias, alias should redirect to set "version"');
+    t.equal(aliasResponse.imports.fuzz, 'http://localhost:4001/finn/pkg/fuzz/v8', 'on PUT of alias, alias should redirect to set "version"');
 
     // DELETE alias on server
     const deleted = await fetch(`${address}/map/@cuz/fuzz/v8`, {
@@ -379,7 +376,7 @@ tap.test('alias map - put alias, then delete alias, then get map through alias -
         headers,
     });
 
-    t.equals(deleted.status, 204, 'on DELETE of alias, server should respond with a 204 Deleted');
+    t.equal(deleted.status, 204, 'on DELETE of alias, server should respond with a 204 Deleted');
 
     // GET map through alias from server
     const errored = await fetch(`${address}/map/@cuz/fuzz/v8`, {
@@ -387,7 +384,7 @@ tap.test('alias map - put alias, then delete alias, then get map through alias -
         redirect: 'manual',
     });
 
-    t.equals(errored.status, 404, 'on GET of map through deleted alias, server should respond with a 404 Not Found');
+    t.equal(errored.status, 404, 'on GET of map through deleted alias, server should respond with a 404 Not Found');
 });
 
 tap.test('alias map - put alias, then delete alias, then get map through alias - non scoped', async (t) => {
@@ -404,8 +401,8 @@ tap.test('alias map - put alias, then delete alias, then get map through alias -
         redirect: 'manual',
     });
 
-    t.equals(uploaded.status, 303, 'on PUT of map, server should respond with a 303 redirect');
-    t.equals(uploaded.headers.get('location'), `${address}/map/fuzz/8.4.1`, 'on PUT of map, server should respond with a location header');
+    t.equal(uploaded.status, 303, 'on PUT of map, server should respond with a 303 redirect');
+    t.equal(uploaded.headers.get('location'), `${address}/map/fuzz/8.4.1`, 'on PUT of map, server should respond with a location header');
 
     // PUT alias on server
     const aliasFormData = new FormData();
@@ -419,7 +416,7 @@ tap.test('alias map - put alias, then delete alias, then get map through alias -
 
     const aliasResponse = await alias.json();
 
-    t.equals(aliasResponse.imports.fuzz, 'http://localhost:4001/finn/pkg/fuzz/v8', 'on PUT of alias, alias should redirect to set "version"');
+    t.equal(aliasResponse.imports.fuzz, 'http://localhost:4001/finn/pkg/fuzz/v8', 'on PUT of alias, alias should redirect to set "version"');
 
     // DELETE alias on server
     const deleted = await fetch(`${address}/map/fuzz/v8`, {
@@ -427,7 +424,7 @@ tap.test('alias map - put alias, then delete alias, then get map through alias -
         headers,
     });
 
-    t.equals(deleted.status, 204, 'on DELETE of alias, server should respond with a 204 Deleted');
+    t.equal(deleted.status, 204, 'on DELETE of alias, server should respond with a 204 Deleted');
 
     // GET map through alias from server
     const errored = await fetch(`${address}/map/fuzz/v8`, {
@@ -435,5 +432,5 @@ tap.test('alias map - put alias, then delete alias, then get map through alias -
         redirect: 'manual',
     });
 
-    t.equals(errored.status, 404, 'on GET of map through deleted alias, server should respond with a 404 Not Found');
+    t.equal(errored.status, 404, 'on GET of map through deleted alias, server should respond with a 404 Not Found');
 });

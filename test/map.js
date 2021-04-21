@@ -12,7 +12,7 @@ const Sink = require('../node_modules/@eik/core/lib/sinks/test');
 
 const FIXTURE_MAP = path.resolve(__dirname, '../fixtures/import-map.json');
 
-tap.beforeEach(async (done, t) => {
+tap.beforeEach(async (t) => {
     const sink = new Sink();
     const service = new Server({ customSink: sink });
 
@@ -40,13 +40,10 @@ tap.beforeEach(async (done, t) => {
         headers,
         app,
     };
-
-    done();
 });
 
-tap.afterEach(async (done, t) => {
+tap.afterEach(async (t) => {
     await t.context.app.close();
-    done();
 });
 
 tap.test('import-map - no auth token on PUT - scoped', async (t) => {
@@ -63,7 +60,7 @@ tap.test('import-map - no auth token on PUT - scoped', async (t) => {
         redirect: 'manual',
     });
 
-    t.equals(uploaded.status, 401, 'on PUT of map, server should respond with a 401 Unauthorized');
+    t.equal(uploaded.status, 401, 'on PUT of map, server should respond with a 401 Unauthorized');
 });
 
 tap.test('import-map - no auth token on PUT - non scoped', async (t) => {
@@ -80,7 +77,7 @@ tap.test('import-map - no auth token on PUT - non scoped', async (t) => {
         redirect: 'manual',
     });
 
-    t.equals(uploaded.status, 401, 'on PUT of map, server should respond with a 401 Unauthorized');
+    t.equal(uploaded.status, 401, 'on PUT of map, server should respond with a 401 Unauthorized');
 });
 
 tap.test('import-map - put map -> get map - scoped successfully uploaded', async (t) => {
@@ -97,8 +94,8 @@ tap.test('import-map - put map -> get map - scoped successfully uploaded', async
         redirect: 'manual',
     });
 
-    t.equals(uploaded.status, 303, 'on PUT of map, server should respond with a 303 redirect');
-    t.equals(uploaded.headers.get('location'), `${address}/map/@cuz/buzz/4.2.2`, 'on PUT of map, server should respond with a location header');
+    t.equal(uploaded.status, 303, 'on PUT of map, server should respond with a 303 redirect');
+    t.equal(uploaded.headers.get('location'), `${address}/map/@cuz/buzz/4.2.2`, 'on PUT of map, server should respond with a location header');
 
     // GET map from server
     const downloaded = await fetch(`${address}/map/@cuz/buzz/4.2.2`, {
@@ -107,7 +104,7 @@ tap.test('import-map - put map -> get map - scoped successfully uploaded', async
 
     const downloadedResponse = await downloaded.json();
 
-    t.equals(downloaded.status, 200, 'on GET of map, server should respond with 200 ok');
+    t.equal(downloaded.status, 200, 'on GET of map, server should respond with 200 ok');
     t.matchSnapshot(downloadedResponse, 'on GET of map, response should match snapshot');
 });
 
@@ -125,8 +122,8 @@ tap.test('import-map - put map -> get map - non scoped successfully uploaded', a
         redirect: 'manual',
     });
 
-    t.equals(uploaded.status, 303, 'on PUT of map, server should respond with a 303 redirect');
-    t.equals(uploaded.headers.get('location'), `${address}/map/buzz/4.2.2`, 'on PUT of map, server should respond with a location header');
+    t.equal(uploaded.status, 303, 'on PUT of map, server should respond with a 303 redirect');
+    t.equal(uploaded.headers.get('location'), `${address}/map/buzz/4.2.2`, 'on PUT of map, server should respond with a location header');
 
     // GET map from server
     const downloaded = await fetch(`${address}/map/buzz/4.2.2`, {
@@ -135,7 +132,7 @@ tap.test('import-map - put map -> get map - non scoped successfully uploaded', a
 
     const downloadedResponse = await downloaded.json();
 
-    t.equals(downloaded.status, 200, 'on GET of map, server should respond with 200 ok');
+    t.equal(downloaded.status, 200, 'on GET of map, server should respond with 200 ok');
     t.matchSnapshot(downloadedResponse, 'on GET of map, response should match snapshot');
 });
 
@@ -178,7 +175,7 @@ tap.test('import-map - get map versions - scoped', async (t) => {
 
     const downloadedResponse = await downloaded.json();
 
-    t.equals(downloaded.status, 200, 'on GET of map versions, server should respond with 200 ok');
+    t.equal(downloaded.status, 200, 'on GET of map versions, server should respond with 200 ok');
     t.matchSnapshot(downloadedResponse, 'on GET of map versions, response should match snapshot');
 });
 
@@ -221,6 +218,6 @@ tap.test('import-map - get map versions - non scoped', async (t) => {
 
     const downloadedResponse = await downloaded.json();
 
-    t.equals(downloaded.status, 200, 'on GET of map versions, server should respond with 200 ok');
+    t.equal(downloaded.status, 200, 'on GET of map versions, server should respond with 200 ok');
     t.matchSnapshot(downloadedResponse, 'on GET of map versions, response should match snapshot');
 });

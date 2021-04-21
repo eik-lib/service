@@ -20,7 +20,7 @@ tap.cleanSnapshot = (s) => {
     return s.replace(regex, '"created": -1,');
 };
 
-tap.beforeEach(async (done, t) => {
+tap.beforeEach(async (t) => {
     const sink = new Sink();
     const service = new Server({ customSink: sink });
 
@@ -48,13 +48,10 @@ tap.beforeEach(async (done, t) => {
         headers,
         app,
     };
-
-    done();
 });
 
-tap.afterEach(async (done, t) => {
+tap.afterEach(async (t) => {
     await t.context.app.close();
-    done();
 });
 
 tap.test('cache-control - auth post', async (t) => {
@@ -69,7 +66,7 @@ tap.test('cache-control - auth post', async (t) => {
         headers: formData.getHeaders(),
     });
 
-    t.equals(response.headers.get('cache-control'), 'no-store', 'should be "no-store"');
+    t.equal(response.headers.get('cache-control'), 'no-store', 'should be "no-store"');
 });
 
 tap.test('cache-control - package - non-scoped', async (t) => {
@@ -85,25 +82,25 @@ tap.test('cache-control - package - non-scoped', async (t) => {
         redirect: 'manual',
         headers: { ...headers, ...formData.getHeaders()},
     });
-    t.equals(uploaded.headers.get('cache-control'), 'no-store', 'should be "no-store"');
+    t.equal(uploaded.headers.get('cache-control'), 'no-store', 'should be "no-store"');
 
     // GET file from server
     const fetched = await fetch(`${address}/pkg/fuzz/1.4.8/main/index.js`, {
         method: 'GET',
     });
-    t.equals(fetched.headers.get('cache-control'), 'public, max-age=31536000, immutable', 'should be "public, max-age=31536000, immutable"');
+    t.equal(fetched.headers.get('cache-control'), 'public, max-age=31536000, immutable', 'should be "public, max-age=31536000, immutable"');
 
     // GET package overview from server
     const overview = await fetch(`${address}/pkg/fuzz/1.4.8`, {
         method: 'GET',
     });
-    t.equals(overview.headers.get('cache-control'), 'no-cache', 'should be "no-cache"');
+    t.equal(overview.headers.get('cache-control'), 'no-cache', 'should be "no-cache"');
 
     // GET package versions overview from server
     const versions = await fetch(`${address}/pkg/fuzz`, {
         method: 'GET',
     });
-    t.equals(versions.headers.get('cache-control'), 'no-cache', 'should be "no-cache"');
+    t.equal(versions.headers.get('cache-control'), 'no-cache', 'should be "no-cache"');
 });
 
 tap.test('cache-control - package - scoped', async (t) => {
@@ -119,25 +116,25 @@ tap.test('cache-control - package - scoped', async (t) => {
         redirect: 'manual',
         headers: { ...headers, ...formData.getHeaders()},
     });
-    t.equals(uploaded.headers.get('cache-control'), 'no-store', 'should be "no-store"');
+    t.equal(uploaded.headers.get('cache-control'), 'no-store', 'should be "no-store"');
 
     // GET file from server
     const fetched = await fetch(`${address}/pkg/@cuz/fuzz/1.4.8/main/index.js`, {
         method: 'GET',
     });
-    t.equals(fetched.headers.get('cache-control'), 'public, max-age=31536000, immutable', 'should be "public, max-age=31536000, immutable"');
+    t.equal(fetched.headers.get('cache-control'), 'public, max-age=31536000, immutable', 'should be "public, max-age=31536000, immutable"');
 
     // GET package overview from server
     const overview = await fetch(`${address}/pkg/@cuz/fuzz/1.4.8`, {
         method: 'GET',
     });
-    t.equals(overview.headers.get('cache-control'), 'no-cache', 'should be "no-cache"');
+    t.equal(overview.headers.get('cache-control'), 'no-cache', 'should be "no-cache"');
 
     // GET package versions overview from server
     const versions = await fetch(`${address}/pkg/@cuz/fuzz`, {
         method: 'GET',
     });
-    t.equals(versions.headers.get('cache-control'), 'no-cache', 'should be "no-cache"');
+    t.equal(versions.headers.get('cache-control'), 'no-cache', 'should be "no-cache"');
 });
 
 tap.test('cache-control - npm package - non-scoped', async (t) => {
@@ -153,25 +150,25 @@ tap.test('cache-control - npm package - non-scoped', async (t) => {
         redirect: 'manual',
         headers: { ...headers, ...formData.getHeaders()},
     });
-    t.equals(uploaded.headers.get('cache-control'), 'no-store', 'should be "no-store"');
+    t.equal(uploaded.headers.get('cache-control'), 'no-store', 'should be "no-store"');
 
     // GET file from server
     const fetched = await fetch(`${address}/npm/fuzz/1.4.8/main/index.js`, {
         method: 'GET',
     });
-    t.equals(fetched.headers.get('cache-control'), 'public, max-age=31536000, immutable', 'should be "public, max-age=31536000, immutable"');
+    t.equal(fetched.headers.get('cache-control'), 'public, max-age=31536000, immutable', 'should be "public, max-age=31536000, immutable"');
 
     // GET package overview from server
     const overview = await fetch(`${address}/npm/fuzz/1.4.8`, {
         method: 'GET',
     });
-    t.equals(overview.headers.get('cache-control'), 'no-cache', 'should be "no-cache"');
+    t.equal(overview.headers.get('cache-control'), 'no-cache', 'should be "no-cache"');
 
     // GET package versions overview from server
     const versions = await fetch(`${address}/npm/fuzz`, {
         method: 'GET',
     });
-    t.equals(versions.headers.get('cache-control'), 'no-cache', 'should be "no-cache"');
+    t.equal(versions.headers.get('cache-control'), 'no-cache', 'should be "no-cache"');
 });
 
 tap.test('cache-control - npm package - scoped', async (t) => {
@@ -187,25 +184,25 @@ tap.test('cache-control - npm package - scoped', async (t) => {
         redirect: 'manual',
         headers: { ...headers, ...formData.getHeaders()},
     });
-    t.equals(uploaded.headers.get('cache-control'), 'no-store', 'should be "no-store"');
+    t.equal(uploaded.headers.get('cache-control'), 'no-store', 'should be "no-store"');
 
     // GET file from server
     const fetched = await fetch(`${address}/npm/@cuz/fuzz/1.4.8/main/index.js`, {
         method: 'GET',
     });
-    t.equals(fetched.headers.get('cache-control'), 'public, max-age=31536000, immutable', 'should be "public, max-age=31536000, immutable"');
+    t.equal(fetched.headers.get('cache-control'), 'public, max-age=31536000, immutable', 'should be "public, max-age=31536000, immutable"');
 
     // GET package overview from server
     const overview = await fetch(`${address}/npm/@cuz/fuzz/1.4.8`, {
         method: 'GET',
     });
-    t.equals(overview.headers.get('cache-control'), 'no-cache', 'should be "no-cache"');
+    t.equal(overview.headers.get('cache-control'), 'no-cache', 'should be "no-cache"');
 
     // GET package versions overview from server
     const versions = await fetch(`${address}/npm/@cuz/fuzz`, {
         method: 'GET',
     });
-    t.equals(versions.headers.get('cache-control'), 'no-cache', 'should be "no-cache"');
+    t.equal(versions.headers.get('cache-control'), 'no-cache', 'should be "no-cache"');
 });
 
 tap.test('cache-control - map - non-scoped', async (t) => {
@@ -221,19 +218,19 @@ tap.test('cache-control - map - non-scoped', async (t) => {
         headers: { ...headers, ...formData.getHeaders()},
         redirect: 'manual',
     });
-    t.equals(uploaded.headers.get('cache-control'), 'no-store', 'should be "no-store"');
+    t.equal(uploaded.headers.get('cache-control'), 'no-store', 'should be "no-store"');
 
     // GET map from server
     const fetched = await fetch(`${address}/map/buzz/4.2.2`, {
         method: 'GET',
     });
-    t.equals(fetched.headers.get('cache-control'), 'public, max-age=31536000, immutable', 'should be "public, max-age=31536000, immutable"');
+    t.equal(fetched.headers.get('cache-control'), 'public, max-age=31536000, immutable', 'should be "public, max-age=31536000, immutable"');
 
     // GET map versions overview from server
     const versions = await fetch(`${address}/map/buzz`, {
         method: 'GET',
     });
-    t.equals(versions.headers.get('cache-control'), 'no-cache', 'should be "no-cache"');
+    t.equal(versions.headers.get('cache-control'), 'no-cache', 'should be "no-cache"');
 });
 
 tap.test('cache-control - map - scoped', async (t) => {
@@ -249,19 +246,19 @@ tap.test('cache-control - map - scoped', async (t) => {
         headers: { ...headers, ...formData.getHeaders()},
         redirect: 'manual',
     });
-    t.equals(uploaded.headers.get('cache-control'), 'no-store', 'should be "no-store"');
+    t.equal(uploaded.headers.get('cache-control'), 'no-store', 'should be "no-store"');
 
     // GET map from server
     const fetched = await fetch(`${address}/map/@cuz/buzz/4.2.2`, {
         method: 'GET',
     });
-    t.equals(fetched.headers.get('cache-control'), 'public, max-age=31536000, immutable', 'should be "public, max-age=31536000, immutable"');
+    t.equal(fetched.headers.get('cache-control'), 'public, max-age=31536000, immutable', 'should be "public, max-age=31536000, immutable"');
 
     // GET map versions overview from server
     const versions = await fetch(`${address}/map/@cuz/buzz`, {
         method: 'GET',
     });
-    t.equals(versions.headers.get('cache-control'), 'no-cache', 'should be "no-cache"');
+    t.equal(versions.headers.get('cache-control'), 'no-cache', 'should be "no-cache"');
 });
 
 tap.test('cache-control - alias package - non-scoped', async (t) => {
@@ -299,14 +296,14 @@ tap.test('cache-control - alias package - non-scoped', async (t) => {
         headers: { ...headers, ...aliasFormData.getHeaders()},
         redirect: 'manual',
     });
-    t.equals(alias.headers.get('cache-control'), 'no-store', 'should be "no-store"');
+    t.equal(alias.headers.get('cache-control'), 'no-store', 'should be "no-store"');
 
     // GET alias from server
     const redirect = await fetch(`${address}/pkg/fuzz/v8/main/index.js`, {
         method: 'GET',
         redirect: 'manual',
     });
-    t.equals(redirect.headers.get('cache-control'), 'public, max-age=1200', 'should be "public, max-age=1200"');
+    t.equal(redirect.headers.get('cache-control'), 'public, max-age=1200', 'should be "public, max-age=1200"');
 
     // POST alias on server
     const aliasFormDataB = new FormData();
@@ -318,14 +315,14 @@ tap.test('cache-control - alias package - non-scoped', async (t) => {
         headers: { ...headers, ...aliasFormDataB.getHeaders()},
         redirect: 'manual',
     });
-    t.equals(updated.headers.get('cache-control'), 'no-store', 'should be "no-store"');
+    t.equal(updated.headers.get('cache-control'), 'no-store', 'should be "no-store"');
 
     // DELETE alias on server
     const deleted = await fetch(`${address}/pkg/fuzz/v8`, {
         method: 'DELETE',
         headers,
     });
-    t.equals(deleted.headers.get('cache-control'), 'no-store', 'should be "no-cache"');
+    t.equal(deleted.headers.get('cache-control'), 'no-store', 'should be "no-cache"');
 });
 
 tap.test('cache-control - alias package - scoped', async (t) => {
@@ -363,14 +360,14 @@ tap.test('cache-control - alias package - scoped', async (t) => {
         headers: { ...headers, ...aliasFormData.getHeaders()},
         redirect: 'manual',
     });
-    t.equals(alias.headers.get('cache-control'), 'no-store', 'should be "no-store"');
+    t.equal(alias.headers.get('cache-control'), 'no-store', 'should be "no-store"');
 
     // GET alias from server
     const redirect = await fetch(`${address}/pkg/@cuz/fuzz/v8/main/index.js`, {
         method: 'GET',
         redirect: 'manual',
     });
-    t.equals(redirect.headers.get('cache-control'), 'public, max-age=1200', 'should be "public, max-age=1200"');
+    t.equal(redirect.headers.get('cache-control'), 'public, max-age=1200', 'should be "public, max-age=1200"');
 
     // POST alias on server
     const aliasFormDataB = new FormData();
@@ -382,14 +379,14 @@ tap.test('cache-control - alias package - scoped', async (t) => {
         headers: { ...headers, ...aliasFormDataB.getHeaders()},
         redirect: 'manual',
     });
-    t.equals(updated.headers.get('cache-control'), 'no-store', 'should be "no-store"');
+    t.equal(updated.headers.get('cache-control'), 'no-store', 'should be "no-store"');
 
     // DELETE alias on server
     const deleted = await fetch(`${address}/pkg/@cuz/fuzz/v8`, {
         method: 'DELETE',
         headers,
     });
-    t.equals(deleted.headers.get('cache-control'), 'no-store', 'should be "no-cache"');
+    t.equal(deleted.headers.get('cache-control'), 'no-store', 'should be "no-cache"');
 });
 
 tap.test('cache-control - alias NPM package - non-scoped', async (t) => {
@@ -427,14 +424,14 @@ tap.test('cache-control - alias NPM package - non-scoped', async (t) => {
         headers: { ...headers, ...aliasFormData.getHeaders()},
         redirect: 'manual',
     });
-    t.equals(alias.headers.get('cache-control'), 'no-store', 'should be "no-store"');
+    t.equal(alias.headers.get('cache-control'), 'no-store', 'should be "no-store"');
 
     // GET alias from server
     const redirect = await fetch(`${address}/npm/fuzz/v8/main/index.js`, {
         method: 'GET',
         redirect: 'manual',
     });
-    t.equals(redirect.headers.get('cache-control'), 'public, max-age=1200', 'should be "public, max-age=1200"');
+    t.equal(redirect.headers.get('cache-control'), 'public, max-age=1200', 'should be "public, max-age=1200"');
 
     // POST alias on server
     const aliasFormDataB = new FormData();
@@ -446,14 +443,14 @@ tap.test('cache-control - alias NPM package - non-scoped', async (t) => {
         headers: { ...headers, ...aliasFormDataB.getHeaders()},
         redirect: 'manual',
     });
-    t.equals(updated.headers.get('cache-control'), 'no-store', 'should be "no-store"');
+    t.equal(updated.headers.get('cache-control'), 'no-store', 'should be "no-store"');
 
     // DELETE alias on server
     const deleted = await fetch(`${address}/npm/fuzz/v8`, {
         method: 'DELETE',
         headers,
     });
-    t.equals(deleted.headers.get('cache-control'), 'no-store', 'should be "no-cache"');
+    t.equal(deleted.headers.get('cache-control'), 'no-store', 'should be "no-cache"');
 });
 
 tap.test('cache-control - alias NPM package - scoped', async (t) => {
@@ -491,14 +488,14 @@ tap.test('cache-control - alias NPM package - scoped', async (t) => {
         headers: { ...headers, ...aliasFormData.getHeaders()},
         redirect: 'manual',
     });
-    t.equals(alias.headers.get('cache-control'), 'no-store', 'should be "no-store"');
+    t.equal(alias.headers.get('cache-control'), 'no-store', 'should be "no-store"');
 
     // GET alias from server
     const redirect = await fetch(`${address}/npm/@cuz/fuzz/v8/main/index.js`, {
         method: 'GET',
         redirect: 'manual',
     });
-    t.equals(redirect.headers.get('cache-control'), 'public, max-age=1200', 'should be "public, max-age=1200"');
+    t.equal(redirect.headers.get('cache-control'), 'public, max-age=1200', 'should be "public, max-age=1200"');
 
     // POST alias on server
     const aliasFormDataB = new FormData();
@@ -510,14 +507,14 @@ tap.test('cache-control - alias NPM package - scoped', async (t) => {
         headers: { ...headers, ...aliasFormDataB.getHeaders()},
         redirect: 'manual',
     });
-    t.equals(updated.headers.get('cache-control'), 'no-store', 'should be "no-store"');
+    t.equal(updated.headers.get('cache-control'), 'no-store', 'should be "no-store"');
 
     // DELETE alias on server
     const deleted = await fetch(`${address}/npm/@cuz/fuzz/v8`, {
         method: 'DELETE',
         headers,
     });
-    t.equals(deleted.headers.get('cache-control'), 'no-store', 'should be "no-cache"');
+    t.equal(deleted.headers.get('cache-control'), 'no-store', 'should be "no-cache"');
 });
 
 tap.test('cache-control - alias map - non-scoped', async (t) => {
@@ -554,14 +551,14 @@ tap.test('cache-control - alias map - non-scoped', async (t) => {
         headers: { ...headers, ...aliasFormData.getHeaders()},
         redirect: 'manual',
     });
-    t.equals(alias.headers.get('cache-control'), 'no-store', 'should be "no-store"');
+    t.equal(alias.headers.get('cache-control'), 'no-store', 'should be "no-store"');
 
     // GET alias from server
     const redirect = await fetch(`${address}/map/buzz/v4`, {
         method: 'GET',
         redirect: 'manual',
     });
-    t.equals(redirect.headers.get('cache-control'), 'public, max-age=1200', 'should be "public, max-age=1200"');
+    t.equal(redirect.headers.get('cache-control'), 'public, max-age=1200', 'should be "public, max-age=1200"');
 
     // POST alias on server
     const aliasFormDataB = new FormData();
@@ -573,14 +570,14 @@ tap.test('cache-control - alias map - non-scoped', async (t) => {
         headers: { ...headers, ...aliasFormDataB.getHeaders()},
         redirect: 'manual',
     });
-    t.equals(updated.headers.get('cache-control'), 'no-store', 'should be "no-store"');
+    t.equal(updated.headers.get('cache-control'), 'no-store', 'should be "no-store"');
 
     // DELETE alias on server
     const deleted = await fetch(`${address}/map/buzz/v4`, {
         method: 'DELETE',
         headers,
     });
-    t.equals(deleted.headers.get('cache-control'), 'no-store', 'should be "no-cache"');
+    t.equal(deleted.headers.get('cache-control'), 'no-store', 'should be "no-cache"');
 });
 
 tap.test('cache-control - alias map - scoped', async (t) => {
@@ -617,14 +614,14 @@ tap.test('cache-control - alias map - scoped', async (t) => {
         headers: { ...headers, ...aliasFormData.getHeaders()},
         redirect: 'manual',
     });
-    t.equals(alias.headers.get('cache-control'), 'no-store', 'should be "no-store"');
+    t.equal(alias.headers.get('cache-control'), 'no-store', 'should be "no-store"');
 
     // GET alias from server
     const redirect = await fetch(`${address}/map/@cuz/buzz/v4`, {
         method: 'GET',
         redirect: 'manual',
     });
-    t.equals(redirect.headers.get('cache-control'), 'public, max-age=1200', 'should be "public, max-age=1200"');
+    t.equal(redirect.headers.get('cache-control'), 'public, max-age=1200', 'should be "public, max-age=1200"');
 
     // POST alias on server
     const aliasFormDataB = new FormData();
@@ -636,12 +633,12 @@ tap.test('cache-control - alias map - scoped', async (t) => {
         headers: { ...headers, ...aliasFormDataB.getHeaders()},
         redirect: 'manual',
     });
-    t.equals(updated.headers.get('cache-control'), 'no-store', 'should be "no-store"');
+    t.equal(updated.headers.get('cache-control'), 'no-store', 'should be "no-store"');
 
     // DELETE alias on server
     const deleted = await fetch(`${address}/map/@cuz/buzz/v4`, {
         method: 'DELETE',
         headers,
     });
-    t.equals(deleted.headers.get('cache-control'), 'no-store', 'should be "no-cache"');
+    t.equal(deleted.headers.get('cache-control'), 'no-store', 'should be "no-cache"');
 });

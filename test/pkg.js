@@ -18,7 +18,7 @@ tap.cleanSnapshot = (s) => {
     return s.replace(regex, '"created": -1,');
 };
 
-tap.beforeEach(async (done, t) => {
+tap.beforeEach(async (t) => {
     const sink = new Sink();
     const service = new Server({ customSink: sink });
 
@@ -46,13 +46,10 @@ tap.beforeEach(async (done, t) => {
         headers,
         app,
     };
-
-    done();
 });
 
-tap.afterEach(async (done, t) => {
+tap.afterEach(async (t) => {
     await t.context.app.close();
-    done();
 });
 
 tap.test('packages - no auth token on PUT - scoped', async (t) => {
@@ -69,7 +66,7 @@ tap.test('packages - no auth token on PUT - scoped', async (t) => {
         headers: formData.getHeaders(),
     });
 
-    t.equals(uploaded.status, 401, 'on PUT of package, server should respond with a 401 Unauthorized');
+    t.equal(uploaded.status, 401, 'on PUT of package, server should respond with a 401 Unauthorized');
 });
 
 tap.test('packages - no auth token on PUT - non scoped', async (t) => {
@@ -86,7 +83,7 @@ tap.test('packages - no auth token on PUT - non scoped', async (t) => {
         headers: formData.getHeaders(),
     });
 
-    t.equals(uploaded.status, 401, 'on PUT of package, server should respond with a 401 Unauthorized');
+    t.equal(uploaded.status, 401, 'on PUT of package, server should respond with a 401 Unauthorized');
 });
 
 tap.test('packages - put pkg -> get file - scoped successfully uploaded', async (t) => {
@@ -103,8 +100,8 @@ tap.test('packages - put pkg -> get file - scoped successfully uploaded', async 
         headers: { ...headers, ...formData.getHeaders()},
     });
 
-    t.equals(uploaded.status, 303, 'on PUT of package, server should respond with a 303 redirect');
-    t.equals(uploaded.headers.get('location'), `${address}/pkg/@cuz/fuzz/1.4.8`, 'on PUT of package, server should respond with a location header');
+    t.equal(uploaded.status, 303, 'on PUT of package, server should respond with a 303 redirect');
+    t.equal(uploaded.headers.get('location'), `${address}/pkg/@cuz/fuzz/1.4.8`, 'on PUT of package, server should respond with a location header');
 
     // GET file from server
     const downloaded = await fetch(`${address}/pkg/@cuz/fuzz/1.4.8/main/index.js`, {
@@ -112,7 +109,7 @@ tap.test('packages - put pkg -> get file - scoped successfully uploaded', async 
     });
     const downloadedResponse = await downloaded.text();
 
-    t.equals(downloaded.status, 200, 'on GET of file, server should respond with 200 ok');
+    t.equal(downloaded.status, 200, 'on GET of file, server should respond with 200 ok');
     t.matchSnapshot(downloadedResponse, 'on GET of package, response should match snapshot');
 });
 
@@ -130,8 +127,8 @@ tap.test('packages - put pkg -> get file - non scoped successfully uploaded', as
         redirect: 'manual',
     });
 
-    t.equals(uploaded.status, 303, 'on PUT of package, server should respond with a 303 redirect');
-    t.equals(uploaded.headers.get('location'), `${address}/pkg/fuzz/8.4.1`, 'on PUT of package, server should respond with a location header');
+    t.equal(uploaded.status, 303, 'on PUT of package, server should respond with a 303 redirect');
+    t.equal(uploaded.headers.get('location'), `${address}/pkg/fuzz/8.4.1`, 'on PUT of package, server should respond with a location header');
 
     // GET file from server
     const downloaded = await fetch(`${address}/pkg/fuzz/8.4.1/main/index.js`, {
@@ -139,7 +136,7 @@ tap.test('packages - put pkg -> get file - non scoped successfully uploaded', as
     });
     const downloadedResponse = await downloaded.text();
 
-    t.equals(downloaded.status, 200, 'on GET of file, server should respond with 200 ok');
+    t.equal(downloaded.status, 200, 'on GET of file, server should respond with 200 ok');
     t.matchSnapshot(downloadedResponse, 'on GET of package, response should match snapshot');
 });
 
@@ -157,8 +154,8 @@ tap.test('packages - get package overview - scoped', async (t) => {
         redirect: 'manual',
     });
 
-    t.equals(uploaded.status, 303, 'on PUT of package, server should respond with a 303 redirect');
-    t.equals(uploaded.headers.get('location'), `${address}/pkg/@cuz/fuzz/8.4.1`, 'on PUT of package, server should respond with a location header');
+    t.equal(uploaded.status, 303, 'on PUT of package, server should respond with a 303 redirect');
+    t.equal(uploaded.headers.get('location'), `${address}/pkg/@cuz/fuzz/8.4.1`, 'on PUT of package, server should respond with a location header');
 
     // GET package overview from server
     const downloaded = await fetch(`${address}/pkg/@cuz/fuzz/8.4.1/`, {
@@ -166,7 +163,7 @@ tap.test('packages - get package overview - scoped', async (t) => {
     });
     const downloadedResponse = await downloaded.json();
 
-    t.equals(downloaded.status, 200, 'on GET, server should respond with 200 ok');
+    t.equal(downloaded.status, 200, 'on GET, server should respond with 200 ok');
     t.matchSnapshot(downloadedResponse, 'on GET, response should match snapshot');
 });
 
@@ -184,8 +181,8 @@ tap.test('packages - get package overview - non scoped', async (t) => {
         redirect: 'manual',
     });
 
-    t.equals(uploaded.status, 303, 'on PUT of package, server should respond with a 303 redirect');
-    t.equals(uploaded.headers.get('location'), `${address}/pkg/fuzz/8.4.1`, 'on PUT of package, server should respond with a location header');
+    t.equal(uploaded.status, 303, 'on PUT of package, server should respond with a 303 redirect');
+    t.equal(uploaded.headers.get('location'), `${address}/pkg/fuzz/8.4.1`, 'on PUT of package, server should respond with a location header');
 
     // GET package overview from server
     const downloaded = await fetch(`${address}/pkg/fuzz/8.4.1/`, {
@@ -193,7 +190,7 @@ tap.test('packages - get package overview - non scoped', async (t) => {
     });
     const downloadedResponse = await downloaded.json();
 
-    t.equals(downloaded.status, 200, 'on GET, server should respond with 200 ok');
+    t.equal(downloaded.status, 200, 'on GET, server should respond with 200 ok');
     t.matchSnapshot(downloadedResponse, 'on GET, response should match snapshot');
 });
 
@@ -235,7 +232,7 @@ tap.test('packages - get package versions - scoped', async (t) => {
     });
     const downloadedResponse = await downloaded.json();
 
-    t.equals(downloaded.status, 200, 'on GET, server should respond with 200 ok');
+    t.equal(downloaded.status, 200, 'on GET, server should respond with 200 ok');
     t.matchSnapshot(downloadedResponse, 'on GET, response should match snapshot');
 });
 
@@ -277,6 +274,6 @@ tap.test('packages - get package versions - non scoped', async (t) => {
     });
     const downloadedResponse = await downloaded.json();
 
-    t.equals(downloaded.status, 200, 'on GET, server should respond with 200 ok');
+    t.equal(downloaded.status, 200, 'on GET, server should respond with 200 ok');
     t.matchSnapshot(downloadedResponse, 'on GET, response should match snapshot');
 });
