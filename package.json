@@ -58,7 +58,7 @@
     "node-fetch": "2.6.1",
     "pino-pretty": "4.8.0",
     "prettier": "2.3.0",
-    "semantic-release": "17.4.2",
+    "semantic-release": "17.4.3",
     "tap": "15.0.9",
     "unique-slug": "2.0.2"
   }
