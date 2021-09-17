@@ -1,3 +1,10 @@
+## [1.2.88](https://github.com/eik-lib/service/compare/v1.2.87...v1.2.88) (2021-09-17)
+
+
+### Bug Fixes
+
+* **deps:** update dependency fastify to v3.21.2 ([7042454](https://github.com/eik-lib/service/commit/7042454465937bcbaf1740e5870315f2ea7294e7))
+
 ## [1.2.87](https://github.com/eik-lib/service/compare/v1.2.86...v1.2.87) (2021-09-14)
 
 
