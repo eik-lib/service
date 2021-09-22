@@ -1,3 +1,10 @@
+## [1.2.92](https://github.com/eik-lib/service/compare/v1.2.91...v1.2.92) (2021-09-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency pino to v6.13.3 ([4877d77](https://github.com/eik-lib/service/commit/4877d779063e0754b4c05c3fa1da0ff9592c7fa4))
+
 ## [1.2.91](https://github.com/eik-lib/service/compare/v1.2.90...v1.2.91) (2021-09-22)
 
 
