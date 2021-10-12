@@ -1,6 +1,6 @@
 {
   "name": "@eik/service",
-  "version": "1.2.93",
+  "version": "1.2.97",
   "description": "Eik REST API as a standalone HTTP service",
   "main": "./lib/main.js",
   "bin": {
@@ -32,12 +32,12 @@
   },
   "homepage": "https://github.com/eik-lib/service#readme",
   "dependencies": {
-    "@eik/core": "1.2.22",
+    "@eik/core": "1.2.23",
     "convict": "6.2.0",
-    "fastify": "3.21.5",
+    "fastify": "3.22.0",
     "fastify-compress": "3.6.0",
     "fastify-cors": "6.0.2",
-    "fastify-jwt": "3.1.0",
+    "fastify-jwt": "3.2.0",
     "http-errors": "1.8.0",
     "js-yaml": "4.1.0",
     "pino": "6.13.3"
@@ -55,11 +55,11 @@
     "eslint-plugin-import": "2.24.2",
     "eslint-plugin-prettier": "4.0.0",
     "form-data": "4.0.0",
-    "node-fetch": "2.6.2",
+    "node-fetch": "2.6.5",
     "pino-pretty": "7.0.1",
     "prettier": "2.4.1",
     "semantic-release": "18.0.0",
-    "tap": "15.0.9",
+    "tap": "15.0.10",
     "unique-slug": "2.0.2"
   }
 }

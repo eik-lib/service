@@ -1,3 +1,31 @@
+## [1.2.97](https://github.com/eik-lib/service/compare/v1.2.96...v1.2.97) (2021-10-11)
+
+
+### Bug Fixes
+
+* **deps:** update dependency fastify-jwt to v3.2.0 ([a63e5c2](https://github.com/eik-lib/service/commit/a63e5c23fddc2b3003ddf8df8ff7c911ef5e7aa5))
+
+## [1.2.96](https://github.com/eik-lib/service/compare/v1.2.95...v1.2.96) (2021-10-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @eik/core to v1.2.23 ([1f0ef86](https://github.com/eik-lib/service/commit/1f0ef86a9b2520a08d19eab53f74399c402eb2d6))
+
+## [1.2.95](https://github.com/eik-lib/service/compare/v1.2.94...v1.2.95) (2021-09-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency fastify to v3.22.0 ([6891a77](https://github.com/eik-lib/service/commit/6891a7766b43f87793ecae28414c600c1dd615cf))
+
+## [1.2.94](https://github.com/eik-lib/service/compare/v1.2.93...v1.2.94) (2021-09-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency fastify to v3.21.6 ([c03c3c8](https://github.com/eik-lib/service/commit/c03c3c8444ea1db43feeb2f07b8b2b8a7e5a311f))
+
 ## [1.2.93](https://github.com/eik-lib/service/compare/v1.2.92...v1.2.93) (2021-09-22)
 
 
