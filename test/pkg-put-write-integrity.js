@@ -1,14 +1,15 @@
-'use strict';
+import FormData from 'form-data';
+import Fastify from 'fastify';
+import fetch from 'node-fetch';
+import path from 'path';
+import tap from 'tap';
+import url from 'url';
+import fs from 'fs';
 
-const { createReadStream } = require('fs');
-const FormData = require('form-data');
-const { join } = require('path');
-const fastify = require('fastify');
-const fetch = require('node-fetch');
-const tap = require('tap');
+import Server from '../lib/main.js';
+import Sink from '../node_modules/@eik/core/lib/sinks/test.js';
 
-const Server = require("..");
-const Sink = require('../node_modules/@eik/core/lib/sinks/test');
+const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
 // Ignore the timestamp for "created" field in the snapshots
 tap.cleanSnapshot = (s) => {
@@ -43,7 +44,7 @@ tap.test('Sink is slow and irregular - Writing medium sized package', async t =>
 
     const service = new Server({ customSink: sink });
 
-    const app = fastify({
+    const app = Fastify({
         ignoreTrailingSlash: true,
     });
     app.register(service.api());
@@ -55,7 +56,7 @@ tap.test('Sink is slow and irregular - Writing medium sized package', async t =>
     const formData = new FormData();
     formData.append(
         'package',
-        createReadStream(join(__dirname, '../fixtures/archive.tgz')),
+        fs.createReadStream(path.join(__dirname, '../fixtures/archive.tgz')),
     );
 
     const res = await fetch(`${address}/pkg/frazz/2.1.4`, {
@@ -83,7 +84,7 @@ tap.test('Sink is slow and irregular - Writing small sized package', async t => 
 
     const service = new Server({ customSink: sink });
 
-    const app = fastify({
+    const app = Fastify({
         ignoreTrailingSlash: true,
     });
     app.register(service.api());
@@ -95,7 +96,7 @@ tap.test('Sink is slow and irregular - Writing small sized package', async t => 
     const formData = new FormData();
     formData.append(
         'package',
-        createReadStream(join(__dirname, '../fixtures/archive-small.tgz')),
+        fs.createReadStream(path.join(__dirname, '../fixtures/archive-small.tgz')),
     );
 
     const res = await fetch(`${address}/pkg/brazz/7.1.3`, {
@@ -123,7 +124,7 @@ tap.test('Sink is slow to construct writer - Writing medium sized package', asyn
 
     const service = new Server({ customSink: sink });
 
-    const app = fastify({
+    const app = Fastify({
         ignoreTrailingSlash: true,
     });
     app.register(service.api());
@@ -135,7 +136,7 @@ tap.test('Sink is slow to construct writer - Writing medium sized package', asyn
     const formData = new FormData();
     formData.append(
         'package',
-        createReadStream(join(__dirname, '../fixtures/archive.tgz')),
+        fs.createReadStream(path.join(__dirname, '../fixtures/archive.tgz')),
     );
 
     const res = await fetch(`${address}/pkg/frazz/2.1.4`, {
@@ -163,7 +164,7 @@ tap.test('Sink is slow to construct writer - Writing small sized package', async
 
     const service = new Server({ customSink: sink });
 
-    const app = fastify({
+    const app = Fastify({
         ignoreTrailingSlash: true,
     });
     app.register(service.api());
@@ -175,7 +176,7 @@ tap.test('Sink is slow to construct writer - Writing small sized package', async
     const formData = new FormData();
     formData.append(
         'package',
-        createReadStream(join(__dirname, '../fixtures/archive-small.tgz')),
+        fs.createReadStream(path.join(__dirname, '../fixtures/archive-small.tgz')),
     );
 
     const res = await fetch(`${address}/pkg/brazz/7.1.3`, {
