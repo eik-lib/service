@@ -1,3 +1,10 @@
+## [1.2.98](https://github.com/eik-lib/service/compare/v1.2.97...v1.2.98) (2021-10-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @eik/core to v1.2.25 ([2062d63](https://github.com/eik-lib/service/commit/2062d63f4c9753166f99a8149cf60bdd4b531fec))
+
 ## [1.2.97](https://github.com/eik-lib/service/compare/v1.2.96...v1.2.97) (2021-10-11)
 
 
