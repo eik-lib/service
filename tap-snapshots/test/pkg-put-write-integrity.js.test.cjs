@@ -14,10 +14,10 @@ Object {
   "created": -1,
   "files": Array [
     Object {
-      "integrity": "sha512-T2qS6EBvOIu10bhUas3FhD39KkwIiXxplJ13q2EdXcA7nlYljlLKaymKhqz49f7qrEKhdISc4q5N+bk0Y1Y/NA==",
+      "integrity": "sha512-Zj50Kiwn7v4iAet6KFYEjmWCvqEiEN57F/THmKDc7kNj1e4CUhXpB4aVx8DjSc7ukLb0/EbQkSjKL3GME7SxLQ==",
       "mimeType": "application/javascript",
       "pathname": "/main/index.js",
-      "size": 75208,
+      "size": 75174,
       "type": "pkg",
     },
     Object {
@@ -28,10 +28,10 @@ Object {
       "type": "pkg",
     },
     Object {
-      "integrity": "sha512-rQhStjrIsElTJci6ZXYSCxGrnJk2Q+11UAi9idgtvehAyqT1LssOiDVCEbJMp4a6bQJB6fLb2QRiHUl+pEDEVQ==",
+      "integrity": "sha512-Ko2/O2KvStydbk9fmFWwPuW0Mp27oFK9OdT4DdJSIz57w3LvQgJuB5VxmLR+WccLoDo/F47G8w2fVmcJ0t6mfA==",
       "mimeType": "application/javascript",
       "pathname": "/ie11/index.js",
-      "size": 75483,
+      "size": 75449,
       "type": "pkg",
     },
     Object {
@@ -42,10 +42,10 @@ Object {
       "type": "pkg",
     },
     Object {
-      "integrity": "sha512-WmTcH9Z9W0/dppj6eypuw7an0wW06GBS9PxNqQ4/I/oJs7OiuIulbE2+q5eHPgvqaSPKs49R4wT9ftX2GxU/Sw==",
+      "integrity": "sha512-tKdbF+APhe0lK7UPv682BB/Jnbp1udLddPpsBTfWsy9gfp+sZzsxx4iShVq2m0Lx9CU5H4rHkb4t9ieWOjgXdw==",
       "mimeType": "text/css",
       "pathname": "/main/index.css",
-      "size": 68,
+      "size": 32,
       "type": "pkg",
     },
     Object {
@@ -63,7 +63,7 @@ Object {
       "type": "pkg",
     },
   ],
-  "integrity": "sha512-nOnJP41e2MTxtqvsZW7ueINwP+GIVTgN5l+Y1KA9QcMH6SSaweFqBmxglGj3/07MQSOru7DBZk/IWAOmle5urg==",
+  "integrity": "sha512-ynt/IdKoHJwOqQNuZVl6u2aSHUjFIm74DGLanbfBpA8VYO6fxQse0Un+Hu9HcnvZxhofqAoSS0d9edSddeovCQ==",
   "meta": Array [],
   "name": "frazz",
   "org": "local",
@@ -141,10 +141,10 @@ Object {
   "created": -1,
   "files": Array [
     Object {
-      "integrity": "sha512-T2qS6EBvOIu10bhUas3FhD39KkwIiXxplJ13q2EdXcA7nlYljlLKaymKhqz49f7qrEKhdISc4q5N+bk0Y1Y/NA==",
+      "integrity": "sha512-Zj50Kiwn7v4iAet6KFYEjmWCvqEiEN57F/THmKDc7kNj1e4CUhXpB4aVx8DjSc7ukLb0/EbQkSjKL3GME7SxLQ==",
       "mimeType": "application/javascript",
       "pathname": "/main/index.js",
-      "size": 75208,
+      "size": 75174,
       "type": "pkg",
     },
     Object {
@@ -155,10 +155,10 @@ Object {
       "type": "pkg",
     },
     Object {
-      "integrity": "sha512-rQhStjrIsElTJci6ZXYSCxGrnJk2Q+11UAi9idgtvehAyqT1LssOiDVCEbJMp4a6bQJB6fLb2QRiHUl+pEDEVQ==",
+      "integrity": "sha512-Ko2/O2KvStydbk9fmFWwPuW0Mp27oFK9OdT4DdJSIz57w3LvQgJuB5VxmLR+WccLoDo/F47G8w2fVmcJ0t6mfA==",
       "mimeType": "application/javascript",
       "pathname": "/ie11/index.js",
-      "size": 75483,
+      "size": 75449,
       "type": "pkg",
     },
     Object {
@@ -169,10 +169,10 @@ Object {
       "type": "pkg",
     },
     Object {
-      "integrity": "sha512-WmTcH9Z9W0/dppj6eypuw7an0wW06GBS9PxNqQ4/I/oJs7OiuIulbE2+q5eHPgvqaSPKs49R4wT9ftX2GxU/Sw==",
+      "integrity": "sha512-tKdbF+APhe0lK7UPv682BB/Jnbp1udLddPpsBTfWsy9gfp+sZzsxx4iShVq2m0Lx9CU5H4rHkb4t9ieWOjgXdw==",
       "mimeType": "text/css",
       "pathname": "/main/index.css",
-      "size": 68,
+      "size": 32,
       "type": "pkg",
     },
     Object {
@@ -190,7 +190,7 @@ Object {
       "type": "pkg",
     },
   ],
-  "integrity": "sha512-nOnJP41e2MTxtqvsZW7ueINwP+GIVTgN5l+Y1KA9QcMH6SSaweFqBmxglGj3/07MQSOru7DBZk/IWAOmle5urg==",
+  "integrity": "sha512-ynt/IdKoHJwOqQNuZVl6u2aSHUjFIm74DGLanbfBpA8VYO6fxQse0Un+Hu9HcnvZxhofqAoSS0d9edSddeovCQ==",
   "meta": Array [],
   "name": "frazz",
   "org": "local",

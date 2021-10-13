@@ -10,7 +10,7 @@
   },
   "scripts": {
     "start": "node ./bin/eik-server.js | pino-pretty",
-    "test": "LOG_LEVEL=fatal tap --no-check-coverage",
+    "test": "LOG_LEVEL=fatal tap ./test --no-check-coverage",
     "test:snapshots:update": "LOG_LEVEL=fatal tap --snapshot",
     "lint:fix": "eslint --fix .",
     "lint": "eslint ."
