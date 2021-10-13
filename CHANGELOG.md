@@ -1,3 +1,20 @@
+# [2.0.0](https://github.com/eik-lib/service/compare/v1.2.98...v2.0.0) (2021-10-13)
+
+
+### Bug Fixes
+
+* Re-name Semantic Release config file to common JS ([4ee1390](https://github.com/eik-lib/service/commit/4ee1390311ac8ea7f68ec9a46e4844b88bc357c5))
+
+
+### chore
+
+* Convert to ESM ([cadf6dc](https://github.com/eik-lib/service/commit/cadf6dcaf1af7e747c398db9063f170eed4a9515))
+
+
+### BREAKING CHANGES
+
+* The modules is now ESM and will not we compatible with use in a Common JS project.
+
 ## [1.2.98](https://github.com/eik-lib/service/compare/v1.2.97...v1.2.98) (2021-10-12)
 
 
