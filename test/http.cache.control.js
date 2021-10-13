@@ -1,18 +1,18 @@
-'use strict';
+import FormData from 'form-data';
+import Fastify from 'fastify';
+import fetch from 'node-fetch';
+import path from 'path';
+import tap from 'tap';
+import url from 'url';
+import fs from 'fs';
 
-const FormData = require('form-data');
-const fastify = require('fastify');
-const fetch = require('node-fetch');
-const path = require('path');
-const tap = require('tap');
-const fs = require('fs');
+import Server from '../lib/main.js';
+import Sink from '../node_modules/@eik/core/lib/sinks/test.js';
 
-const Server = require("..");
-const Sink = require('../node_modules/@eik/core/lib/sinks/test');
+const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
 const FIXTURE_PKG = path.resolve(__dirname, '../fixtures/archive.tgz');
 const FIXTURE_MAP = path.resolve(__dirname, '../fixtures/import-map.json');
-
 
 // Ignore the timestamp for "created" field in the snapshots
 tap.cleanSnapshot = (s) => {
@@ -24,7 +24,7 @@ tap.beforeEach(async (t) => {
     const sink = new Sink();
     const service = new Server({ customSink: sink });
 
-    const app = fastify({
+    const app = Fastify({
         ignoreTrailingSlash: true,
     });
     app.register(service.api());

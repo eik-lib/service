@@ -1,18 +1,16 @@
-'use strict';
+import FormData from 'form-data';
+import Fastify from 'fastify';
+import fetch from 'node-fetch';
+import tap from 'tap';
 
-const FormData = require('form-data');
-const fastify = require('fastify');
-const fetch = require('node-fetch');
-const tap = require('tap');
-
-const Server = require("..");
-const Sink = require('../node_modules/@eik/core/lib/sinks/test');
+import Server from '../lib/main.js';
+import Sink from '../node_modules/@eik/core/lib/sinks/test.js';
 
 tap.test('404 - POST request to non existing pathname', async (t) => {
     const sink = new Sink();
     const service = new Server({ customSink: sink });
 
-    const app = fastify({
+    const app = Fastify({
         ignoreTrailingSlash: true,
     });
     app.register(service.api());
@@ -38,7 +36,7 @@ tap.test('404 - GET request to non existing pathname', async (t) => {
     const sink = new Sink();
     const service = new Server({ customSink: sink });
 
-    const app = fastify({
+    const app = Fastify({
         ignoreTrailingSlash: true,
     });
     app.register(service.api());
