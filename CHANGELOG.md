@@ -1,3 +1,11 @@
+## [2.0.2](https://github.com/eik-lib/service/compare/v2.0.1...v2.0.2) (2021-10-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency fastify-jwt to v3.2.1 ([acb1f4c](https://github.com/eik-lib/service/commit/acb1f4c7ba841c86f56fc9e4a6e3195d4f68cf28))
+* **deps:** update dependency pino to v7 ([8993f31](https://github.com/eik-lib/service/commit/8993f310acf87505da4655f459a19112084c0975))
+
 ## [2.0.1](https://github.com/eik-lib/service/compare/v2.0.0...v2.0.1) (2021-10-14)
 
 
