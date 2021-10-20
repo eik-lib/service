@@ -1,3 +1,10 @@
+## [2.0.6](https://github.com/eik-lib/service/compare/v2.0.5...v2.0.6) (2021-10-20)
+
+
+### Bug Fixes
+
+* Allow to override alias get ([#239](https://github.com/eik-lib/service/issues/239)) ([51fce59](https://github.com/eik-lib/service/commit/51fce598c9da29f96739147bc19962e6ffef2ed5))
+
 ## [2.0.5](https://github.com/eik-lib/service/compare/v2.0.4...v2.0.5) (2021-10-19)
 
 
