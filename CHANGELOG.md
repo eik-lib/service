@@ -1,3 +1,10 @@
+## [2.0.7](https://github.com/eik-lib/service/compare/v2.0.6...v2.0.7) (2021-10-20)
+
+
+### Bug Fixes
+
+* default cache header of 404 objects to 5 seconds ([#307](https://github.com/eik-lib/service/issues/307)) ([0e01035](https://github.com/eik-lib/service/commit/0e01035ec84bf3ef188f579f23490d5dae7ac6c9))
+
 ## [2.0.6](https://github.com/eik-lib/service/compare/v2.0.5...v2.0.6) (2021-10-20)
 
 
