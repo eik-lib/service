@@ -1,3 +1,56 @@
+## [2.0.5](https://github.com/eik-lib/service/compare/v2.0.4...v2.0.5) (2021-10-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency pino to v7.0.3 ([14dd67f](https://github.com/eik-lib/service/commit/14dd67fbbfb60ac6d83338f8c1b872d9a20aec40))
+
+## [2.0.4](https://github.com/eik-lib/service/compare/v2.0.3...v2.0.4) (2021-10-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency fastify to v3.22.1 ([a4eeb06](https://github.com/eik-lib/service/commit/a4eeb0656d4520f303fb3f4b4f907a157783cdec))
+
+## [2.0.3](https://github.com/eik-lib/service/compare/v2.0.2...v2.0.3) (2021-10-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency pino to v7.0.2 ([1aff30e](https://github.com/eik-lib/service/commit/1aff30ee12266988f00792271754df23efd0d6e5))
+
+## [2.0.2](https://github.com/eik-lib/service/compare/v2.0.1...v2.0.2) (2021-10-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency fastify-jwt to v3.2.1 ([acb1f4c](https://github.com/eik-lib/service/commit/acb1f4c7ba841c86f56fc9e4a6e3195d4f68cf28))
+* **deps:** update dependency pino to v7 ([8993f31](https://github.com/eik-lib/service/commit/8993f310acf87505da4655f459a19112084c0975))
+
+## [2.0.1](https://github.com/eik-lib/service/compare/v2.0.0...v2.0.1) (2021-10-14)
+
+
+### Bug Fixes
+
+* **deps:** update dependency fastify-compress to v3.6.1 ([86cbbc3](https://github.com/eik-lib/service/commit/86cbbc358ace445fcacd9b12ddce76e512b84b97))
+
+# [2.0.0](https://github.com/eik-lib/service/compare/v1.2.98...v2.0.0) (2021-10-13)
+
+
+### Bug Fixes
+
+* Re-name Semantic Release config file to common JS ([4ee1390](https://github.com/eik-lib/service/commit/4ee1390311ac8ea7f68ec9a46e4844b88bc357c5))
+
+
+### chore
+
+* Convert to ESM ([cadf6dc](https://github.com/eik-lib/service/commit/cadf6dcaf1af7e747c398db9063f170eed4a9515))
+
+
+### BREAKING CHANGES
+
+* The modules is now ESM and will not we compatible with use in a Common JS project.
+
 ## [1.2.98](https://github.com/eik-lib/service/compare/v1.2.97...v1.2.98) (2021-10-12)
 
 
