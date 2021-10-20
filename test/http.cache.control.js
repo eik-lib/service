@@ -90,6 +90,13 @@ tap.test('cache-control - package - non-scoped', async (t) => {
     });
     t.equal(fetched.headers.get('cache-control'), 'public, max-age=31536000, immutable', 'should be "public, max-age=31536000, immutable"');
 
+    // GET non-existing file from server
+    const nonExisting = await fetch(`${address}/pkg/fuzz/1.4.99999999999/main/index.js`, {
+        method: 'GET',
+    });
+    t.equal(nonExisting.headers.get('cache-control'), 'public, max-age=5', 'should be "public, max-age=5"');
+
+
     // GET package overview from server
     const overview = await fetch(`${address}/pkg/fuzz/1.4.8`, {
         method: 'GET',
@@ -123,6 +130,12 @@ tap.test('cache-control - package - scoped', async (t) => {
         method: 'GET',
     });
     t.equal(fetched.headers.get('cache-control'), 'public, max-age=31536000, immutable', 'should be "public, max-age=31536000, immutable"');
+
+    // GET non-existing file from server
+    const nonExisting = await fetch(`${address}/pkg/@cuz/fuzz/1.4.99999999999/main/index.js`, {
+        method: 'GET',
+    });
+    t.equal(nonExisting.headers.get('cache-control'), 'public, max-age=5', 'should be "public, max-age=5"');
 
     // GET package overview from server
     const overview = await fetch(`${address}/pkg/@cuz/fuzz/1.4.8`, {
@@ -158,6 +171,12 @@ tap.test('cache-control - npm package - non-scoped', async (t) => {
     });
     t.equal(fetched.headers.get('cache-control'), 'public, max-age=31536000, immutable', 'should be "public, max-age=31536000, immutable"');
 
+    // GET non-existing file from server
+    const nonExisting = await fetch(`${address}/npm/fuzz/1.4.99999999999/main/index.js`, {
+        method: 'GET',
+    });
+    t.equal(nonExisting.headers.get('cache-control'), 'public, max-age=5', 'should be "public, max-age=5"');
+
     // GET package overview from server
     const overview = await fetch(`${address}/npm/fuzz/1.4.8`, {
         method: 'GET',
@@ -191,6 +210,12 @@ tap.test('cache-control - npm package - scoped', async (t) => {
         method: 'GET',
     });
     t.equal(fetched.headers.get('cache-control'), 'public, max-age=31536000, immutable', 'should be "public, max-age=31536000, immutable"');
+
+    // GET non-existing file from server
+    const nonExisting = await fetch(`${address}/pkg/@cuz/fuzz/1.4.99999999999/main/index.js`, {
+        method: 'GET',
+    });
+    t.equal(nonExisting.headers.get('cache-control'), 'public, max-age=5', 'should be "public, max-age=5"');
 
     // GET package overview from server
     const overview = await fetch(`${address}/npm/@cuz/fuzz/1.4.8`, {
@@ -226,6 +251,12 @@ tap.test('cache-control - map - non-scoped', async (t) => {
     });
     t.equal(fetched.headers.get('cache-control'), 'public, max-age=31536000, immutable', 'should be "public, max-age=31536000, immutable"');
 
+    // GET non-existing file from server
+    const nonExisting = await fetch(`${address}/map/fuzz/1.4.99999999999/main/index.js`, {
+        method: 'GET',
+    });
+    t.equal(nonExisting.headers.get('cache-control'), 'public, max-age=5', 'should be "public, max-age=5"');
+
     // GET map versions overview from server
     const versions = await fetch(`${address}/map/buzz`, {
         method: 'GET',
@@ -253,6 +284,12 @@ tap.test('cache-control - map - scoped', async (t) => {
         method: 'GET',
     });
     t.equal(fetched.headers.get('cache-control'), 'public, max-age=31536000, immutable', 'should be "public, max-age=31536000, immutable"');
+
+    // GET non-existing file from server
+    const nonExisting = await fetch(`${address}/map/@cuz/fuzz/1.4.99999999999/main/index.js`, {
+        method: 'GET',
+    });
+    t.equal(nonExisting.headers.get('cache-control'), 'public, max-age=5', 'should be "public, max-age=5"');
 
     // GET map versions overview from server
     const versions = await fetch(`${address}/map/@cuz/buzz`, {
