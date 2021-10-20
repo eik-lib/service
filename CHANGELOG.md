@@ -1,3 +1,10 @@
+## [2.0.8](https://github.com/eik-lib/service/compare/v2.0.7...v2.0.8) (2021-10-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency convict to v6.2.1 ([48e8f12](https://github.com/eik-lib/service/commit/48e8f12884d53068d78606ede876fde0eaf01fa3))
+
 ## [2.0.7](https://github.com/eik-lib/service/compare/v2.0.6...v2.0.7) (2021-10-20)
 
 
