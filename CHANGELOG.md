@@ -1,3 +1,10 @@
+## [2.0.18](https://github.com/eik-lib/service/compare/v2.0.17...v2.0.18) (2021-11-15)
+
+
+### Bug Fixes
+
+* Make config be read from import folder ([#331](https://github.com/eik-lib/service/issues/331)) ([7018442](https://github.com/eik-lib/service/commit/701844227d0226f679dd35ba17579692f35a9c93))
+
 ## [2.0.17](https://github.com/eik-lib/service/compare/v2.0.16...v2.0.17) (2021-11-15)
 
 
