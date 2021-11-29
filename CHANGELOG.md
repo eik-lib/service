@@ -1,3 +1,10 @@
+## [2.0.24](https://github.com/eik-lib/service/compare/v2.0.23...v2.0.24) (2021-11-29)
+
+
+### Bug Fixes
+
+* **deps:** update fastify packages ([645e42d](https://github.com/eik-lib/service/commit/645e42d299b3e2109bc9cb20ce1c8b1fcb996276))
+
 ## [2.0.23](https://github.com/eik-lib/service/compare/v2.0.22...v2.0.23) (2021-11-26)
 
 
