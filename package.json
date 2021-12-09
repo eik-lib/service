@@ -36,7 +36,7 @@
     "@eik/core": "1.2.28",
     "convict": "6.2.1",
     "fastify": "3.24.1",
-    "fastify-compress": "3.7.0",
+    "fastify-compress": "4.0.0",
     "fastify-cors": "6.0.2",
     "fastify-jwt": "4.1.1",
     "http-errors": "1.8.1",
