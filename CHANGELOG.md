@@ -1,3 +1,10 @@
+## [2.0.31](https://github.com/eik-lib/service/compare/v2.0.30...v2.0.31) (2021-12-14)
+
+
+### Bug Fixes
+
+* **deps:** update fastify packages ([4c7ab62](https://github.com/eik-lib/service/commit/4c7ab62da8118acd7f6fc3ce2c8182150c3eb1eb))
+
 ## [2.0.30](https://github.com/eik-lib/service/compare/v2.0.29...v2.0.30) (2021-12-09)
 
 
