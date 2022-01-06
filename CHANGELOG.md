@@ -1,3 +1,10 @@
+## [2.0.41](https://github.com/eik-lib/service/compare/v2.0.40...v2.0.41) (2022-01-06)
+
+
+### Bug Fixes
+
+* **deps:** update dependency http-errors to v2 ([#354](https://github.com/eik-lib/service/issues/354)) ([56cd8d2](https://github.com/eik-lib/service/commit/56cd8d2aa4ea34b42d8c7a3d3d77a22e916ad1ee))
+
 ## [2.0.40](https://github.com/eik-lib/service/compare/v2.0.39...v2.0.40) (2022-01-05)
 
 
