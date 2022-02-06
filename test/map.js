@@ -96,7 +96,7 @@ tap.test('import-map - put map -> get map - scoped successfully uploaded', async
     });
 
     t.equal(uploaded.status, 303, 'on PUT of map, server should respond with a 303 redirect');
-    t.equal(uploaded.headers.get('location'), `${address}/map/@cuz/buzz/4.2.2`, 'on PUT of map, server should respond with a location header');
+    t.equal(uploaded.headers.get('location'), `/map/@cuz/buzz/4.2.2`, 'on PUT of map, server should respond with a location header');
 
     // GET map from server
     const downloaded = await fetch(`${address}/map/@cuz/buzz/4.2.2`, {
@@ -124,7 +124,7 @@ tap.test('import-map - put map -> get map - non scoped successfully uploaded', a
     });
 
     t.equal(uploaded.status, 303, 'on PUT of map, server should respond with a 303 redirect');
-    t.equal(uploaded.headers.get('location'), `${address}/map/buzz/4.2.2`, 'on PUT of map, server should respond with a location header');
+    t.equal(uploaded.headers.get('location'), `/map/buzz/4.2.2`, 'on PUT of map, server should respond with a location header');
 
     // GET map from server
     const downloaded = await fetch(`${address}/map/buzz/4.2.2`, {

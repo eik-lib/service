@@ -28,7 +28,7 @@ tap.beforeEach(async (t) => {
     });
     app.register(service.api());
 
-    const address = await app.listen(0, 'localhost');
+    const address = await app.listen(0, '127.0.0.1');
 
     const formData = new FormData();
     formData.append('key', 'change_me');
@@ -102,7 +102,7 @@ tap.test('packages - put pkg -> get file - scoped successfully uploaded', async 
     });
 
     t.equal(uploaded.status, 303, 'on PUT of package, server should respond with a 303 redirect');
-    t.equal(uploaded.headers.get('location'), `${address}/pkg/@cuz/fuzz/1.4.8`, 'on PUT of package, server should respond with a location header');
+    t.equal(uploaded.headers.get('location'), `/pkg/@cuz/fuzz/1.4.8`, 'on PUT of package, server should respond with a location header');
 
     // GET file from server
     const downloaded = await fetch(`${address}/pkg/@cuz/fuzz/1.4.8/main/index.js`, {
@@ -129,7 +129,7 @@ tap.test('packages - put pkg -> get file - non scoped successfully uploaded', as
     });
 
     t.equal(uploaded.status, 303, 'on PUT of package, server should respond with a 303 redirect');
-    t.equal(uploaded.headers.get('location'), `${address}/pkg/fuzz/8.4.1`, 'on PUT of package, server should respond with a location header');
+    t.equal(uploaded.headers.get('location'), `/pkg/fuzz/8.4.1`, 'on PUT of package, server should respond with a location header');
 
     // GET file from server
     const downloaded = await fetch(`${address}/pkg/fuzz/8.4.1/main/index.js`, {
@@ -156,7 +156,7 @@ tap.test('packages - get package overview - scoped', async (t) => {
     });
 
     t.equal(uploaded.status, 303, 'on PUT of package, server should respond with a 303 redirect');
-    t.equal(uploaded.headers.get('location'), `${address}/pkg/@cuz/fuzz/8.4.1`, 'on PUT of package, server should respond with a location header');
+    t.equal(uploaded.headers.get('location'), `/pkg/@cuz/fuzz/8.4.1`, 'on PUT of package, server should respond with a location header');
 
     // GET package overview from server
     const downloaded = await fetch(`${address}/pkg/@cuz/fuzz/8.4.1/`, {
@@ -183,7 +183,7 @@ tap.test('packages - get package overview - non scoped', async (t) => {
     });
 
     t.equal(uploaded.status, 303, 'on PUT of package, server should respond with a 303 redirect');
-    t.equal(uploaded.headers.get('location'), `${address}/pkg/fuzz/8.4.1`, 'on PUT of package, server should respond with a location header');
+    t.equal(uploaded.headers.get('location'), `/pkg/fuzz/8.4.1`, 'on PUT of package, server should respond with a location header');
 
     // GET package overview from server
     const downloaded = await fetch(`${address}/pkg/fuzz/8.4.1/`, {

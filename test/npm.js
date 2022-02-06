@@ -102,7 +102,7 @@ tap.test('npm packages - put pkg -> get file - scoped successfully uploaded', as
     });
 
     t.equal(uploaded.status, 303, 'on PUT of package, server should respond with a 303 redirect');
-    t.equal(uploaded.headers.get('location'), `${address}/npm/@cuz/fuzz/1.4.8`, 'on PUT of package, server should respond with a location header');
+    t.equal(uploaded.headers.get('location'), `/npm/@cuz/fuzz/1.4.8`, 'on PUT of package, server should respond with a location header');
 
     // GET file from server
     const downloaded = await fetch(`${address}/npm/@cuz/fuzz/1.4.8/main/index.js`, {
@@ -129,7 +129,7 @@ tap.test('npm packages - put pkg -> get file - non scoped successfully uploaded'
     });
 
     t.equal(uploaded.status, 303, 'on PUT of package, server should respond with a 303 redirect');
-    t.equal(uploaded.headers.get('location'), `${address}/npm/fuzz/8.4.1`, 'on PUT of package, server should respond with a location header');
+    t.equal(uploaded.headers.get('location'), `/npm/fuzz/8.4.1`, 'on PUT of package, server should respond with a location header');
 
     // GET file from server
     const downloaded = await fetch(`${address}/npm/fuzz/8.4.1/main/index.js`, {
@@ -156,7 +156,7 @@ tap.test('npm packages - get package overview - scoped', async (t) => {
     });
 
     t.equal(uploaded.status, 303, 'on PUT of package, server should respond with a 303 redirect');
-    t.equal(uploaded.headers.get('location'), `${address}/npm/@cuz/fuzz/8.4.1`, 'on PUT of package, server should respond with a location header');
+    t.equal(uploaded.headers.get('location'), `/npm/@cuz/fuzz/8.4.1`, 'on PUT of package, server should respond with a location header');
 
     // GET package overview from server
     const downloaded = await fetch(`${address}/npm/@cuz/fuzz/8.4.1/`, {
@@ -183,7 +183,7 @@ tap.test('npm packages - get package overview - non scoped', async (t) => {
     });
 
     t.equal(uploaded.status, 303, 'on PUT of package, server should respond with a 303 redirect');
-    t.equal(uploaded.headers.get('location'), `${address}/npm/fuzz/8.4.1`, 'on PUT of package, server should respond with a location header');
+    t.equal(uploaded.headers.get('location'), `/npm/fuzz/8.4.1`, 'on PUT of package, server should respond with a location header');
 
     // GET package overview from server
     const downloaded = await fetch(`${address}/npm/fuzz/8.4.1/`, {
