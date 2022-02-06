@@ -151,7 +151,7 @@ tap.test('alias map - put alias, then get map through alias - scoped', async (t)
     });
 
     t.equal(uploaded.status, 303, 'on PUT of map, server should respond with a 303 redirect');
-    t.equal(uploaded.headers.get('location'), `${address}/map/@cuz/fuzz/8.4.1`, 'on PUT of map, server should respond with a location header');
+    t.equal(uploaded.headers.get('location'), `/map/@cuz/fuzz/8.4.1`, 'on PUT of map, server should respond with a location header');
 
     // PUT alias on server
     const aliasFormData = new FormData();
@@ -165,19 +165,19 @@ tap.test('alias map - put alias, then get map through alias - scoped', async (t)
     });
 
     t.equal(alias.status, 303, 'on PUT of alias, server should respond with a 303 redirect');
-    t.equal(alias.headers.get('location'), `${address}/map/@cuz/fuzz/v8`, 'on PUT of alias, server should respond with a location header');
+    t.equal(alias.headers.get('location'), `/map/@cuz/fuzz/v8`, 'on PUT of alias, server should respond with a location header');
 
     // GET map through alias from server
-    const redirect = await fetch(alias.headers.get('location'), {
+    const redirect = await fetch(`${address}${alias.headers.get('location')}`, {
         method: 'GET',
         redirect: 'manual',
     });
 
     t.equal(redirect.status, 302, 'on GET of map through alias, server should respond with a 302 redirect');
-    t.equal(redirect.headers.get('location'), `${address}/map/@cuz/fuzz/8.4.1`, 'on GET of map through alias, server should respond with a location header');
+    t.equal(redirect.headers.get('location'), `/map/@cuz/fuzz/8.4.1`, 'on GET of map through alias, server should respond with a location header');
 
     // GET map from server
-    const downloaded = await fetch(redirect.headers.get('location'), {
+    const downloaded = await fetch(`${address}${redirect.headers.get('location')}`, {
         method: 'GET',
     });
 
@@ -202,7 +202,7 @@ tap.test('alias map - put alias, then get map through alias - non scoped', async
     });
 
     t.equal(uploaded.status, 303, 'on PUT of map, server should respond with a 303 redirect');
-    t.equal(uploaded.headers.get('location'), `${address}/map/fuzz/8.4.1`, 'on PUT of map, server should respond with a location header');
+    t.equal(uploaded.headers.get('location'), `/map/fuzz/8.4.1`, 'on PUT of map, server should respond with a location header');
 
     // PUT alias on server
     const aliasFormData = new FormData();
@@ -216,19 +216,19 @@ tap.test('alias map - put alias, then get map through alias - non scoped', async
     });
 
     t.equal(alias.status, 303, 'on PUT of alias, server should respond with a 303 redirect');
-    t.equal(alias.headers.get('location'), `${address}/map/fuzz/v8`, 'on PUT of alias, server should respond with a location header');
+    t.equal(alias.headers.get('location'), `/map/fuzz/v8`, 'on PUT of alias, server should respond with a location header');
 
     // GET file through alias from server
-    const redirect = await fetch(alias.headers.get('location'), {
+    const redirect = await fetch(`${address}${alias.headers.get('location')}`, {
         method: 'GET',
         redirect: 'manual',
     });
 
     t.equal(redirect.status, 302, 'on GET of map through alias, server should respond with a 302 redirect');
-    t.equal(redirect.headers.get('location'), `${address}/map/fuzz/8.4.1`, 'on GET of map through alias, server should respond with a location header');
+    t.equal(redirect.headers.get('location'), `/map/fuzz/8.4.1`, 'on GET of map through alias, server should respond with a location header');
 
     // GET file from server
-    const downloaded = await fetch(redirect.headers.get('location'), {
+    const downloaded = await fetch(`${address}${redirect.headers.get('location')}`, {
         method: 'GET',
     });
 
@@ -355,7 +355,7 @@ tap.test('alias map - put alias, then delete alias, then get map through alias -
     });
 
     t.equal(uploaded.status, 303, 'on PUT of map, server should respond with a 303 redirect');
-    t.equal(uploaded.headers.get('location'), `${address}/map/@cuz/fuzz/8.4.1`, 'on PUT of map, server should respond with a location header');
+    t.equal(uploaded.headers.get('location'), `/map/@cuz/fuzz/8.4.1`, 'on PUT of map, server should respond with a location header');
 
     // PUT alias on server
     const aliasFormData = new FormData();
@@ -403,7 +403,7 @@ tap.test('alias map - put alias, then delete alias, then get map through alias -
     });
 
     t.equal(uploaded.status, 303, 'on PUT of map, server should respond with a 303 redirect');
-    t.equal(uploaded.headers.get('location'), `${address}/map/fuzz/8.4.1`, 'on PUT of map, server should respond with a location header');
+    t.equal(uploaded.headers.get('location'), `/map/fuzz/8.4.1`, 'on PUT of map, server should respond with a location header');
 
     // PUT alias on server
     const aliasFormData = new FormData();

@@ -154,7 +154,7 @@ tap.test('alias package - put alias, then get file overview through alias - scop
     });
 
     t.equal(uploaded.status, 303, 'on PUT of package, server should respond with a 303 redirect');
-    t.equal(uploaded.headers.get('location'), `${address}/pkg/@cuz/fuzz/8.4.1`, 'on PUT of package, server should respond with a location header');
+    t.equal(uploaded.headers.get('location'), `/pkg/@cuz/fuzz/8.4.1`, 'on PUT of package, server should respond with a location header');
 
     // PUT alias on server
     const aliasFormData = new FormData();
@@ -168,19 +168,19 @@ tap.test('alias package - put alias, then get file overview through alias - scop
     });
 
     t.equal(alias.status, 303, 'on PUT of alias, server should respond with a 303 redirect');
-    t.equal(alias.headers.get('location'), `${address}/pkg/@cuz/fuzz/v8`, 'on PUT of alias, server should respond with a location header');
+    t.equal(alias.headers.get('location'), `/pkg/@cuz/fuzz/v8`, 'on PUT of alias, server should respond with a location header');
 
     // GET file through alias from server
-    const redirect = await fetch(alias.headers.get('location'), {
+    const redirect = await fetch(`${address}${alias.headers.get('location')}`, {
         method: 'GET',
         redirect: 'manual',
     });
 
     t.equal(redirect.status, 302, 'on GET of file through alias, server should respond with a 302 redirect');
-    t.equal(redirect.headers.get('location'), `${address}/pkg/@cuz/fuzz/8.4.1`, 'on GET of file through alias, server should respond with a location header');
+    t.equal(redirect.headers.get('location'), `/pkg/@cuz/fuzz/8.4.1`, 'on GET of file through alias, server should respond with a location header');
 
     // GET file from server
-    const downloaded = await fetch(redirect.headers.get('location'), {
+    const downloaded = await fetch(`${address}${redirect.headers.get('location')}`, {
         method: 'GET',
     });
 
@@ -205,7 +205,7 @@ tap.test('alias package - put alias, then get file overview through alias - non 
     });
 
     t.equal(uploaded.status, 303, 'on PUT of package, server should respond with a 303 redirect');
-    t.equal(uploaded.headers.get('location'), `${address}/pkg/fuzz/8.4.1`, 'on PUT of package, server should respond with a location header');
+    t.equal(uploaded.headers.get('location'), `/pkg/fuzz/8.4.1`, 'on PUT of package, server should respond with a location header');
 
     // PUT alias on server
     const aliasFormData = new FormData();
@@ -219,19 +219,19 @@ tap.test('alias package - put alias, then get file overview through alias - non 
     });
 
     t.equal(alias.status, 303, 'on PUT of alias, server should respond with a 303 redirect');
-    t.equal(alias.headers.get('location'), `${address}/pkg/fuzz/v8`, 'on PUT of alias, server should respond with a location header');
+    t.equal(alias.headers.get('location'), `/pkg/fuzz/v8`, 'on PUT of alias, server should respond with a location header');
 
     // GET file through alias from server
-    const redirect = await fetch(alias.headers.get('location'), {
+    const redirect = await fetch(`${address}${alias.headers.get('location')}`, {
         method: 'GET',
         redirect: 'manual',
     });
 
     t.equal(redirect.status, 302, 'on GET of file through alias, server should respond with a 302 redirect');
-    t.equal(redirect.headers.get('location'), `${address}/pkg/fuzz/8.4.1`, 'on GET of file through alias, server should respond with a location header');
+    t.equal(redirect.headers.get('location'), `/pkg/fuzz/8.4.1`, 'on GET of file through alias, server should respond with a location header');
 
     // GET file from server
-    const downloaded = await fetch(redirect.headers.get('location'), {
+    const downloaded = await fetch(`${address}${redirect.headers.get('location')}`, {
         method: 'GET',
     });
 
@@ -256,7 +256,7 @@ tap.test('alias package - put alias, then get file through alias - scoped', asyn
     });
 
     t.equal(uploaded.status, 303, 'on PUT of package, server should respond with a 303 redirect');
-    t.equal(uploaded.headers.get('location'), `${address}/pkg/@cuz/fuzz/8.4.1`, 'on PUT of package, server should respond with a location header');
+    t.equal(uploaded.headers.get('location'), `/pkg/@cuz/fuzz/8.4.1`, 'on PUT of package, server should respond with a location header');
 
     // PUT alias on server
     const aliasFormData = new FormData();
@@ -270,7 +270,7 @@ tap.test('alias package - put alias, then get file through alias - scoped', asyn
     });
 
     t.equal(alias.status, 303, 'on PUT of alias, server should respond with a 303 redirect');
-    t.equal(alias.headers.get('location'), `${address}/pkg/@cuz/fuzz/v8`, 'on PUT of alias, server should respond with a location header');
+    t.equal(alias.headers.get('location'), `/pkg/@cuz/fuzz/v8`, 'on PUT of alias, server should respond with a location header');
 
     // GET file through alias from server
     const redirect = await fetch(`${address}/pkg/@cuz/fuzz/v8/main/index.js`, {
@@ -279,10 +279,10 @@ tap.test('alias package - put alias, then get file through alias - scoped', asyn
     });
 
     t.equal(redirect.status, 302, 'on GET of file through alias, server should respond with a 302 redirect');
-    t.equal(redirect.headers.get('location'), `${address}/pkg/@cuz/fuzz/8.4.1/main/index.js`, 'on GET of file through alias, server should respond with a location header');
+    t.equal(redirect.headers.get('location'), `/pkg/@cuz/fuzz/8.4.1/main/index.js`, 'on GET of file through alias, server should respond with a location header');
 
     // GET file from server
-    const downloaded = await fetch(redirect.headers.get('location'), {
+    const downloaded = await fetch(`${address}${redirect.headers.get('location')}`, {
         method: 'GET',
     });
 
@@ -307,7 +307,7 @@ tap.test('alias package - put alias, then get file through alias - non scoped', 
     });
 
     t.equal(uploaded.status, 303, 'on PUT of package, server should respond with a 303 redirect');
-    t.equal(uploaded.headers.get('location'), `${address}/pkg/fuzz/8.4.1`, 'on PUT of package, server should respond with a location header');
+    t.equal(uploaded.headers.get('location'), `/pkg/fuzz/8.4.1`, 'on PUT of package, server should respond with a location header');
 
     // PUT alias on server
     const aliasFormData = new FormData();
@@ -321,7 +321,7 @@ tap.test('alias package - put alias, then get file through alias - non scoped', 
     });
 
     t.equal(alias.status, 303, 'on PUT of alias, server should respond with a 303 redirect');
-    t.equal(alias.headers.get('location'), `${address}/pkg/fuzz/v8`, 'on PUT of alias, server should respond with a location header');
+    t.equal(alias.headers.get('location'), `/pkg/fuzz/v8`, 'on PUT of alias, server should respond with a location header');
 
     // GET file through alias from server
     const redirect = await fetch(`${address}/pkg/fuzz/v8/main/index.js`, {
@@ -330,10 +330,10 @@ tap.test('alias package - put alias, then get file through alias - non scoped', 
     });
 
     t.equal(redirect.status, 302, 'on GET of file through alias, server should respond with a 302 redirect');
-    t.equal(redirect.headers.get('location'), `${address}/pkg/fuzz/8.4.1/main/index.js`, 'on GET of file through alias, server should respond with a location header');
+    t.equal(redirect.headers.get('location'), `/pkg/fuzz/8.4.1/main/index.js`, 'on GET of file through alias, server should respond with a location header');
 
     // GET file from server
-    const downloaded = await fetch(redirect.headers.get('location'), {
+    const downloaded = await fetch(`${address}${redirect.headers.get('location')}`, {
         method: 'GET',
     });
 
@@ -464,7 +464,7 @@ tap.test('alias package - put alias, then delete alias, then get file through al
     });
 
     t.equal(uploaded.status, 303, 'on PUT of package, server should respond with a 303 redirect');
-    t.equal(uploaded.headers.get('location'), `${address}/pkg/@cuz/fuzz/8.4.1`, 'on PUT of package, server should respond with a location header');
+    t.equal(uploaded.headers.get('location'), `/pkg/@cuz/fuzz/8.4.1`, 'on PUT of package, server should respond with a location header');
 
     // PUT alias on server
     const aliasFormData = new FormData();
@@ -513,7 +513,7 @@ tap.test('alias package - put alias, then delete alias, then get file through al
     });
 
     t.equal(uploaded.status, 303, 'on PUT of package, server should respond with a 303 redirect');
-    t.equal(uploaded.headers.get('location'), `${address}/pkg/fuzz/8.4.1`, 'on PUT of package, server should respond with a location header');
+    t.equal(uploaded.headers.get('location'), `/pkg/fuzz/8.4.1`, 'on PUT of package, server should respond with a location header');
 
     // PUT alias on server
     const aliasFormData = new FormData();
