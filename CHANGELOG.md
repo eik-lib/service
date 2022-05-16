@@ -1,3 +1,10 @@
+## [2.0.67](https://github.com/eik-lib/service/compare/v2.0.66...v2.0.67) (2022-05-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency fastify-compress to v4.1.0 ([61b44d9](https://github.com/eik-lib/service/commit/61b44d94b8683a06acec3af1d2eeac3a34657b4f))
+
 ## [2.0.66](https://github.com/eik-lib/service/compare/v2.0.65...v2.0.66) (2022-05-09)
 
 
