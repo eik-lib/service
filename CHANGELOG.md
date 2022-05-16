@@ -1,3 +1,10 @@
+## [2.0.68](https://github.com/eik-lib/service/compare/v2.0.67...v2.0.68) (2022-05-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency fastify-cors to v6.1.0 ([507b448](https://github.com/eik-lib/service/commit/507b4483ea5725a63fe54a16c98e9a82ed241cb9))
+
 ## [2.0.67](https://github.com/eik-lib/service/compare/v2.0.66...v2.0.67) (2022-05-16)
 
 
