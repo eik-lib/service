@@ -1,3 +1,10 @@
+## [2.0.70](https://github.com/eik-lib/service/compare/v2.0.69...v2.0.70) (2022-05-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency fastify-jwt to v4.2.0 ([66534c2](https://github.com/eik-lib/service/commit/66534c26dec181ebe2b0c8726b11fe86caa49276))
+
 ## [2.0.69](https://github.com/eik-lib/service/compare/v2.0.68...v2.0.69) (2022-05-23)
 
 
