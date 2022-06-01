@@ -57,7 +57,7 @@
     "pino-pretty": "7.6.1",
     "prettier": "2.6.2",
     "semantic-release": "19.0.2",
-    "tap": "16.1.0",
+    "tap": "16.2.0",
     "unique-slug": "2.0.2"
   }
 }
