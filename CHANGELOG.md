@@ -1,3 +1,10 @@
+## [2.0.72](https://github.com/eik-lib/service/compare/v2.0.71...v2.0.72) (2022-06-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency pino to v8 ([#419](https://github.com/eik-lib/service/issues/419)) ([ac5cbcf](https://github.com/eik-lib/service/commit/ac5cbcfb371002365e8cf88ceb6b27cc6a5912f3))
+
 ## [2.0.71](https://github.com/eik-lib/service/compare/v2.0.70...v2.0.71) (2022-05-30)
 
 
