@@ -44,7 +44,7 @@
     "pino": "8.6.0"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "7.18.9",
+    "@babel/eslint-parser": "7.19.1",
     "@semantic-release/changelog": "6.0.1",
     "@semantic-release/git": "10.0.1",
     "eslint": "7.32.0",
