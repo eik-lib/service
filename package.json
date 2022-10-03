@@ -41,7 +41,7 @@
     "fastify-jwt": "4.2.0",
     "http-errors": "2.0.0",
     "js-yaml": "4.1.0",
-    "pino": "8.6.0"
+    "pino": "8.6.1"
   },
   "devDependencies": {
     "@babel/eslint-parser": "7.19.1",
