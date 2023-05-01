@@ -44,18 +44,18 @@
     "pino": "8.11.0"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "7.19.1",
+    "@babel/eslint-parser": "7.21.3",
     "@semantic-release/changelog": "6.0.3",
     "@semantic-release/git": "10.0.1",
     "eslint": "7.32.0",
     "eslint-config-airbnb-base": "14.2.1",
-    "eslint-config-prettier": "8.6.0",
+    "eslint-config-prettier": "8.8.0",
     "eslint-plugin-import": "2.27.5",
     "eslint-plugin-prettier": "4.2.1",
     "form-data": "4.0.0",
     "node-fetch": "3.3.1",
     "pino-pretty": "8.1.0",
-    "prettier": "2.8.4",
+    "prettier": "2.8.8",
     "semantic-release": "19.0.5",
     "tap": "16.3.4",
     "unique-slug": "4.0.0"
