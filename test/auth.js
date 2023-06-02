@@ -8,7 +8,7 @@ import Server from '../lib/main.js';
 
 tap.test('auth - authenticate - legal "key" value', async (t) => {
     const sink = new Sink();
-    const service = new Server({ customSink: sink });
+    const service = new Server({ sink });
 
     const app = Fastify({
         ignoreTrailingSlash: true,
@@ -43,7 +43,7 @@ tap.test('auth - authenticate - legal "key" value', async (t) => {
 
 tap.test('auth - authenticate - illegal "key" value', async (t) => {
     const sink = new Sink();
-    const service = new Server({ customSink: sink, port: 0, logger: false });
+    const service = new Server({ sink });
 
     const app = Fastify({
         ignoreTrailingSlash: true,

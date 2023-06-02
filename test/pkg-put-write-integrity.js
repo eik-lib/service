@@ -44,7 +44,7 @@ tap.test(
             return Math.floor(Math.random() * max) + min;
         };
 
-        const service = new Server({ customSink: sink });
+        const service = new Server({ sink });
 
         const app = Fastify({
             ignoreTrailingSlash: true,
@@ -92,7 +92,7 @@ tap.test(
             return Math.floor(Math.random() * max) + min;
         };
 
-        const service = new Server({ customSink: sink });
+        const service = new Server({ sink });
 
         const app = Fastify({
             ignoreTrailingSlash: true,
@@ -140,7 +140,7 @@ tap.test(
             return Math.floor(Math.random() * max) + min;
         };
 
-        const service = new Server({ customSink: sink });
+        const service = new Server({ sink });
 
         const app = Fastify({
             ignoreTrailingSlash: true,
@@ -188,7 +188,7 @@ tap.test(
             return Math.floor(Math.random() * max) + min;
         };
 
-        const service = new Server({ customSink: sink });
+        const service = new Server({ sink });
 
         const app = Fastify({
             ignoreTrailingSlash: true,
