@@ -6,8 +6,8 @@ import tap from 'tap';
 import url from 'url';
 import fs from 'fs';
 
+import Sink from "@eik/core/lib/sinks/test.js";
 import Server from '../lib/main.js';
-import Sink from '../node_modules/@eik/core/lib/sinks/test.js';
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
@@ -28,7 +28,7 @@ tap.beforeEach(async (t) => {
     });
     app.register(service.api());
 
-    const address = await app.listen(0, '127.0.0.1');
+    const address = await app.listen({port: 0});
 
     const formData = new FormData();
     formData.append('key', 'change_me');
