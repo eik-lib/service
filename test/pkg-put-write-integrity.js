@@ -49,7 +49,7 @@ tap.test('Sink is slow and irregular - Writing medium sized package', async t =>
     });
     app.register(service.api());
 
-    const address = await app.listen({ port: 0 });
+    const address = await app.listen({ port: 0, host: '127.0.0.1' });
 
     const headers = await authentication(address);
 
@@ -89,7 +89,7 @@ tap.test('Sink is slow and irregular - Writing small sized package', async t => 
     });
     app.register(service.api());
 
-    const address = await app.listen({ port: 0 });
+    const address = await app.listen({ port: 0, host: '127.0.0.1' });
 
     const headers = await authentication(address);
 
@@ -129,7 +129,7 @@ tap.test('Sink is slow to construct writer - Writing medium sized package', asyn
     });
     app.register(service.api());
 
-    const address = await app.listen({ port: 0 });
+    const address = await app.listen({ port: 0, host: '127.0.0.1' });
 
     const headers = await authentication(address);
 
@@ -169,7 +169,7 @@ tap.test('Sink is slow to construct writer - Writing small sized package', async
     });
     app.register(service.api());
 
-    const address = await app.listen({ port: 0 });
+    const address = await app.listen({ port: 0, host: '127.0.0.1' });
 
     const headers = await authentication(address);
 

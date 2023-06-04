@@ -15,7 +15,7 @@ tap.test('auth - authenticate - legal "key" value', async (t) => {
     });
     app.register(service.api());
 
-    const address = await app.listen({port: 0});
+    const address = await app.listen({ port: 0, host: '127.0.0.1' });
 
     const formData = new FormData();
     formData.append('key', 'change_me');
@@ -43,7 +43,7 @@ tap.test('auth - authenticate - illegal "key" value', async (t) => {
     });
     app.register(service.api());
 
-    const address = await app.listen({port: 0});
+    const address = await app.listen({ port: 0, host: '127.0.0.1' });
 
     const formData = new FormData();
     formData.append('key', 'error_me');

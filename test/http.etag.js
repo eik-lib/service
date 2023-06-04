@@ -18,7 +18,7 @@ tap.test('ETag - pkg:get - ETag and "If-None-Match" is matching', async t => {
     });
     app.register(service.api());
 
-    const address = await app.listen({ port: 0 });
+    const address = await app.listen({ port: 0, host: '127.0.0.1' });
 
     const url = `${address}/pkg/fuzz/8.4.1/main/index.js`;
     sink.set('/local/pkg/fuzz/8.4.1/main/index.js', 'hello world');
@@ -56,7 +56,7 @@ tap.test('ETag - pkg:get - ETag and "If-None-Match" is NOT matching', async t =>
     });
     app.register(service.api());
 
-    const address = await app.listen({ port: 0 });
+    const address = await app.listen({ port: 0, host: '127.0.0.1' });
 
     const url = `${address}/pkg/fuzz/8.4.1/main/index.js`;
     sink.set('/local/pkg/fuzz/8.4.1/main/index.js', 'hello world');
@@ -94,7 +94,7 @@ tap.test('ETag - pkg:get - "If-None-Match" is NOT set on request', async t => {
     });
     app.register(service.api());
 
-    const address = await app.listen({ port: 0 });
+    const address = await app.listen({ port: 0, host: '127.0.0.1' });
 
     const url = `${address}/pkg/fuzz/8.4.1/main/index.js`;
     sink.set('/local/pkg/fuzz/8.4.1/main/index.js', 'hello world');
@@ -166,7 +166,7 @@ tap.test('ETag - pkg:log - ETag and "If-None-Match" is matching', async t => {
     });
     app.register(service.api());
 
-    const address = await app.listen({ port: 0 });
+    const address = await app.listen({ port: 0, host: '127.0.0.1' });
 
     const url = `${address}/pkg/fuzz/8.4.1`;
     sink.set('/local/pkg/fuzz/8.4.1.package.json', 'hello world');
@@ -205,7 +205,7 @@ tap.test('ETag - pkg:log - ETag and "If-None-Match" is NOT matching', async t =>
     });
     app.register(service.api());
 
-    const address = await app.listen({ port: 0 });
+    const address = await app.listen({ port: 0, host: '127.0.0.1' });
 
     const url = `${address}/pkg/fuzz/8.4.1`;
     sink.set('/local/pkg/fuzz/8.4.1.package.json', 'hello world');
@@ -243,7 +243,7 @@ tap.test('ETag - pkg:log - "If-None-Match" is NOT set on request', async t => {
     });
     app.register(service.api());
 
-    const address = await app.listen({ port: 0 });
+    const address = await app.listen({ port: 0, host: '127.0.0.1' });
 
     const url = `${address}/pkg/fuzz/8.4.1`;
     sink.set('/local/pkg/fuzz/8.4.1.package.json', 'hello world');
@@ -315,7 +315,7 @@ tap.test('ETag - map:get - ETag and "If-None-Match" is matching', async t => {
     });
     app.register(service.api());
 
-    const address = await app.listen({ port: 0 });
+    const address = await app.listen({ port: 0, host: '127.0.0.1' });
 
     const url = `${address}/map/buzz/4.2.2`;
     sink.set('/local/map/buzz/4.2.2.import-map.json', 'hello world');
@@ -354,7 +354,7 @@ tap.test('ETag - map:get - ETag and "If-None-Match" is NOT matching', async t =>
     });
     app.register(service.api());
 
-    const address = await app.listen({ port: 0 });
+    const address = await app.listen({ port: 0, host: '127.0.0.1' });
 
     const url = `${address}/map/buzz/4.2.2`;
     sink.set('/local/map/buzz/4.2.2.import-map.json', 'hello world');
@@ -392,7 +392,7 @@ tap.test('ETag - map:get - "If-None-Match" is NOT set on request', async t => {
     });
     app.register(service.api());
 
-    const address = await app.listen({ port: 0 });
+    const address = await app.listen({ port: 0, host: '127.0.0.1' });
 
     const url = `${address}/map/buzz/4.2.2`;
     sink.set('/local/map/buzz/4.2.2.import-map.json', 'hello world');
