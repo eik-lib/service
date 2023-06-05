@@ -28,8 +28,15 @@ tap.test('auth - authenticate - legal "key" value', async (t) => {
 
     const body = await response.json();
 
-    t.equal(response.status, 200, 'on POST of valid key, server should respond with a 200 OK');
-    t.ok(body.token.length > 5, 'on POST of valid key, server should respond with a body with a token');
+    t.equal(
+        response.status,
+        200,
+        'on POST of valid key, server should respond with a 200 OK',
+    );
+    t.ok(
+        body.token.length > 5,
+        'on POST of valid key, server should respond with a body with a token',
+    );
 
     await app.close();
 });
@@ -54,7 +61,11 @@ tap.test('auth - authenticate - illegal "key" value', async (t) => {
         headers: formData.getHeaders(),
     });
 
-    t.equal(response.status, 401, 'on POST of valid key, server should respond with a 401 Unauthorized');
+    t.equal(
+        response.status,
+        401,
+        'on POST of valid key, server should respond with a 401 Unauthorized',
+    );
 
     await app.close();
 });
