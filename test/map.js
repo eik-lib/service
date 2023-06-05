@@ -6,7 +6,7 @@ import tap from 'tap';
 import url from 'url';
 import fs from 'fs';
 
-import Sink from "@eik/core/lib/sinks/test.js";
+import Sink from '@eik/core/lib/sinks/test.js';
 import Server from '../lib/main.js';
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
@@ -15,7 +15,7 @@ const FIXTURE_MAP = path.resolve(__dirname, '../fixtures/import-map.json');
 
 tap.beforeEach(async (t) => {
     const sink = new Sink();
-    const service = new Server({ customSink: sink });
+    const service = new Server({ sink });
 
     const app = Fastify({
         ignoreTrailingSlash: true,
@@ -34,9 +34,10 @@ tap.beforeEach(async (t) => {
     });
 
     const { token } = await res.json();
-    const headers = { 'Authorization': `Bearer ${token}` };
+    const headers = { Authorization: `Bearer ${token}` };
 
-    t.context = { // eslint-disable-line no-param-reassign
+    // eslint-disable-next-line no-param-reassign
+    t.context = {
         address,
         headers,
         app,
@@ -61,7 +62,11 @@ tap.test('import-map - no auth token on PUT - scoped', async (t) => {
         redirect: 'manual',
     });
 
-    t.equal(uploaded.status, 401, 'on PUT of map, server should respond with a 401 Unauthorized');
+    t.equal(
+        uploaded.status,
+        401,
+        'on PUT of map, server should respond with a 401 Unauthorized',
+    );
 });
 
 tap.test('import-map - no auth token on PUT - non scoped', async (t) => {
@@ -78,64 +83,104 @@ tap.test('import-map - no auth token on PUT - non scoped', async (t) => {
         redirect: 'manual',
     });
 
-    t.equal(uploaded.status, 401, 'on PUT of map, server should respond with a 401 Unauthorized');
+    t.equal(
+        uploaded.status,
+        401,
+        'on PUT of map, server should respond with a 401 Unauthorized',
+    );
 });
 
-tap.test('import-map - put map -> get map - scoped successfully uploaded', async (t) => {
-    const { headers, address } = t.context;
+tap.test(
+    'import-map - put map -> get map - scoped successfully uploaded',
+    async (t) => {
+        const { headers, address } = t.context;
 
-    const formData = new FormData();
-    formData.append('map', fs.createReadStream(FIXTURE_MAP));
+        const formData = new FormData();
+        formData.append('map', fs.createReadStream(FIXTURE_MAP));
 
-    // PUT map on server
-    const uploaded = await fetch(`${address}/map/@cuz/buzz/4.2.2`, {
-        method: 'PUT',
-        body: formData,
-        headers: { ...headers, ...formData.getHeaders()},
-        redirect: 'manual',
-    });
+        // PUT map on server
+        const uploaded = await fetch(`${address}/map/@cuz/buzz/4.2.2`, {
+            method: 'PUT',
+            body: formData,
+            headers: { ...headers, ...formData.getHeaders() },
+            redirect: 'manual',
+        });
 
-    t.equal(uploaded.status, 303, 'on PUT of map, server should respond with a 303 redirect');
-    t.equal(uploaded.headers.get('location'), `/map/@cuz/buzz/4.2.2`, 'on PUT of map, server should respond with a location header');
+        t.equal(
+            uploaded.status,
+            303,
+            'on PUT of map, server should respond with a 303 redirect',
+        );
+        t.equal(
+            uploaded.headers.get('location'),
+            `/map/@cuz/buzz/4.2.2`,
+            'on PUT of map, server should respond with a location header',
+        );
 
-    // GET map from server
-    const downloaded = await fetch(`${address}/map/@cuz/buzz/4.2.2`, {
-        method: 'GET',
-    });
+        // GET map from server
+        const downloaded = await fetch(`${address}/map/@cuz/buzz/4.2.2`, {
+            method: 'GET',
+        });
 
-    const downloadedResponse = await downloaded.json();
+        const downloadedResponse = await downloaded.json();
 
-    t.equal(downloaded.status, 200, 'on GET of map, server should respond with 200 ok');
-    t.matchSnapshot(downloadedResponse, 'on GET of map, response should match snapshot');
-});
+        t.equal(
+            downloaded.status,
+            200,
+            'on GET of map, server should respond with 200 ok',
+        );
+        t.matchSnapshot(
+            downloadedResponse,
+            'on GET of map, response should match snapshot',
+        );
+    },
+);
 
-tap.test('import-map - put map -> get map - non scoped successfully uploaded', async (t) => {
-    const { headers, address } = t.context;
+tap.test(
+    'import-map - put map -> get map - non scoped successfully uploaded',
+    async (t) => {
+        const { headers, address } = t.context;
 
-    const formData = new FormData();
-    formData.append('map', fs.createReadStream(FIXTURE_MAP));
+        const formData = new FormData();
+        formData.append('map', fs.createReadStream(FIXTURE_MAP));
 
-    // PUT map on server
-    const uploaded = await fetch(`${address}/map/buzz/4.2.2`, {
-        method: 'PUT',
-        body: formData,
-        headers: { ...headers, ...formData.getHeaders()},
-        redirect: 'manual',
-    });
+        // PUT map on server
+        const uploaded = await fetch(`${address}/map/buzz/4.2.2`, {
+            method: 'PUT',
+            body: formData,
+            headers: { ...headers, ...formData.getHeaders() },
+            redirect: 'manual',
+        });
 
-    t.equal(uploaded.status, 303, 'on PUT of map, server should respond with a 303 redirect');
-    t.equal(uploaded.headers.get('location'), `/map/buzz/4.2.2`, 'on PUT of map, server should respond with a location header');
+        t.equal(
+            uploaded.status,
+            303,
+            'on PUT of map, server should respond with a 303 redirect',
+        );
+        t.equal(
+            uploaded.headers.get('location'),
+            `/map/buzz/4.2.2`,
+            'on PUT of map, server should respond with a location header',
+        );
 
-    // GET map from server
-    const downloaded = await fetch(`${address}/map/buzz/4.2.2`, {
-        method: 'GET',
-    });
+        // GET map from server
+        const downloaded = await fetch(`${address}/map/buzz/4.2.2`, {
+            method: 'GET',
+        });
 
-    const downloadedResponse = await downloaded.json();
+        const downloadedResponse = await downloaded.json();
 
-    t.equal(downloaded.status, 200, 'on GET of map, server should respond with 200 ok');
-    t.matchSnapshot(downloadedResponse, 'on GET of map, response should match snapshot');
-});
+        t.equal(
+            downloaded.status,
+            200,
+            'on GET of map, server should respond with 200 ok',
+        );
+        t.matchSnapshot(
+            downloadedResponse,
+            'on GET of map, response should match snapshot',
+        );
+    },
+);
 
 tap.test('import-map - get map versions - scoped', async (t) => {
     const { headers, address } = t.context;
@@ -147,7 +192,7 @@ tap.test('import-map - get map versions - scoped', async (t) => {
     await fetch(`${address}/map/@cuz/buzz/4.2.2`, {
         method: 'PUT',
         body: formDataA,
-        headers: { ...headers, ...formDataA.getHeaders()},
+        headers: { ...headers, ...formDataA.getHeaders() },
         redirect: 'manual',
     });
 
@@ -156,7 +201,7 @@ tap.test('import-map - get map versions - scoped', async (t) => {
     await fetch(`${address}/map/@cuz/buzz/5.2.2`, {
         method: 'PUT',
         body: formDataB,
-        headers: { ...headers, ...formDataB.getHeaders()},
+        headers: { ...headers, ...formDataB.getHeaders() },
         redirect: 'manual',
     });
 
@@ -165,7 +210,7 @@ tap.test('import-map - get map versions - scoped', async (t) => {
     await fetch(`${address}/map/@cuz/buzz/4.9.2`, {
         method: 'PUT',
         body: formDataC,
-        headers: { ...headers, ...formDataC.getHeaders()},
+        headers: { ...headers, ...formDataC.getHeaders() },
         redirect: 'manual',
     });
 
@@ -176,8 +221,15 @@ tap.test('import-map - get map versions - scoped', async (t) => {
 
     const downloadedResponse = await downloaded.json();
 
-    t.equal(downloaded.status, 200, 'on GET of map versions, server should respond with 200 ok');
-    t.matchSnapshot(downloadedResponse, 'on GET of map versions, response should match snapshot');
+    t.equal(
+        downloaded.status,
+        200,
+        'on GET of map versions, server should respond with 200 ok',
+    );
+    t.matchSnapshot(
+        downloadedResponse,
+        'on GET of map versions, response should match snapshot',
+    );
 });
 
 tap.test('import-map - get map versions - non scoped', async (t) => {
@@ -190,7 +242,7 @@ tap.test('import-map - get map versions - non scoped', async (t) => {
     await fetch(`${address}/map/buzz/4.2.2`, {
         method: 'PUT',
         body: formDataA,
-        headers: { ...headers, ...formDataA.getHeaders()},
+        headers: { ...headers, ...formDataA.getHeaders() },
         redirect: 'manual',
     });
 
@@ -199,7 +251,7 @@ tap.test('import-map - get map versions - non scoped', async (t) => {
     await fetch(`${address}/map/buzz/5.2.2`, {
         method: 'PUT',
         body: formDataB,
-        headers: { ...headers, ...formDataB.getHeaders()},
+        headers: { ...headers, ...formDataB.getHeaders() },
         redirect: 'manual',
     });
 
@@ -208,7 +260,7 @@ tap.test('import-map - get map versions - non scoped', async (t) => {
     await fetch(`${address}/map/buzz/4.9.2`, {
         method: 'PUT',
         body: formDataC,
-        headers: { ...headers, ...formDataC.getHeaders()},
+        headers: { ...headers, ...formDataC.getHeaders() },
         redirect: 'manual',
     });
 
@@ -219,6 +271,13 @@ tap.test('import-map - get map versions - non scoped', async (t) => {
 
     const downloadedResponse = await downloaded.json();
 
-    t.equal(downloaded.status, 200, 'on GET of map versions, server should respond with 200 ok');
-    t.matchSnapshot(downloadedResponse, 'on GET of map versions, response should match snapshot');
+    t.equal(
+        downloaded.status,
+        200,
+        'on GET of map versions, server should respond with 200 ok',
+    );
+    t.matchSnapshot(
+        downloadedResponse,
+        'on GET of map versions, response should match snapshot',
+    );
 });

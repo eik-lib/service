@@ -8,7 +8,7 @@ import Server from '../lib/main.js';
 
 tap.test('404 - POST request to non existing pathname', async (t) => {
     const sink = new Sink();
-    const service = new Server({ customSink: sink });
+    const service = new Server({ sink });
 
     const app = Fastify({
         ignoreTrailingSlash: true,
@@ -25,16 +25,20 @@ tap.test('404 - POST request to non existing pathname', async (t) => {
         body: formData,
         headers: formData.getHeaders(),
     });
-  
+
     t.equal(response.status, 404, 'server should respond with a 404 Not found');
-    t.equal(response.headers.get('cache-control'), 'public, max-age=5', 'should contain "cache-control" set to "public, max-age=5"');
+    t.equal(
+        response.headers.get('cache-control'),
+        'public, max-age=5',
+        'should contain "cache-control" set to "public, max-age=5"',
+    );
 
     await app.close();
 });
 
 tap.test('404 - GET request to non existing pathname', async (t) => {
     const sink = new Sink();
-    const service = new Server({ customSink: sink });
+    const service = new Server({ sink });
 
     const app = Fastify({
         ignoreTrailingSlash: true,
@@ -44,9 +48,13 @@ tap.test('404 - GET request to non existing pathname', async (t) => {
     const address = await app.listen({ port: 0, host: '127.0.0.1' });
 
     const response = await fetch(`${address}/non/existent`);
-  
+
     t.equal(response.status, 404, 'server should respond with a 404 Not found');
-    t.equal(response.headers.get('cache-control'), 'public, max-age=5', 'should contain "cache-control" set to "public, max-age=5"');
+    t.equal(
+        response.headers.get('cache-control'),
+        'public, max-age=5',
+        'should contain "cache-control" set to "public, max-age=5"',
+    );
 
     await app.close();
 });
