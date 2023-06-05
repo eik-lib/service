@@ -3,8 +3,8 @@ import Fastify from 'fastify';
 import fetch from 'node-fetch';
 import tap from 'tap';
 
+import Sink from "@eik/core/lib/sinks/test.js";
 import Server from '../lib/main.js';
-import Sink from '../node_modules/@eik/core/lib/sinks/test.js';
 
 tap.test('auth - authenticate - legal "key" value', async (t) => {
     const sink = new Sink();
@@ -15,7 +15,7 @@ tap.test('auth - authenticate - legal "key" value', async (t) => {
     });
     app.register(service.api());
 
-    const address = await app.listen(0, 'localhost');
+    const address = await app.listen({ port: 0, host: '127.0.0.1' });
 
     const formData = new FormData();
     formData.append('key', 'change_me');
@@ -43,7 +43,7 @@ tap.test('auth - authenticate - illegal "key" value', async (t) => {
     });
     app.register(service.api());
 
-    const address = await app.listen(0, 'localhost');
+    const address = await app.listen({ port: 0, host: '127.0.0.1' });
 
     const formData = new FormData();
     formData.append('key', 'error_me');

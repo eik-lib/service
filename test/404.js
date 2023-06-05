@@ -3,8 +3,8 @@ import Fastify from 'fastify';
 import fetch from 'node-fetch';
 import tap from 'tap';
 
+import Sink from "@eik/core/lib/sinks/test.js";
 import Server from '../lib/main.js';
-import Sink from '../node_modules/@eik/core/lib/sinks/test.js';
 
 tap.test('404 - POST request to non existing pathname', async (t) => {
     const sink = new Sink();
@@ -15,7 +15,7 @@ tap.test('404 - POST request to non existing pathname', async (t) => {
     });
     app.register(service.api());
 
-    const address = await app.listen(0, 'localhost');
+    const address = await app.listen({ port: 0, host: '127.0.0.1' });
 
     const formData = new FormData();
     formData.append('key', 'change_me');
@@ -41,7 +41,7 @@ tap.test('404 - GET request to non existing pathname', async (t) => {
     });
     app.register(service.api());
 
-    const address = await app.listen(0, 'localhost');
+    const address = await app.listen({ port: 0, host: '127.0.0.1' });
 
     const response = await fetch(`${address}/non/existent`);
   
