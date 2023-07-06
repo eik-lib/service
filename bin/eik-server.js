@@ -20,4 +20,7 @@ try {
     // Do accept errors
 }
 
-await app.listen(eik.config.get('http.port'), eik.config.get('http.address'));
+await app.listen({
+    port: eik.config.get('http.port'),
+    host: eik.config.get('http.address')
+});
