@@ -38,7 +38,7 @@
     "fastify": "4.22.2",
     "@fastify/compress": "6.4.0",
     "@fastify/cors": "8.3.0",
-    "@fastify/jwt": "7.2.0",
+    "@fastify/jwt": "7.2.1",
     "http-errors": "2.0.0",
     "js-yaml": "4.1.0",
     "pino": "8.15.0"
