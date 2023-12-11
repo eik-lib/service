@@ -37,7 +37,7 @@
     "convict": "6.2.4",
     "fastify": "4.24.3",
     "@fastify/compress": "6.5.0",
-    "@fastify/cors": "8.4.1",
+    "@fastify/cors": "8.4.2",
     "@fastify/jwt": "7.2.4",
     "http-errors": "2.0.0",
     "js-yaml": "4.1.0",
