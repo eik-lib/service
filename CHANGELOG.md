@@ -1,3 +1,10 @@
+## [2.0.143](https://github.com/eik-lib/service/compare/v2.0.142...v2.0.143) (2023-12-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency pino to v8.17.1 ([6820fab](https://github.com/eik-lib/service/commit/6820fab54a35d7513074ca717f00dad084131c34))
+
 ## [2.0.142](https://github.com/eik-lib/service/compare/v2.0.141...v2.0.142) (2023-12-18)
 
 
