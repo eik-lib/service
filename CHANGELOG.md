@@ -1,3 +1,10 @@
+## [2.0.145](https://github.com/eik-lib/service/compare/v2.0.144...v2.0.145) (2023-12-25)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @fastify/cors to v8.5.0 ([c062171](https://github.com/eik-lib/service/commit/c062171a652c9aec680afd90efd178946080f00f))
+
 ## [2.0.144](https://github.com/eik-lib/service/compare/v2.0.143...v2.0.144) (2023-12-25)
 
 
