@@ -1,3 +1,10 @@
+## [2.0.147](https://github.com/eik-lib/service/compare/v2.0.146...v2.0.147) (2024-02-05)
+
+
+### Bug Fixes
+
+* **deps:** update dependency fastify to v4.26.0 ([c416ac9](https://github.com/eik-lib/service/commit/c416ac9c2393bfd7e76123aa8f3900d6b8db57fd))
+
 ## [2.0.146](https://github.com/eik-lib/service/compare/v2.0.145...v2.0.146) (2024-01-01)
 
 
