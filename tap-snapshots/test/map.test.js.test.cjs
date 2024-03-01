@@ -5,7 +5,7 @@
  * Make sure to inspect the output below.  Do not ignore changes!
  */
 'use strict'
-exports[`test/map.js > TAP > import-map - get map versions - non scoped > on GET of map versions, response should match snapshot 1`] = `
+exports[`test/map.test.js > TAP > import-map - get map versions - non scoped > on GET of map versions, response should match snapshot 1`] = `
 Object {
   "name": "buzz",
   "org": "local",
@@ -29,7 +29,7 @@ Object {
 }
 `
 
-exports[`test/map.js > TAP > import-map - get map versions - scoped > on GET of map versions, response should match snapshot 1`] = `
+exports[`test/map.test.js > TAP > import-map - get map versions - scoped > on GET of map versions, response should match snapshot 1`] = `
 Object {
   "name": "@cuz/buzz",
   "org": "local",
@@ -53,7 +53,7 @@ Object {
 }
 `
 
-exports[`test/map.js > TAP > import-map - put map -> get map - non scoped successfully uploaded > on GET of map, response should match snapshot 1`] = `
+exports[`test/map.test.js > TAP > import-map - put map -> get map - non scoped successfully uploaded > on GET of map, response should match snapshot 1`] = `
 Object {
   "imports": Object {
     "fuzz": "http://localhost:4001/finn/pkg/fuzz/v8",
@@ -61,7 +61,7 @@ Object {
 }
 `
 
-exports[`test/map.js > TAP > import-map - put map -> get map - scoped successfully uploaded > on GET of map, response should match snapshot 1`] = `
+exports[`test/map.test.js > TAP > import-map - put map -> get map - scoped successfully uploaded > on GET of map, response should match snapshot 1`] = `
 Object {
   "imports": Object {
     "fuzz": "http://localhost:4001/finn/pkg/fuzz/v8",
