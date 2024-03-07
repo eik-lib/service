@@ -13,3 +13,4 @@ tmp/**/*
 coverage
 .vscode
 .nyc_output/
+.tap/

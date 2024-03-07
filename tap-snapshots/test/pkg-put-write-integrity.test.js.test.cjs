@@ -5,7 +5,7 @@
  * Make sure to inspect the output below.  Do not ignore changes!
  */
 'use strict'
-exports[`test/pkg-put-write-integrity.js > TAP > Sink is slow and irregular - Writing medium sized package > on GET of package, response should match snapshot 1`] = `
+exports[`test/pkg-put-write-integrity.test.js > TAP > Sink is slow and irregular - Writing medium sized package > on GET of package, response should match snapshot 1`] = `
 Object {
   "author": Object {
     "name": "Generic User",
@@ -72,7 +72,7 @@ Object {
 }
 `
 
-exports[`test/pkg-put-write-integrity.js > TAP > Sink is slow and irregular - Writing small sized package > on GET of package, response should match snapshot 1`] = `
+exports[`test/pkg-put-write-integrity.test.js > TAP > Sink is slow and irregular - Writing small sized package > on GET of package, response should match snapshot 1`] = `
 Object {
   "author": Object {
     "name": "Generic User",
@@ -132,7 +132,7 @@ Object {
 }
 `
 
-exports[`test/pkg-put-write-integrity.js > TAP > Sink is slow to construct writer - Writing medium sized package > on GET of package, response should match snapshot 1`] = `
+exports[`test/pkg-put-write-integrity.test.js > TAP > Sink is slow to construct writer - Writing medium sized package > on GET of package, response should match snapshot 1`] = `
 Object {
   "author": Object {
     "name": "Generic User",
@@ -199,7 +199,7 @@ Object {
 }
 `
 
-exports[`test/pkg-put-write-integrity.js > TAP > Sink is slow to construct writer - Writing small sized package > on GET of package, response should match snapshot 1`] = `
+exports[`test/pkg-put-write-integrity.test.js > TAP > Sink is slow to construct writer - Writing small sized package > on GET of package, response should match snapshot 1`] = `
 Object {
   "author": Object {
     "name": "Generic User",
