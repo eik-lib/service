@@ -1,3 +1,10 @@
+## [2.0.159](https://github.com/eik-lib/service/compare/v2.0.158...v2.0.159) (2024-05-13)
+
+
+### Bug Fixes
+
+* forward the thrown errorCode and fall back to 500  ([#559](https://github.com/eik-lib/service/issues/559)) ([a8db5e9](https://github.com/eik-lib/service/commit/a8db5e948e1067745f163c77150d434f664548dd))
+
 ## [2.0.158](https://github.com/eik-lib/service/compare/v2.0.157...v2.0.158) (2024-05-13)
 
 
