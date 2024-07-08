@@ -11,8 +11,8 @@
   },
   "scripts": {
     "start": "node ./bin/eik-server.js | pino-pretty",
-    "test": "LOG_LEVEL=fatal tap ./test --disable-coverage --allow-empty-coverage --serial=test",
-    "test:snapshots": "LOG_LEVEL=fatal tap --snapshot --disable-coverage --allow-empty-coverage --serial=test",
+    "test": "cross-env LOG_LEVEL=fatal tap ./test --disable-coverage --allow-empty-coverage --serial=test",
+    "test:snapshots": "cross-env LOG_LEVEL=fatal tap --snapshot --disable-coverage --allow-empty-coverage --serial=test",
     "lint:fix": "eslint --fix .",
     "lint": "eslint ."
   },
@@ -34,11 +34,11 @@
   "homepage": "https://github.com/eik-lib/service#readme",
   "dependencies": {
     "@eik/core": "1.3.47",
-    "convict": "6.2.4",
-    "fastify": "4.28.0",
     "@fastify/compress": "6.5.0",
     "@fastify/cors": "8.5.0",
     "@fastify/jwt": "7.2.4",
+    "convict": "6.2.4",
+    "fastify": "4.28.0",
     "http-errors": "2.0.0",
     "js-yaml": "4.1.0",
     "pino": "8.21.0"
@@ -47,6 +47,7 @@
     "@babel/eslint-parser": "7.24.6",
     "@semantic-release/changelog": "6.0.3",
     "@semantic-release/git": "10.0.1",
+    "cross-env": "^7.0.3",
     "eslint": "8.57.0",
     "eslint-config-airbnb-base": "15.0.0",
     "eslint-config-prettier": "9.1.0",
