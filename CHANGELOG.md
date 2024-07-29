@@ -1,3 +1,10 @@
+## [2.0.163](https://github.com/eik-lib/service/compare/v2.0.162...v2.0.163) (2024-07-29)
+
+
+### Bug Fixes
+
+* sending in service default config to the FS sink ([#492](https://github.com/eik-lib/service/issues/492)) ([f9025f6](https://github.com/eik-lib/service/commit/f9025f61af27a6957717d9a0fd662ba28b336392))
+
 ## [2.0.162](https://github.com/eik-lib/service/compare/v2.0.161...v2.0.162) (2024-07-08)
 
 
