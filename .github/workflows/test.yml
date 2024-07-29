@@ -3,7 +3,7 @@ name: Run Lint and Tests
 on:
   push:
     branches-ignore:
-      - master
+      - main
       - alpha
       - beta
       - next
