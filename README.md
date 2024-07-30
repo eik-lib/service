@@ -1,6 +1,6 @@
 # Eik HTTP Service
 
-Eik REST API - As a standalone running HTTP service
+As a standalone running HTTP service exposing the Eik Service.
 
 ## Installation
 
@@ -12,20 +12,26 @@ npm install @eik/service
 
 This server can either be run as a Node executable, or as a Fastify plugin.
 
+### CLI
+
+This spins up the built-in Fastify server using configuration from your `config/` folder, or from environment variables.
+
 ```sh
 npx @eik/service
 ```
+
+### Fastify plugin
 
 For a production setup, the Fastify plugin method is recommended.
 
 ```js
 import fastify from 'fastify';
 import Service from '@eik/service';
-import Sink from '@eik/sink-gcs';
+import SinkGoogleCloudStorage from '@eik/sink-gcs';
 
 // Set up the Google Cloud Storage sink
 // https://github.com/eik-lib/sink-gcs?tab=readme-ov-file#example
-const sink = new Sink({
+const sink = new SinkGoogleCloudStorage({
     credentials: {
         client_email: 'a@email.address',
         private_key: '[ ...snip... ]',
@@ -45,15 +51,6 @@ const app = fastify({
 
 // Register the Eik service in Fastify
 app.register(service.api());
-
-// Append custom HTTP ready checks
-app.get('/_/health', (request, reply) => {
-    reply.send('ok');
-});
-
-app.get('/_/ready', (request, reply) => {
-    reply.send('ok');
-});
 
 // Start the server
 const run = async () => {
