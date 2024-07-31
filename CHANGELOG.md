@@ -1,3 +1,10 @@
+## [2.0.164](https://github.com/eik-lib/service/compare/v2.0.163...v2.0.164) (2024-07-31)
+
+
+### Bug Fixes
+
+* deprecate customSink and built-in sinks ([a1bd266](https://github.com/eik-lib/service/commit/a1bd2662d531994afcb9a591001d3100c97e8dcc))
+
 ## [2.0.163](https://github.com/eik-lib/service/compare/v2.0.162...v2.0.163) (2024-07-29)
 
 
