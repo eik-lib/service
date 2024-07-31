@@ -1,3 +1,10 @@
+# [2.1.0](https://github.com/eik-lib/service/compare/v2.0.164...v2.1.0) (2024-07-31)
+
+
+### Features
+
+* allow passing in a pino instance ([#577](https://github.com/eik-lib/service/issues/577)) ([2161f83](https://github.com/eik-lib/service/commit/2161f833dd63b4321fe54b27e3926011eb2886e2))
+
 ## [2.0.164](https://github.com/eik-lib/service/compare/v2.0.163...v2.0.164) (2024-07-31)
 
 
