@@ -1,3 +1,10 @@
+## [2.1.1](https://github.com/eik-lib/service/compare/v2.1.0...v2.1.1) (2024-08-01)
+
+
+### Bug Fixes
+
+* don't overwrite `sink` with SinkFileSystem ([22355ff](https://github.com/eik-lib/service/commit/22355ffff0f4a56a60af6df9a918b7c12451e92e))
+
 # [2.1.0](https://github.com/eik-lib/service/compare/v2.0.164...v2.1.0) (2024-07-31)
 
 
