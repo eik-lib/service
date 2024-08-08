@@ -26,7 +26,7 @@ tap.test('auth - authenticate - legal "key" value', async (t) => {
         headers: formData.getHeaders(),
     });
 
-    const body = await response.json();
+    const { token } = /** @type {{ token: string }} */ (await response.json());
 
     t.equal(
         response.status,
@@ -34,7 +34,7 @@ tap.test('auth - authenticate - legal "key" value', async (t) => {
         'on POST of valid key, server should respond with a 200 OK',
     );
     t.ok(
-        body.token.length > 5,
+        token.length > 5,
         'on POST of valid key, server should respond with a body with a token',
     );
 
@@ -43,7 +43,7 @@ tap.test('auth - authenticate - legal "key" value', async (t) => {
 
 tap.test('auth - authenticate - illegal "key" value', async (t) => {
     const sink = new Sink();
-    const service = new Server({ customSink: sink, port: 0, logger: false });
+    const service = new Server({ customSink: sink });
 
     const app = Fastify({
         ignoreTrailingSlash: true,

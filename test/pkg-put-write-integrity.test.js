@@ -27,7 +27,7 @@ const authentication = async (address) => {
         headers: formData.getHeaders(),
     });
 
-    const { token } = await res.json();
+    const { token } = /** @type {{ token: string }} */ (await res.json());
     return { Authorization: `Bearer ${token}` };
 };
 

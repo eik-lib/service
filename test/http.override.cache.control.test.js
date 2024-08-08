@@ -42,7 +42,7 @@ tap.beforeEach(async (t) => {
         headers: formData.getHeaders(),
     });
 
-    const { token } = await res.json();
+    const { token } = /** @type {{ token: string }} */ (await res.json());
     const headers = { Authorization: `Bearer ${token}` };
 
     t.context = {

@@ -33,7 +33,7 @@ tap.test('400 - GET request with non-existing hostname', async (t) => {
         headers: formData.getHeaders(),
     });
 
-    const { token } = await res.json();
+    const { token } = /** @type {{ token: string }} */ (await res.json());
 
     formData = new FormData();
     formData.append('package', fs.createReadStream(FIXTURE_PKG));

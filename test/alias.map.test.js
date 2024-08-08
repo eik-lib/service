@@ -34,7 +34,7 @@ tap.beforeEach(async (t) => {
         headers: formData.getHeaders(),
     });
 
-    const { token } = await res.json();
+    const { token } = /** @type {{ token: string }} */ (await res.json());
     const headers = { Authorization: `Bearer ${token}` };
 
     t.context = {
@@ -376,7 +376,9 @@ tap.test(
             headers: { ...headers, ...aliasFormDataA.getHeaders() },
         });
 
-        const aliasResponseA = await aliasA.json();
+        const aliasResponseA = /** @type {{ imports: { fuzz: string }}} */ (
+            await aliasA.json()
+        );
 
         t.equal(
             aliasResponseA.imports.fuzz,
@@ -394,7 +396,9 @@ tap.test(
             headers: { ...headers, ...aliasFormDataB.getHeaders() },
         });
 
-        const aliasResponseB = await aliasB.json();
+        const aliasResponseB = /** @type {{ imports: { fuzz: string }}} */ (
+            await aliasB.json()
+        );
 
         t.equal(
             aliasResponseB.imports.fuzz,
@@ -438,7 +442,9 @@ tap.test(
             headers: { ...headers, ...aliasFormDataA.getHeaders() },
         });
 
-        const aliasResponseA = await aliasA.json();
+        const aliasResponseA = /** @type {{ imports: { fuzz: string }}} */ (
+            await aliasA.json()
+        );
 
         t.equal(
             aliasResponseA.imports.fuzz,
@@ -456,7 +462,9 @@ tap.test(
             headers: { ...headers, ...aliasFormDataB.getHeaders() },
         });
 
-        const aliasResponseB = await aliasB.json();
+        const aliasResponseB = /** @type {{ imports: { fuzz: string }}} */ (
+            await aliasB.json()
+        );
 
         t.equal(
             aliasResponseB.imports.fuzz,
@@ -503,7 +511,9 @@ tap.test(
             headers: { ...headers, ...aliasFormData.getHeaders() },
         });
 
-        const aliasResponse = await alias.json();
+        const aliasResponse = /** @type {{ imports: { fuzz: string }}} */ (
+            await alias.json()
+        );
 
         t.equal(
             aliasResponse.imports.fuzz,
@@ -574,7 +584,9 @@ tap.test(
             headers: { ...headers, ...aliasFormData.getHeaders() },
         });
 
-        const aliasResponse = await alias.json();
+        const aliasResponse = /** @type {{ imports: { fuzz: string }}} */ (
+            await alias.json()
+        );
 
         t.equal(
             aliasResponse.imports.fuzz,

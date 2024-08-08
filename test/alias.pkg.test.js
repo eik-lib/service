@@ -39,7 +39,7 @@ tap.beforeEach(async (t) => {
         headers: formData.getHeaders(),
     });
 
-    const { token } = await res.json();
+    const { token } = /** @type {{ token: string }} */ (await res.json());
     const headers = { Authorization: `Bearer ${token}` };
 
     t.context = {
@@ -558,7 +558,10 @@ tap.test(
             headers: { ...headers, ...aliasFormDataA.getHeaders() },
         });
 
-        const aliasResponseA = await aliasA.json();
+        const aliasResponseA =
+            /** @type {{ version: string; name: String; }} */ (
+                await aliasA.json()
+            );
 
         t.equal(
             aliasResponseA.version,
@@ -581,7 +584,10 @@ tap.test(
             headers: { ...headers, ...aliasFormDataB.getHeaders() },
         });
 
-        const aliasResponseB = await aliasB.json();
+        const aliasResponseB =
+            /** @type {{ version: string; name: String; }} */ (
+                await aliasB.json()
+            );
 
         t.equal(
             aliasResponseB.version,
@@ -630,7 +636,10 @@ tap.test(
             headers: { ...headers, ...aliasFormDataA.getHeaders() },
         });
 
-        const aliasResponseA = await aliasA.json();
+        const aliasResponseA =
+            /** @type {{ version: string; name: String; }} */ (
+                await aliasA.json()
+            );
 
         t.equal(
             aliasResponseA.version,
@@ -653,7 +662,10 @@ tap.test(
             headers: { ...headers, ...aliasFormDataB.getHeaders() },
         });
 
-        const aliasResponseB = await aliasB.json();
+        const aliasResponseB =
+            /** @type {{ version: string; name: String; }} */ (
+                await aliasB.json()
+            );
 
         t.equal(
             aliasResponseB.version,
@@ -705,7 +717,10 @@ tap.test(
             headers: { ...headers, ...aliasFormData.getHeaders() },
         });
 
-        const aliasResponse = await alias.json();
+        const aliasResponse =
+            /** @type {{ version: string; name: String; }} */ (
+                await alias.json()
+            );
 
         t.equal(
             aliasResponse.version,
@@ -784,7 +799,10 @@ tap.test(
             headers: { ...headers, ...aliasFormData.getHeaders() },
         });
 
-        const aliasResponse = await alias.json();
+        const aliasResponse =
+            /** @type {{ version: string; name: String; }} */ (
+                await alias.json()
+            );
 
         t.equal(
             aliasResponse.version,

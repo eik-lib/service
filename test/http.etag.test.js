@@ -65,8 +65,6 @@ tap.test(
         const sink = new Sink();
         const service = new Server({
             customSink: sink,
-            port: 0,
-            logger: false,
         });
 
         const app = Fastify({
@@ -126,8 +124,6 @@ tap.test(
         const sink = new Sink();
         const service = new Server({
             customSink: sink,
-            port: 0,
-            logger: false,
         });
 
         const app = Fastify({
@@ -217,7 +213,7 @@ tap.test('ETag - pkg:get - ETags is configured to not be set', async t => {
 
 tap.test('ETag - pkg:log - ETag and "If-None-Match" is matching', async (t) => {
     const sink = new Sink();
-    const service = new Server({ customSink: sink, port: 0, logger: false });
+    const service = new Server({ customSink: sink });
 
     const app = Fastify({
         ignoreTrailingSlash: true,
@@ -271,8 +267,6 @@ tap.test(
         const sink = new Sink();
         const service = new Server({
             customSink: sink,
-            port: 0,
-            logger: false,
         });
 
         const app = Fastify({
@@ -332,8 +326,6 @@ tap.test(
         const sink = new Sink();
         const service = new Server({
             customSink: sink,
-            port: 0,
-            logger: false,
         });
 
         const app = Fastify({
@@ -423,7 +415,7 @@ tap.test('ETag - pkg:log - ETags is configured to not be set', async t => {
 
 tap.test('ETag - map:get - ETag and "If-None-Match" is matching', async (t) => {
     const sink = new Sink();
-    const service = new Server({ customSink: sink, port: 0, logger: false });
+    const service = new Server({ customSink: sink });
 
     const app = Fastify({
         ignoreTrailingSlash: true,
@@ -477,8 +469,6 @@ tap.test(
         const sink = new Sink();
         const service = new Server({
             customSink: sink,
-            port: 0,
-            logger: false,
         });
 
         const app = Fastify({
@@ -538,8 +528,6 @@ tap.test(
         const sink = new Sink();
         const service = new Server({
             customSink: sink,
-            port: 0,
-            logger: false,
         });
 
         const app = Fastify({
