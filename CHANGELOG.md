@@ -1,3 +1,10 @@
+# [2.2.0](https://github.com/eik-lib/service/compare/v2.1.2...v2.2.0) (2024-08-08)
+
+
+### Features
+
+* add constructor options to configure max sizes ([#586](https://github.com/eik-lib/service/issues/586)) ([37a60a0](https://github.com/eik-lib/service/commit/37a60a07cabde49b8e6ac45a12386e37b5a9ea91))
+
 ## [2.1.2](https://github.com/eik-lib/service/compare/v2.1.1...v2.1.2) (2024-08-05)
 
 
