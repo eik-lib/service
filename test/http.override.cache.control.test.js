@@ -22,7 +22,7 @@ tap.cleanSnapshot = (s) => {
 tap.beforeEach(async (t) => {
     const sink = new Sink();
     const service = new Server({
-        customSink: sink,
+        sink,
         aliasCacheControl: 'public, max-age=600',
     });
 

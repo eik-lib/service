@@ -15,7 +15,7 @@ const FIXTURE_PKG = path.resolve(__dirname, '../fixtures/archive.tgz');
 
 tap.test('400 - GET request with non-existing hostname', async (t) => {
     const sink = new Sink();
-    const service = new Server({ customSink: sink });
+    const service = new Server({ sink });
 
     const app = Fastify({
         ignoreTrailingSlash: true,

@@ -8,7 +8,7 @@ import Server from '../lib/main.js';
 
 tap.test('404 - POST request to non existing pathname', async (t) => {
     const sink = new Sink();
-    const service = new Server({ customSink: sink });
+    const service = new Server({ sink });
 
     const app = Fastify({
         ignoreTrailingSlash: true,
@@ -38,7 +38,7 @@ tap.test('404 - POST request to non existing pathname', async (t) => {
 
 tap.test('404 - GET request to non existing pathname', async (t) => {
     const sink = new Sink();
-    const service = new Server({ customSink: sink });
+    const service = new Server({ sink });
 
     const app = Fastify({
         ignoreTrailingSlash: true,
