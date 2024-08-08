@@ -54,6 +54,7 @@
   "devDependencies": {
     "@eik/eslint-config": "1.0.2",
     "@eik/prettier-config": "1.0.1",
+    "@eik/semantic-release-config": "1.0.0",
     "@eik/typescript-config": "1.0.0",
     "cross-env": "7.0.3",
     "eslint": "9.8.0",
