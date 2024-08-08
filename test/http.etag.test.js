@@ -11,7 +11,7 @@ import Server from '../lib/main.js';
 
 tap.test('ETag - pkg:get - ETag and "If-None-Match" is matching', async (t) => {
     const sink = new Sink();
-    const service = new Server({ customSink: sink });
+    const service = new Server({ sink });
 
     const app = Fastify({
         ignoreTrailingSlash: true,
@@ -64,7 +64,7 @@ tap.test(
     async (t) => {
         const sink = new Sink();
         const service = new Server({
-            customSink: sink,
+            sink,
         });
 
         const app = Fastify({
@@ -123,7 +123,7 @@ tap.test(
     async (t) => {
         const sink = new Sink();
         const service = new Server({
-            customSink: sink,
+            sink,
         });
 
         const app = Fastify({
@@ -176,7 +176,7 @@ tap.test(
 /*
 tap.test('ETag - pkg:get - ETags is configured to not be set', async t => {
     const sink = new Sink();
-    const service = new Server({ customSink: sink, port: 0, config: { etag: false }, logger: false });
+    const service = new Server({ sink, port: 0, config: { etag: false }, logger: false });
     const address = await service.start();
 
     const url = `${address}/pkg/fuzz/8.4.1/main/index.js`;
@@ -213,7 +213,7 @@ tap.test('ETag - pkg:get - ETags is configured to not be set', async t => {
 
 tap.test('ETag - pkg:log - ETag and "If-None-Match" is matching', async (t) => {
     const sink = new Sink();
-    const service = new Server({ customSink: sink });
+    const service = new Server({ sink });
 
     const app = Fastify({
         ignoreTrailingSlash: true,
@@ -266,7 +266,7 @@ tap.test(
     async (t) => {
         const sink = new Sink();
         const service = new Server({
-            customSink: sink,
+            sink,
         });
 
         const app = Fastify({
@@ -325,7 +325,7 @@ tap.test(
     async (t) => {
         const sink = new Sink();
         const service = new Server({
-            customSink: sink,
+            sink,
         });
 
         const app = Fastify({
@@ -378,7 +378,7 @@ tap.test(
 /*
 tap.test('ETag - pkg:log - ETags is configured to not be set', async t => {
     const sink = new Sink();
-    const service = new Server({ customSink: sink, port: 0, config: { etag: false }, logger: false });
+    const service = new Server({ sink, port: 0, config: { etag: false }, logger: false });
     const address = await service.start();
 
     const url = `${address}/pkg/fuzz/8.4.1`;
@@ -415,7 +415,7 @@ tap.test('ETag - pkg:log - ETags is configured to not be set', async t => {
 
 tap.test('ETag - map:get - ETag and "If-None-Match" is matching', async (t) => {
     const sink = new Sink();
-    const service = new Server({ customSink: sink });
+    const service = new Server({ sink });
 
     const app = Fastify({
         ignoreTrailingSlash: true,
@@ -468,7 +468,7 @@ tap.test(
     async (t) => {
         const sink = new Sink();
         const service = new Server({
-            customSink: sink,
+            sink,
         });
 
         const app = Fastify({
@@ -527,7 +527,7 @@ tap.test(
     async (t) => {
         const sink = new Sink();
         const service = new Server({
-            customSink: sink,
+            sink,
         });
 
         const app = Fastify({
@@ -580,7 +580,7 @@ tap.test(
 /*
 tap.test('ETag - map:get - ETags is configured to not be set', async t => {
     const sink = new Sink();
-    const service = new Server({ customSink: sink, port: 0, config: { etag: false }, logger: false });
+    const service = new Server({ sink, port: 0, config: { etag: false }, logger: false });
     const address = await service.start();
 
     const url = `${address}/map/buzz/4.2.2`;

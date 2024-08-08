@@ -21,7 +21,7 @@ tap.cleanSnapshot = (s) => {
 
 tap.beforeEach(async (t) => {
     const sink = new Sink();
-    const service = new Server({ customSink: sink });
+    const service = new Server({ sink });
 
     const app = Fastify({
         ignoreTrailingSlash: true,
@@ -370,5 +370,47 @@ tap.test('packages - get package versions - non scoped', async (t) => {
     t.matchSnapshot(
         downloadedResponse,
         'on GET, response should match snapshot',
+    );
+});
+
+tap.test('packages - configure max size', async (t) => {
+    const sink = new Sink();
+    const service = new Server({ sink, pkgMaxFileSize: 10 });
+
+    const app = Fastify({
+        ignoreTrailingSlash: true,
+    });
+    t.after(() => app.close());
+
+    app.register(service.api());
+
+    const address = await app.listen({ port: 0, host: '127.0.0.1' });
+
+    const loginFormData = new FormData();
+    loginFormData.append('key', 'change_me');
+    const res = await fetch(`${address}/auth/login`, {
+        method: 'POST',
+        body: loginFormData,
+        headers: loginFormData.getHeaders(),
+    });
+
+    const { token } = /** @type {{ token: string }} */ (await res.json());
+    const headers = { Authorization: `Bearer ${token}` };
+
+    const formData = new FormData();
+    formData.append('package', fs.createReadStream(FIXTURE_PKG));
+
+    // PUT files on server
+    const uploaded = await fetch(`${address}/pkg/fuzz/8.4.1/`, {
+        method: 'PUT',
+        body: formData,
+        headers: { ...headers, ...formData.getHeaders() },
+        redirect: 'manual',
+    });
+
+    t.equal(
+        uploaded.status,
+        413,
+        'Expected to be told that the content is too large',
     );
 });
