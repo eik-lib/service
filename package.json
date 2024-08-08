@@ -4,23 +4,28 @@
   "description": "Eik REST API as a standalone HTTP service",
   "type": "module",
   "main": "./lib/main.js",
+  "types": "./types/main.d.ts",
   "bin": {
     "eik-server": "bin/eik-server.js",
     "eik-service": "bin/eik-server.js",
     "service": "bin/eik-server.js"
   },
   "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
     "start": "node ./bin/eik-server.js | pino-pretty",
     "test": "cross-env LOG_LEVEL=fatal tap ./test --disable-coverage --allow-empty-coverage --serial=test",
     "test:snapshots": "cross-env LOG_LEVEL=fatal tap --snapshot --disable-coverage --allow-empty-coverage --serial=test",
-    "lint:fix": "eslint --fix .",
-    "lint": "eslint ."
+    "types": "run-s types:module types:test",
+    "types:module": "tsc",
+    "types:test": "tsc --project tsconfig.test.json"
   },
   "files": [
     "CHANGELOG.md",
     "package.json",
     "lib",
-    "bin"
+    "bin",
+    "types"
   ],
   "repository": {
     "type": "git",
@@ -47,21 +52,20 @@
     "pino": "8.21.0"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "7.25.1",
-    "@semantic-release/changelog": "6.0.3",
-    "@semantic-release/git": "10.0.1",
-    "cross-env": "^7.0.3",
-    "eslint": "8.57.0",
-    "eslint-config-airbnb-base": "15.0.0",
-    "eslint-config-prettier": "9.1.0",
-    "eslint-plugin-import": "2.29.1",
-    "eslint-plugin-prettier": "5.2.1",
+    "@eik/eslint-config": "1.0.2",
+    "@eik/prettier-config": "1.0.1",
+    "@eik/semantic-release-config": "1.0.0",
+    "@eik/typescript-config": "1.0.0",
+    "cross-env": "7.0.3",
+    "eslint": "9.8.0",
     "form-data": "4.0.0",
     "node-fetch": "3.3.1",
+    "npm-run-all": "4.1.5",
     "pino-pretty": "10.3.1",
     "prettier": "3.3.3",
-    "semantic-release": "23.1.1",
+    "semantic-release": "24.0.0",
     "tap": "18.8.0",
+    "typescript": "5.5.4",
     "unique-slug": "4.0.0"
   }
 }

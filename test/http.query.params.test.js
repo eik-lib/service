@@ -6,7 +6,7 @@ import tap from 'tap';
 import url from 'url';
 import fs from 'fs';
 
-import Sink from "@eik/core/lib/sinks/test.js";
+import Sink from '@eik/core/lib/sinks/test.js';
 import Server from '../lib/main.js';
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
@@ -40,10 +40,10 @@ tap.beforeEach(async (t) => {
         headers: formData.getHeaders(),
     });
 
-    const { token } = await res.json();
-    const headers = { 'Authorization': `Bearer ${token}` };
+    const { token } = /** @type {{ token: string }} */ (await res.json());
+    const headers = { Authorization: `Bearer ${token}` };
 
-    t.context = { // eslint-disable-line no-param-reassign
+    t.context = {
         address,
         headers,
         app,
@@ -64,16 +64,23 @@ tap.test('query params - package', async (t) => {
     await fetch(`${address}/pkg/fuzz/8.4.1`, {
         method: 'PUT',
         body: formData,
-        headers: { ...headers, ...formData.getHeaders()},
+        headers: { ...headers, ...formData.getHeaders() },
         redirect: 'manual',
     });
 
     // GET file from server
-    const downloaded = await fetch(`${address}/pkg/fuzz/8.4.1/main/index.js?foo=bar`, {
-        method: 'GET',
-    });
+    const downloaded = await fetch(
+        `${address}/pkg/fuzz/8.4.1/main/index.js?foo=bar`,
+        {
+            method: 'GET',
+        },
+    );
 
-    t.equal(downloaded.status, 200, 'on GET of file, server should respond with 200 ok');
+    t.equal(
+        downloaded.status,
+        200,
+        'on GET of file, server should respond with 200 ok',
+    );
 });
 
 tap.test('query params - NPM package', async (t) => {
@@ -86,16 +93,23 @@ tap.test('query params - NPM package', async (t) => {
     await fetch(`${address}/npm/fuzz/8.4.1`, {
         method: 'PUT',
         body: formData,
-        headers: { ...headers, ...formData.getHeaders()},
+        headers: { ...headers, ...formData.getHeaders() },
         redirect: 'manual',
     });
 
     // GET file from server
-    const downloaded = await fetch(`${address}/npm/fuzz/8.4.1/main/index.js?foo=bar`, {
-        method: 'GET',
-    });
+    const downloaded = await fetch(
+        `${address}/npm/fuzz/8.4.1/main/index.js?foo=bar`,
+        {
+            method: 'GET',
+        },
+    );
 
-    t.equal(downloaded.status, 200, 'on GET of file, server should respond with 200 ok');
+    t.equal(
+        downloaded.status,
+        200,
+        'on GET of file, server should respond with 200 ok',
+    );
 });
 
 tap.test('query params - map', async (t) => {
@@ -108,7 +122,7 @@ tap.test('query params - map', async (t) => {
     await fetch(`${address}/map/buzz/4.2.2`, {
         method: 'PUT',
         body: formData,
-        headers: { ...headers, ...formData.getHeaders()},
+        headers: { ...headers, ...formData.getHeaders() },
         redirect: 'manual',
     });
 
@@ -117,5 +131,9 @@ tap.test('query params - map', async (t) => {
         method: 'GET',
     });
 
-    t.equal(downloaded.status, 200, 'on GET of file, server should respond with 200 ok');
+    t.equal(
+        downloaded.status,
+        200,
+        'on GET of file, server should respond with 200 ok',
+    );
 });

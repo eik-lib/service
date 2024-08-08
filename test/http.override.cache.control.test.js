@@ -6,7 +6,7 @@ import tap from 'tap';
 import url from 'url';
 import fs from 'fs';
 
-import Sink from "@eik/core/lib/sinks/test.js";
+import Sink from '@eik/core/lib/sinks/test.js';
 import Server from '../lib/main.js';
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
@@ -42,10 +42,9 @@ tap.beforeEach(async (t) => {
         headers: formData.getHeaders(),
     });
 
-    const { token } = await res.json();
+    const { token } = /** @type {{ token: string }} */ (await res.json());
     const headers = { Authorization: `Bearer ${token}` };
 
-    // eslint-disable-next-line no-param-reassign
     t.context = {
         address,
         headers,

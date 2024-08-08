@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-
-import Fastify from 'fastify'
+/* eslint-disable no-unused-vars */
+import Fastify from 'fastify';
 import Eik from '../lib/main.js';
 
 const eik = new Eik();
@@ -22,5 +22,5 @@ try {
 
 await app.listen({
     port: eik.config.get('http.port'),
-    host: eik.config.get('http.address')
+    host: eik.config.get('http.address'),
 });
