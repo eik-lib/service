@@ -1,0 +1,4 @@
+{
+  "extends": "@eik/typescript-config/test.json",
+  "include": ["./test/**/*.js"]
+}

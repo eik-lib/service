@@ -14,3 +14,4 @@ coverage
 .vscode
 .nyc_output/
 .tap/
+types/
