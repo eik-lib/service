@@ -11,6 +11,7 @@
     "service": "bin/eik-server.js"
   },
   "scripts": {
+    "clean": "rimraf .tap node_modules types",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "start": "node ./bin/eik-server.js | pino-pretty",
@@ -63,6 +64,7 @@
     "npm-run-all": "4.1.5",
     "pino-pretty": "10.3.1",
     "prettier": "3.3.3",
+    "rimraf": "6.0.1",
     "semantic-release": "24.0.0",
     "tap": "18.8.0",
     "typescript": "5.5.4",
