@@ -1,6 +1,6 @@
-# Eik HTTP Service
+# @eik/service
 
-As a standalone running HTTP service exposing the Eik Service.
+This is the [HTTP server](https://eik.dev/docs/server/) running the Eik service.
 
 ## Installation
 
