@@ -1,6 +1,7 @@
 # @eik/service
 
 This is the [HTTP server](https://eik.dev/docs/server/) running the Eik service.
+The implementation for the different [HTTP endpoints](https://eik.dev/docs/server/http-api) are in [`@eik/core`](https://github.com/eik-lib/service).
 
 ## Installation
 
