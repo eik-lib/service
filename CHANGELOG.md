@@ -1,3 +1,16 @@
+# [2.3.0](https://github.com/eik-lib/service/compare/v2.2.1...v2.3.0) (2024-08-14)
+
+
+### Bug Fixes
+
+* set defaults to max types ([a5b67e3](https://github.com/eik-lib/service/commit/a5b67e335d006c84d8796dc3b7ede7455caf9de9))
+* update @eik/core to v1.4.0 ([a09d12c](https://github.com/eik-lib/service/commit/a09d12c1f24ad2c2eadbfffbd0d47cf14ef3e2b6))
+
+
+### Features
+
+* add routes for /img/ with configurable upload limit ([0f6bda7](https://github.com/eik-lib/service/commit/0f6bda7a3b3c7ddc5f3f9959a9c1056616184981))
+
 ## [2.2.1](https://github.com/eik-lib/service/compare/v2.2.0...v2.2.1) (2024-08-12)
 
 
