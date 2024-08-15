@@ -11,7 +11,7 @@ import Server from '../lib/main.js';
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
-const FIXTURE_PKG = path.resolve(__dirname, '../fixtures/archive.tgz');
+const FIXTURE_PKG = path.resolve(__dirname, '..', 'fixtures', 'archive.tgz');
 
 // Ignore the timestamp for "created" field in the snapshots
 tap.cleanSnapshot = (s) => {

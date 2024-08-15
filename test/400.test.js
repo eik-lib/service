@@ -11,7 +11,7 @@ import Server from '../lib/main.js';
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
-const FIXTURE_PKG = path.resolve(__dirname, '../fixtures/archive.tgz');
+const FIXTURE_PKG = path.resolve(__dirname, '..', 'fixtures', 'archive.tgz');
 
 tap.test('400 - GET request with non-existing hostname', async (t) => {
     const sink = new Sink();
