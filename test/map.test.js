@@ -11,7 +11,12 @@ import Server from '../lib/main.js';
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
-const FIXTURE_MAP = path.resolve(__dirname, '../fixtures/import-map.json');
+const FIXTURE_MAP = path.resolve(
+    __dirname,
+    '..',
+    'fixtures',
+    'import-map.json',
+);
 
 tap.beforeEach(async (t) => {
     const sink = new Sink();
