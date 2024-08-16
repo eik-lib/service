@@ -60,6 +60,7 @@
     "@eik/semantic-release-config": "1.0.0",
     "@eik/typescript-config": "1.0.0",
     "@types/mime": "3.0.4",
+    "@types/readable-stream": "4.0.15",
     "cross-env": "7.0.3",
     "eslint": "9.8.0",
     "form-data": "4.0.0",
