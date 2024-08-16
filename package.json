@@ -15,9 +15,9 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "start": "node ./bin/eik-server.js | pino-pretty",
-    "test": "cross-env LOG_LEVEL=fatal tap ./test --disable-coverage --allow-empty-coverage --serial=test",
-    "test:ci": "cross-env LOG_LEVEL=trace tap ./test --disable-coverage --allow-empty-coverage --serial=test",
-    "test:snapshots": "cross-env LOG_LEVEL=fatal tap --snapshot --disable-coverage --allow-empty-coverage --serial=test",
+    "test": "cross-env LOG_LEVEL=fatal tap ./test --disable-coverage --allow-empty-coverage",
+    "test:ci": "cross-env LOG_LEVEL=trace tap ./test --disable-coverage --allow-empty-coverage",
+    "test:snapshots": "cross-env LOG_LEVEL=fatal tap --snapshot --disable-coverage --allow-empty-coverage",
     "types": "run-s types:module types:test",
     "types:module": "tsc",
     "types:test": "tsc --project tsconfig.test.json"
