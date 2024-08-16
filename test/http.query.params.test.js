@@ -1,5 +1,5 @@
 import FormData from 'form-data';
-import Fastify from 'fastify';
+import fastify from 'fastify';
 import fetch from 'node-fetch';
 import path from 'path';
 import tap from 'tap';
@@ -25,43 +25,47 @@ tap.cleanSnapshot = (s) => {
     return s.replace(regex, '"created": -1,');
 };
 
-tap.beforeEach(async (t) => {
-    const sink = new Sink();
+/** @type {import('fastify').FastifyInstance} */
+let app;
+/** @type {string} */
+let address;
+/** @type {Record<string, string>} */
+let headers;
+/** @type {Sink} */
+let sink;
+
+tap.before(async () => {
+    sink = new Sink();
     const service = new Server({ sink });
 
-    const app = Fastify({
+    app = fastify({
         ignoreTrailingSlash: true,
+        forceCloseConnections: true,
     });
     app.register(service.api());
 
-    const address = await app.listen({ port: 0, host: '127.0.0.1' });
+    address = await app.listen({ port: 0, host: '127.0.0.1' });
 
     const formData = new FormData();
     formData.append('key', 'change_me');
-
     const res = await fetch(`${address}/auth/login`, {
         method: 'POST',
         body: formData,
         headers: formData.getHeaders(),
     });
-
-    const { token } = /** @type {{ token: string }} */ (await res.json());
-    const headers = { Authorization: `Bearer ${token}` };
-
-    t.context = {
-        address,
-        headers,
-        app,
-    };
+    const login = /** @type {{ token: string }} */ (await res.json());
+    headers = { Authorization: `Bearer ${login.token}` };
 });
 
-tap.afterEach(async (t) => {
-    await t.context.app.close();
+tap.afterEach(() => {
+    sink.clear();
+});
+
+tap.teardown(async () => {
+    await app.close();
 });
 
 tap.test('query params - package', async (t) => {
-    const { headers, address } = t.context;
-
     const formData = new FormData();
     formData.append('package', fs.createReadStream(FIXTURE_PKG));
 
@@ -89,8 +93,6 @@ tap.test('query params - package', async (t) => {
 });
 
 tap.test('query params - NPM package', async (t) => {
-    const { headers, address } = t.context;
-
     const formData = new FormData();
     formData.append('package', fs.createReadStream(FIXTURE_PKG));
 
@@ -118,8 +120,6 @@ tap.test('query params - NPM package', async (t) => {
 });
 
 tap.test('query params - map', async (t) => {
-    const { headers, address } = t.context;
-
     const formData = new FormData();
     formData.append('map', fs.createReadStream(FIXTURE_MAP));
 

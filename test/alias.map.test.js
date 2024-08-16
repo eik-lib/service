@@ -1,5 +1,5 @@
 import FormData from 'form-data';
-import Fastify from 'fastify';
+import fastify from 'fastify';
 import fetch from 'node-fetch';
 import path from 'path';
 import tap from 'tap';
@@ -24,43 +24,47 @@ const FIXTURE_MAP_B = path.resolve(
     'import-map-b.json',
 );
 
-tap.beforeEach(async (t) => {
-    const sink = new Sink();
+/** @type {import('fastify').FastifyInstance} */
+let app;
+/** @type {string} */
+let address;
+/** @type {Record<string, string>} */
+let headers;
+/** @type {Sink} */
+let sink;
+
+tap.before(async () => {
+    sink = new Sink();
     const service = new Server({ sink });
 
-    const app = Fastify({
+    app = fastify({
         ignoreTrailingSlash: true,
+        forceCloseConnections: true,
     });
     app.register(service.api());
 
-    const address = await app.listen({ port: 0, host: '127.0.0.1' });
+    address = await app.listen({ port: 0, host: '127.0.0.1' });
 
     const formData = new FormData();
     formData.append('key', 'change_me');
-
     const res = await fetch(`${address}/auth/login`, {
         method: 'POST',
         body: formData,
         headers: formData.getHeaders(),
     });
-
-    const { token } = /** @type {{ token: string }} */ (await res.json());
-    const headers = { Authorization: `Bearer ${token}` };
-
-    t.context = {
-        address,
-        headers,
-        app,
-    };
+    const login = /** @type {{ token: string }} */ (await res.json());
+    headers = { Authorization: `Bearer ${login.token}` };
 });
 
-tap.afterEach(async (t) => {
-    await t.context.app.close();
+tap.afterEach(() => {
+    sink.clear();
+});
+
+tap.teardown(async () => {
+    await app.close();
 });
 
 tap.test('alias map - no auth token on PUT - scoped', async (t) => {
-    const { address } = t.context;
-
     // PUT alias on server
     const aliasFormData = new FormData();
     aliasFormData.append('version', '8.4.1');
@@ -79,8 +83,6 @@ tap.test('alias map - no auth token on PUT - scoped', async (t) => {
 });
 
 tap.test('alias map - no auth token on PUT - non scoped', async (t) => {
-    const { address } = t.context;
-
     // PUT alias on server
     const aliasFormData = new FormData();
     aliasFormData.append('version', '8.4.1');
@@ -99,8 +101,6 @@ tap.test('alias map - no auth token on PUT - non scoped', async (t) => {
 });
 
 tap.test('alias map - no auth token on POST - scoped', async (t) => {
-    const { address } = t.context;
-
     // POST alias on server
     const aliasFormData = new FormData();
     aliasFormData.append('version', '8.4.1');
@@ -119,8 +119,6 @@ tap.test('alias map - no auth token on POST - scoped', async (t) => {
 });
 
 tap.test('alias map - no auth token on POST - non scoped', async (t) => {
-    const { address } = t.context;
-
     // PUT alias on server
     const aliasFormData = new FormData();
     aliasFormData.append('version', '8.4.1');
@@ -139,8 +137,6 @@ tap.test('alias map - no auth token on POST - non scoped', async (t) => {
 });
 
 tap.test('alias map - no auth token on DELETE - scoped', async (t) => {
-    const { address } = t.context;
-
     // DELETE alias on server
 
     const alias = await fetch(`${address}/map/@cuz/fuzz/v8`, {
@@ -155,8 +151,6 @@ tap.test('alias map - no auth token on DELETE - scoped', async (t) => {
 });
 
 tap.test('alias map - no auth token on POST - non scoped', async (t) => {
-    const { address } = t.context;
-
     // PUT alias on server
 
     const alias = await fetch(`${address}/map/fuzz/v8`, {
@@ -173,8 +167,6 @@ tap.test('alias map - no auth token on POST - non scoped', async (t) => {
 tap.test(
     'alias map - put alias, then get map through alias - scoped',
     async (t) => {
-        const { headers, address } = t.context;
-
         // PUT map on server
         const pkgFormData = new FormData();
         pkgFormData.append('map', fs.createReadStream(FIXTURE_MAP));
@@ -264,8 +256,6 @@ tap.test(
 tap.test(
     'alias map - put alias, then get map through alias - non scoped',
     async (t) => {
-        const { headers, address } = t.context;
-
         // PUT map on server
         const pkgFormData = new FormData();
         pkgFormData.append('map', fs.createReadStream(FIXTURE_MAP));
@@ -355,8 +345,6 @@ tap.test(
 tap.test(
     'alias map - put alias, then update alias, then get map through alias - scoped',
     async (t) => {
-        const { headers, address } = t.context;
-
         // PUT maps on server
         const pkgFormDataA = new FormData();
         pkgFormDataA.append('map', fs.createReadStream(FIXTURE_MAP));
@@ -421,8 +409,6 @@ tap.test(
 tap.test(
     'alias map - put alias, then update alias, then get map through alias - non scoped',
     async (t) => {
-        const { headers, address } = t.context;
-
         // PUT maps on server
         const pkgFormDataA = new FormData();
         pkgFormDataA.append('map', fs.createReadStream(FIXTURE_MAP));
@@ -487,8 +473,6 @@ tap.test(
 tap.test(
     'alias map - put alias, then delete alias, then get map through alias - scoped',
     async (t) => {
-        const { headers, address } = t.context;
-
         // PUT map on server
         const pkgFormData = new FormData();
         pkgFormData.append('map', fs.createReadStream(FIXTURE_MAP));
@@ -560,8 +544,6 @@ tap.test(
 tap.test(
     'alias map - put alias, then delete alias, then get map through alias - non scoped',
     async (t) => {
-        const { headers, address } = t.context;
-
         // PUT map on server
         const pkgFormData = new FormData();
         pkgFormData.append('map', fs.createReadStream(FIXTURE_MAP));

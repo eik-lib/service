@@ -1,5 +1,5 @@
 import FormData from 'form-data';
-import Fastify from 'fastify';
+import fastify from 'fastify';
 import fetch from 'node-fetch';
 import path from 'path';
 import tap from 'tap';
@@ -19,43 +19,47 @@ tap.cleanSnapshot = (s) => {
     return s.replace(regex, '"created": -1,');
 };
 
-tap.beforeEach(async (t) => {
-    const sink = new Sink();
+/** @type {import('fastify').FastifyInstance} */
+let app;
+/** @type {string} */
+let address;
+/** @type {Record<string, string>} */
+let headers;
+/** @type {Sink} */
+let sink;
+
+tap.before(async () => {
+    sink = new Sink();
     const service = new Server({ sink });
 
-    const app = Fastify({
+    app = fastify({
         ignoreTrailingSlash: true,
+        forceCloseConnections: true,
     });
     app.register(service.api());
 
-    const address = await app.listen({ port: 0, host: '127.0.0.1' });
+    address = await app.listen({ port: 0, host: '127.0.0.1' });
 
     const formData = new FormData();
     formData.append('key', 'change_me');
-
     const res = await fetch(`${address}/auth/login`, {
         method: 'POST',
         body: formData,
         headers: formData.getHeaders(),
     });
-
-    const { token } = /** @type {{ token: string }} */ (await res.json());
-    const headers = { Authorization: `Bearer ${token}` };
-
-    t.context = {
-        address,
-        headers,
-        app,
-    };
+    const login = /** @type {{ token: string }} */ (await res.json());
+    headers = { Authorization: `Bearer ${login.token}` };
 });
 
-tap.afterEach(async (t) => {
-    await t.context.app.close();
+tap.afterEach(() => {
+    sink.clear();
+});
+
+tap.teardown(async () => {
+    await app.close();
 });
 
 tap.test('alias package - no auth token on PUT - scoped', async (t) => {
-    const { address } = t.context;
-
     // PUT alias on server
     const aliasFormData = new FormData();
     aliasFormData.append('version', '8.4.1');
@@ -74,8 +78,6 @@ tap.test('alias package - no auth token on PUT - scoped', async (t) => {
 });
 
 tap.test('alias package - no auth token on PUT - non scoped', async (t) => {
-    const { address } = t.context;
-
     // PUT alias on server
     const aliasFormData = new FormData();
     aliasFormData.append('version', '8.4.1');
@@ -94,8 +96,6 @@ tap.test('alias package - no auth token on PUT - non scoped', async (t) => {
 });
 
 tap.test('alias package - no auth token on POST - scoped', async (t) => {
-    const { address } = t.context;
-
     // POST alias on server
     const aliasFormData = new FormData();
     aliasFormData.append('version', '8.4.1');
@@ -114,8 +114,6 @@ tap.test('alias package - no auth token on POST - scoped', async (t) => {
 });
 
 tap.test('alias package - no auth token on POST - non scoped', async (t) => {
-    const { address } = t.context;
-
     // POST alias on server
     const aliasFormData = new FormData();
     aliasFormData.append('version', '8.4.1');
@@ -134,8 +132,6 @@ tap.test('alias package - no auth token on POST - non scoped', async (t) => {
 });
 
 tap.test('alias package - no auth token on DELETE - scoped', async (t) => {
-    const { address } = t.context;
-
     // DELETE alias on server
     const alias = await fetch(`${address}/npm/@cuz/fuzz/v8`, {
         method: 'DELETE',
@@ -149,8 +145,6 @@ tap.test('alias package - no auth token on DELETE - scoped', async (t) => {
 });
 
 tap.test('alias package - no auth token on DELETE - non scoped', async (t) => {
-    const { address } = t.context;
-
     // DELETE alias on server
     const alias = await fetch(`${address}/npm/fuzz/v8`, {
         method: 'DELETE',
@@ -166,8 +160,6 @@ tap.test('alias package - no auth token on DELETE - non scoped', async (t) => {
 tap.test(
     'alias package - put alias, then get file overview through alias - scoped',
     async (t) => {
-        const { headers, address } = t.context;
-
         const pkgFormData = new FormData();
         pkgFormData.append('package', fs.createReadStream(FIXTURE_PKG));
 
@@ -257,8 +249,6 @@ tap.test(
 tap.test(
     'alias package - put alias, then get file overview through alias - non scoped',
     async (t) => {
-        const { headers, address } = t.context;
-
         const pkgFormData = new FormData();
         pkgFormData.append('package', fs.createReadStream(FIXTURE_PKG));
 
@@ -348,8 +338,6 @@ tap.test(
 tap.test(
     'alias package - put alias, then get file through alias - scoped',
     async (t) => {
-        const { headers, address } = t.context;
-
         const pkgFormData = new FormData();
         pkgFormData.append('package', fs.createReadStream(FIXTURE_PKG));
 
@@ -439,8 +427,6 @@ tap.test(
 tap.test(
     'alias package - put alias, then get file through alias - non scoped',
     async (t) => {
-        const { headers, address } = t.context;
-
         const pkgFormData = new FormData();
         pkgFormData.append('package', fs.createReadStream(FIXTURE_PKG));
 
@@ -527,8 +513,6 @@ tap.test(
 tap.test(
     'alias package - put alias, then update alias, then get file through alias - scoped',
     async (t) => {
-        const { headers, address } = t.context;
-
         // PUT packages on server
         const pkgFormDataA = new FormData();
         pkgFormDataA.append('package', fs.createReadStream(FIXTURE_PKG));
@@ -605,8 +589,6 @@ tap.test(
 tap.test(
     'alias package - put alias, then update alias, then get file through alias - non scoped',
     async (t) => {
-        const { headers, address } = t.context;
-
         // PUT packages on server
         const pkgFormDataA = new FormData();
         pkgFormDataA.append('package', fs.createReadStream(FIXTURE_PKG));
@@ -683,8 +665,6 @@ tap.test(
 tap.test(
     'alias package - put alias, then delete alias, then get file through alias - scoped',
     async (t) => {
-        const { headers, address } = t.context;
-
         const pkgFormData = new FormData();
         pkgFormData.append('package', fs.createReadStream(FIXTURE_PKG));
 
@@ -765,8 +745,6 @@ tap.test(
 tap.test(
     'alias package - put alias, then delete alias, then get file through alias - non scoped',
     async (t) => {
-        const { headers, address } = t.context;
-
         const pkgFormData = new FormData();
         pkgFormData.append('package', fs.createReadStream(FIXTURE_PKG));
 
