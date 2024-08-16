@@ -2,7 +2,7 @@ import fastify from 'fastify';
 import fetch from 'node-fetch';
 import tap from 'tap';
 
-import Sink from '@eik/core/lib/sinks/test.js';
+import Sink from './utils/sink.js';
 import Server from '../lib/main.js';
 
 /** @type {import('fastify').FastifyInstance} */

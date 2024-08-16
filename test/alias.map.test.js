@@ -6,7 +6,7 @@ import tap from 'tap';
 import url from 'url';
 import fs from 'fs';
 
-import Sink from '@eik/core/lib/sinks/test.js';
+import Sink from './utils/sink.js';
 import Server from '../lib/main.js';
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
