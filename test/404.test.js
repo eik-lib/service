@@ -1,22 +1,40 @@
 import FormData from 'form-data';
-import Fastify from 'fastify';
+import fastify from 'fastify';
 import fetch from 'node-fetch';
 import tap from 'tap';
 
 import Sink from '@eik/core/lib/sinks/test.js';
 import Server from '../lib/main.js';
 
-tap.test('404 - POST request to non existing pathname', async (t) => {
-    const sink = new Sink();
+/** @type {import('fastify').FastifyInstance} */
+let app;
+/** @type {string} */
+let address;
+/** @type {Sink} */
+let sink;
+
+tap.before(async () => {
+    sink = new Sink();
     const service = new Server({ sink });
 
-    const app = Fastify({
+    app = fastify({
         ignoreTrailingSlash: true,
+        forceCloseConnections: true,
     });
     app.register(service.api());
 
-    const address = await app.listen({ port: 0, host: '127.0.0.1' });
+    address = await app.listen({ port: 0, host: '127.0.0.1' });
+});
 
+tap.afterEach(() => {
+    sink.clear();
+});
+
+tap.teardown(async () => {
+    await app.close();
+});
+
+tap.test('404 - POST request to non existing pathname', async (t) => {
     const formData = new FormData();
     formData.append('key', 'change_me');
 
@@ -32,21 +50,9 @@ tap.test('404 - POST request to non existing pathname', async (t) => {
         'public, max-age=5',
         'should contain "cache-control" set to "public, max-age=5"',
     );
-
-    await app.close();
 });
 
 tap.test('404 - GET request to non existing pathname', async (t) => {
-    const sink = new Sink();
-    const service = new Server({ sink });
-
-    const app = Fastify({
-        ignoreTrailingSlash: true,
-    });
-    app.register(service.api());
-
-    const address = await app.listen({ port: 0, host: '127.0.0.1' });
-
     const response = await fetch(`${address}/non/existent`);
 
     t.equal(response.status, 404, 'server should respond with a 404 Not found');
@@ -55,6 +61,4 @@ tap.test('404 - GET request to non existing pathname', async (t) => {
         'public, max-age=5',
         'should contain "cache-control" set to "public, max-age=5"',
     );
-
-    await app.close();
 });

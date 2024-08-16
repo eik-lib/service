@@ -1,22 +1,40 @@
 import FormData from 'form-data';
-import Fastify from 'fastify';
+import fastify from 'fastify';
 import fetch from 'node-fetch';
 import tap from 'tap';
 
 import Sink from '@eik/core/lib/sinks/test.js';
 import Server from '../lib/main.js';
 
-tap.test('auth - authenticate - legal "key" value', async (t) => {
-    const sink = new Sink();
+/** @type {import('fastify').FastifyInstance} */
+let app;
+/** @type {string} */
+let address;
+/** @type {Sink} */
+let sink;
+
+tap.before(async () => {
+    sink = new Sink();
     const service = new Server({ sink });
 
-    const app = Fastify({
+    app = fastify({
         ignoreTrailingSlash: true,
+        forceCloseConnections: true,
     });
     app.register(service.api());
 
-    const address = await app.listen({ port: 0, host: '127.0.0.1' });
+    address = await app.listen({ port: 0, host: '127.0.0.1' });
+});
 
+tap.afterEach(() => {
+    sink.clear();
+});
+
+tap.teardown(async () => {
+    await app.close();
+});
+
+tap.test('auth - authenticate - legal "key" value', async (t) => {
     const formData = new FormData();
     formData.append('key', 'change_me');
 
@@ -37,21 +55,9 @@ tap.test('auth - authenticate - legal "key" value', async (t) => {
         token.length > 5,
         'on POST of valid key, server should respond with a body with a token',
     );
-
-    await app.close();
 });
 
 tap.test('auth - authenticate - illegal "key" value', async (t) => {
-    const sink = new Sink();
-    const service = new Server({ sink });
-
-    const app = Fastify({
-        ignoreTrailingSlash: true,
-    });
-    app.register(service.api());
-
-    const address = await app.listen({ port: 0, host: '127.0.0.1' });
-
     const formData = new FormData();
     formData.append('key', 'error_me');
 
@@ -66,6 +72,4 @@ tap.test('auth - authenticate - illegal "key" value', async (t) => {
         401,
         'on POST of valid key, server should respond with a 401 Unauthorized',
     );
-
-    await app.close();
 });

@@ -1,5 +1,5 @@
 import FormData from 'form-data';
-import Fastify from 'fastify';
+import fastify from 'fastify';
 import fetch from 'node-fetch';
 import path from 'path';
 import tap from 'tap';
@@ -13,17 +13,35 @@ const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
 const FIXTURE_PKG = path.resolve(__dirname, '..', 'fixtures', 'archive.tgz');
 
-tap.test('400 - GET request with non-existing hostname', async (t) => {
-    const sink = new Sink();
+/** @type {import('fastify').FastifyInstance} */
+let app;
+/** @type {string} */
+let address;
+/** @type {Sink} */
+let sink;
+
+tap.before(async () => {
+    sink = new Sink();
     const service = new Server({ sink });
 
-    const app = Fastify({
+    app = fastify({
         ignoreTrailingSlash: true,
+        forceCloseConnections: true,
     });
     app.register(service.api());
 
-    const address = await app.listen({ port: 0, host: '127.0.0.1' });
+    address = await app.listen({ port: 0, host: '127.0.0.1' });
+});
 
+tap.afterEach(() => {
+    sink.clear();
+});
+
+tap.teardown(async () => {
+    await app.close();
+});
+
+tap.test('400 - GET request with non-existing hostname', async (t) => {
     let formData = new FormData();
     formData.append('key', 'change_me');
 
@@ -73,6 +91,4 @@ tap.test('400 - GET request with non-existing hostname', async (t) => {
         400,
         'server should respond with a 400 Bad Request',
     );
-
-    await app.close();
 });

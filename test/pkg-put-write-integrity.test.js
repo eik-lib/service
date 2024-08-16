@@ -1,5 +1,5 @@
 import FormData from 'form-data';
-import Fastify from 'fastify';
+import fastify from 'fastify';
 import fetch from 'node-fetch';
 import path from 'path';
 import tap from 'tap';
@@ -17,26 +17,50 @@ tap.cleanSnapshot = (s) => {
     return s.replace(regex, '"created": -1,');
 };
 
-const authentication = async (address) => {
+/** @type {import('fastify').FastifyInstance} */
+let app;
+/** @type {string} */
+let address;
+/** @type {Record<string, string>} */
+let headers;
+/** @type {Sink} */
+let sink;
+
+tap.before(async () => {
+    sink = new Sink();
+    const service = new Server({ sink });
+
+    app = fastify({
+        ignoreTrailingSlash: true,
+        forceCloseConnections: true,
+    });
+    app.register(service.api());
+
+    address = await app.listen({ port: 0, host: '127.0.0.1' });
+
     const formData = new FormData();
     formData.append('key', 'change_me');
-
     const res = await fetch(`${address}/auth/login`, {
         method: 'POST',
         body: formData,
         headers: formData.getHeaders(),
     });
+    const login = /** @type {{ token: string }} */ (await res.json());
+    headers = { Authorization: `Bearer ${login.token}` };
+});
 
-    const { token } = /** @type {{ token: string }} */ (await res.json());
-    return { Authorization: `Bearer ${token}` };
-};
+tap.afterEach(() => {
+    sink.clear();
+});
+
+tap.teardown(async () => {
+    await app.close();
+});
 
 tap.test(
     'Sink is slow and irregular - Writing medium sized package',
     async (t) => {
         t.setTimeout(20_000_000);
-
-        const sink = new Sink();
 
         // Simulate a slow write process by delaying each chunk written
         // to the sink with something between 10 and 100 + (buffer count) ms.
@@ -45,17 +69,6 @@ tap.test(
             const min = 10;
             return Math.floor(Math.random() * max) + min;
         };
-
-        const service = new Server({ sink });
-
-        const app = Fastify({
-            ignoreTrailingSlash: true,
-        });
-        app.register(service.api());
-
-        const address = await app.listen({ port: 0, host: '127.0.0.1' });
-
-        const headers = await authentication(address);
 
         const formData = new FormData();
         formData.append(
@@ -76,8 +89,6 @@ tap.test(
             obj,
             'on GET of package, response should match snapshot',
         );
-
-        await app.close();
     },
 );
 
@@ -86,8 +97,6 @@ tap.test(
     async (t) => {
         t.setTimeout(20_000_000);
 
-        const sink = new Sink();
-
         // Simulate a slow write process by delaying each chunk written
         // to the sink with something between 10 and 100 + (buffer count) ms.
         sink.writeDelayChunks = (count) => {
@@ -95,17 +104,6 @@ tap.test(
             const min = 10;
             return Math.floor(Math.random() * max) + min;
         };
-
-        const service = new Server({ sink });
-
-        const app = Fastify({
-            ignoreTrailingSlash: true,
-        });
-        app.register(service.api());
-
-        const address = await app.listen({ port: 0, host: '127.0.0.1' });
-
-        const headers = await authentication(address);
 
         const formData = new FormData();
         formData.append(
@@ -126,8 +124,6 @@ tap.test(
             obj,
             'on GET of package, response should match snapshot',
         );
-
-        await app.close();
     },
 );
 
@@ -136,8 +132,6 @@ tap.test(
     async (t) => {
         t.setTimeout(20_000_000);
 
-        const sink = new Sink();
-
         // Simulate a slow creation of the sink write operation by delaying
         // it something between 20 and 100ms.
         sink.writeDelayResolve = () => {
@@ -145,17 +139,6 @@ tap.test(
             const min = 20;
             return Math.floor(Math.random() * max) + min;
         };
-
-        const service = new Server({ sink });
-
-        const app = Fastify({
-            ignoreTrailingSlash: true,
-        });
-        app.register(service.api());
-
-        const address = await app.listen({ port: 0, host: '127.0.0.1' });
-
-        const headers = await authentication(address);
 
         const formData = new FormData();
         formData.append(
@@ -176,8 +159,6 @@ tap.test(
             obj,
             'on GET of package, response should match snapshot',
         );
-
-        await app.close();
     },
 );
 
@@ -186,8 +167,6 @@ tap.test(
     async (t) => {
         t.setTimeout(20_000_000);
 
-        const sink = new Sink();
-
         // Simulate a slow creation of the sink write operation by delaying
         // it something between 20 and 100ms.
         sink.writeDelayResolve = () => {
@@ -195,17 +174,6 @@ tap.test(
             const min = 20;
             return Math.floor(Math.random() * max) + min;
         };
-
-        const service = new Server({ sink });
-
-        const app = Fastify({
-            ignoreTrailingSlash: true,
-        });
-        app.register(service.api());
-
-        const address = await app.listen({ port: 0, host: '127.0.0.1' });
-
-        const headers = await authentication(address);
 
         const formData = new FormData();
         formData.append(
@@ -226,7 +194,5 @@ tap.test(
             obj,
             'on GET of package, response should match snapshot',
         );
-
-        await app.close();
     },
 );
