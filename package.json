@@ -47,7 +47,7 @@
     "@eik/sink-memory": "1.1.2",
     "@fastify/compress": "6.5.0",
     "@fastify/cors": "8.5.0",
-    "@fastify/jwt": "7.2.4",
+    "@fastify/jwt": "8.0.1",
     "convict": "6.2.4",
     "fastify": "4.28.1",
     "http-errors": "2.0.0",
