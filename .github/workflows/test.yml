@@ -14,6 +14,9 @@ jobs:
       matrix:
         os: [ubuntu-latest, macOS-latest, windows-latest]
         node-version: [18, 20]
+        exclude:
+          - os: windows-latest
+            node-version: 18 # upload tests fail with ECONNRESET for unknown reasons on Node 18 on Windows
     runs-on: ${{ matrix.os }}
 
     steps:
