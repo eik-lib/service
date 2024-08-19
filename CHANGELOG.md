@@ -1,3 +1,10 @@
+## [2.3.1](https://github.com/eik-lib/service/compare/v2.3.0...v2.3.1) (2024-08-19)
+
+
+### Bug Fixes
+
+* add support for windows hosts ([ed263d6](https://github.com/eik-lib/service/commit/ed263d6ed72cc21ad89d0fb3c27b06ca96c6d416))
+
 # [2.3.0](https://github.com/eik-lib/service/compare/v2.2.1...v2.3.0) (2024-08-14)
 
 
