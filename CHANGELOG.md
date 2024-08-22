@@ -1,3 +1,16 @@
+# [3.0.0](https://github.com/eik-lib/service/compare/v2.3.2...v3.0.0) (2024-08-22)
+
+
+### Bug Fixes
+
+* let compression finish before adding routes ([#592](https://github.com/eik-lib/service/issues/592)) ([f3796eb](https://github.com/eik-lib/service/commit/f3796ebfcb6d7c350e0eeae3578f329c6ec1f49e))
+
+
+### BREAKING CHANGES
+
+* requires `await` when registering the eik plugin
+with fastify (`await fastify.register(service.api())`).
+
 ## [2.3.2](https://github.com/eik-lib/service/compare/v2.3.1...v2.3.2) (2024-08-19)
 
 
