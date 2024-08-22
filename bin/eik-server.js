@@ -12,7 +12,7 @@ const app = Fastify({
     http2: eik.config.get('http.http2'),
 });
 
-app.register(eik.api());
+await app.register(eik.api());
 
 try {
     await eik.health();
