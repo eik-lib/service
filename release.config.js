@@ -1,3 +1,3 @@
 export default {
-    extends: '@eik/semantic-release-config',
+	extends: "@eik/semantic-release-config",
 };

@@ -1,22 +1,22 @@
-import FormData from 'form-data';
-import fastify from 'fastify';
-import fetch from 'node-fetch';
-import path from 'path';
-import tap from 'tap';
-import url from 'url';
-import fs from 'fs';
+import FormData from "form-data";
+import fastify from "fastify";
+import fetch from "node-fetch";
+import path from "path";
+import tap from "tap";
+import url from "url";
+import fs from "fs";
 
-import Sink from './utils/sink.js';
-import Server from '../lib/main.js';
+import Sink from "./utils/sink.js";
+import Server from "../lib/main.js";
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
-const FIXTURE_PKG = path.resolve(__dirname, '..', 'fixtures', 'archive.tgz');
+const FIXTURE_PKG = path.resolve(__dirname, "..", "fixtures", "archive.tgz");
 
 // Ignore the timestamp for "created" field in the snapshots
 tap.cleanSnapshot = (s) => {
-    const regex = /"created": [0-9]+,/gi;
-    return s.replace(regex, '"created": -1,');
+	const regex = /"created": [0-9]+,/gi;
+	return s.replace(regex, '"created": -1,');
 };
 
 /** @type {import('fastify').FastifyInstance} */
@@ -29,380 +29,349 @@ let headers;
 let sink;
 
 tap.before(async () => {
-    sink = new Sink();
-    const service = new Server({ sink });
+	sink = new Sink();
+	const service = new Server({ sink });
 
-    app = fastify({
-        ignoreTrailingSlash: true,
-        forceCloseConnections: true,
-    });
-    app.register(service.api());
+	app = fastify({
+		ignoreTrailingSlash: true,
+		forceCloseConnections: true,
+	});
+	app.register(service.api());
 
-    address = await app.listen({ port: 0, host: '127.0.0.1' });
+	address = await app.listen({ port: 0, host: "127.0.0.1" });
 
-    const formData = new FormData();
-    formData.append('key', 'change_me');
-    const res = await fetch(`${address}/auth/login`, {
-        method: 'POST',
-        body: formData,
-        headers: formData.getHeaders(),
-    });
-    const login = /** @type {{ token: string }} */ (await res.json());
-    headers = { Authorization: `Bearer ${login.token}` };
+	const formData = new FormData();
+	formData.append("key", "change_me");
+	const res = await fetch(`${address}/auth/login`, {
+		method: "POST",
+		body: formData,
+		headers: formData.getHeaders(),
+	});
+	const login = /** @type {{ token: string }} */ (await res.json());
+	headers = { Authorization: `Bearer ${login.token}` };
 });
 
 tap.afterEach(() => {
-    sink.clear();
+	sink.clear();
 });
 
 tap.teardown(async () => {
-    await app.close();
+	await app.close();
 });
 
-tap.test('packages - no auth token on PUT - scoped', async (t) => {
-    const formData = new FormData();
-    formData.append('package', fs.createReadStream(FIXTURE_PKG));
+tap.test("packages - no auth token on PUT - scoped", async (t) => {
+	const formData = new FormData();
+	formData.append("package", fs.createReadStream(FIXTURE_PKG));
 
-    // PUT files on server
-    const uploaded = await fetch(`${address}/pkg/@cuz/fuzz/1.4.8`, {
-        method: 'PUT',
-        body: formData,
-        redirect: 'manual',
-        headers: formData.getHeaders(),
-    });
+	// PUT files on server
+	const uploaded = await fetch(`${address}/pkg/@cuz/fuzz/1.4.8`, {
+		method: "PUT",
+		body: formData,
+		redirect: "manual",
+		headers: formData.getHeaders(),
+	});
 
-    t.equal(
-        uploaded.status,
-        401,
-        'on PUT of package, server should respond with a 401 Unauthorized',
-    );
+	t.equal(
+		uploaded.status,
+		401,
+		"on PUT of package, server should respond with a 401 Unauthorized",
+	);
 });
 
-tap.test('packages - no auth token on PUT - non scoped', async (t) => {
-    const formData = new FormData();
-    formData.append('package', fs.createReadStream(FIXTURE_PKG));
+tap.test("packages - no auth token on PUT - non scoped", async (t) => {
+	const formData = new FormData();
+	formData.append("package", fs.createReadStream(FIXTURE_PKG));
 
-    // PUT files on server
-    const uploaded = await fetch(`${address}/pkg/fuzz/1.4.8`, {
-        method: 'PUT',
-        body: formData,
-        redirect: 'manual',
-        headers: formData.getHeaders(),
-    });
+	// PUT files on server
+	const uploaded = await fetch(`${address}/pkg/fuzz/1.4.8`, {
+		method: "PUT",
+		body: formData,
+		redirect: "manual",
+		headers: formData.getHeaders(),
+	});
 
-    t.equal(
-        uploaded.status,
-        401,
-        'on PUT of package, server should respond with a 401 Unauthorized',
-    );
+	t.equal(
+		uploaded.status,
+		401,
+		"on PUT of package, server should respond with a 401 Unauthorized",
+	);
 });
 
 tap.test(
-    'packages - put pkg -> get file - scoped successfully uploaded',
-    async (t) => {
-        const formData = new FormData();
-        formData.append('package', fs.createReadStream(FIXTURE_PKG));
+	"packages - put pkg -> get file - scoped successfully uploaded",
+	async (t) => {
+		const formData = new FormData();
+		formData.append("package", fs.createReadStream(FIXTURE_PKG));
 
-        // PUT files on server
-        const uploaded = await fetch(`${address}/pkg/@cuz/fuzz/1.4.8`, {
-            method: 'PUT',
-            body: formData,
-            redirect: 'manual',
-            headers: { ...headers, ...formData.getHeaders() },
-        });
+		// PUT files on server
+		const uploaded = await fetch(`${address}/pkg/@cuz/fuzz/1.4.8`, {
+			method: "PUT",
+			body: formData,
+			redirect: "manual",
+			headers: { ...headers, ...formData.getHeaders() },
+		});
 
-        t.equal(
-            uploaded.status,
-            303,
-            'on PUT of package, server should respond with a 303 redirect',
-        );
-        t.equal(
-            uploaded.headers.get('location'),
-            `/pkg/@cuz/fuzz/1.4.8`,
-            'on PUT of package, server should respond with a location header',
-        );
+		t.equal(
+			uploaded.status,
+			303,
+			"on PUT of package, server should respond with a 303 redirect",
+		);
+		t.equal(
+			uploaded.headers.get("location"),
+			`/pkg/@cuz/fuzz/1.4.8`,
+			"on PUT of package, server should respond with a location header",
+		);
 
-        // GET file from server
-        const downloaded = await fetch(
-            `${address}/pkg/@cuz/fuzz/1.4.8/main/index.js`,
-            {
-                method: 'GET',
-            },
-        );
-        const downloadedResponse = await downloaded.text();
+		// GET file from server
+		const downloaded = await fetch(
+			`${address}/pkg/@cuz/fuzz/1.4.8/main/index.js`,
+			{
+				method: "GET",
+			},
+		);
+		const downloadedResponse = await downloaded.text();
 
-        t.equal(
-            downloaded.status,
-            200,
-            'on GET of file, server should respond with 200 ok',
-        );
-        t.matchSnapshot(
-            downloadedResponse,
-            'on GET of package, response should match snapshot',
-        );
-    },
+		t.equal(
+			downloaded.status,
+			200,
+			"on GET of file, server should respond with 200 ok",
+		);
+		t.matchSnapshot(
+			downloadedResponse,
+			"on GET of package, response should match snapshot",
+		);
+	},
 );
 
 tap.test(
-    'packages - put pkg -> get file - non scoped successfully uploaded',
-    async (t) => {
-        const formData = new FormData();
-        formData.append('package', fs.createReadStream(FIXTURE_PKG));
+	"packages - put pkg -> get file - non scoped successfully uploaded",
+	async (t) => {
+		const formData = new FormData();
+		formData.append("package", fs.createReadStream(FIXTURE_PKG));
 
-        // PUT files on server
-        const uploaded = await fetch(`${address}/pkg/fuzz/8.4.1`, {
-            method: 'PUT',
-            body: formData,
-            headers: { ...headers, ...formData.getHeaders() },
-            redirect: 'manual',
-        });
+		// PUT files on server
+		const uploaded = await fetch(`${address}/pkg/fuzz/8.4.1`, {
+			method: "PUT",
+			body: formData,
+			headers: { ...headers, ...formData.getHeaders() },
+			redirect: "manual",
+		});
 
-        t.equal(
-            uploaded.status,
-            303,
-            'on PUT of package, server should respond with a 303 redirect',
-        );
-        t.equal(
-            uploaded.headers.get('location'),
-            `/pkg/fuzz/8.4.1`,
-            'on PUT of package, server should respond with a location header',
-        );
+		t.equal(
+			uploaded.status,
+			303,
+			"on PUT of package, server should respond with a 303 redirect",
+		);
+		t.equal(
+			uploaded.headers.get("location"),
+			`/pkg/fuzz/8.4.1`,
+			"on PUT of package, server should respond with a location header",
+		);
 
-        // GET file from server
-        const downloaded = await fetch(
-            `${address}/pkg/fuzz/8.4.1/main/index.js`,
-            {
-                method: 'GET',
-            },
-        );
-        const downloadedResponse = await downloaded.text();
+		// GET file from server
+		const downloaded = await fetch(`${address}/pkg/fuzz/8.4.1/main/index.js`, {
+			method: "GET",
+		});
+		const downloadedResponse = await downloaded.text();
 
-        t.equal(
-            downloaded.status,
-            200,
-            'on GET of file, server should respond with 200 ok',
-        );
-        t.matchSnapshot(
-            downloadedResponse,
-            'on GET of package, response should match snapshot',
-        );
-    },
+		t.equal(
+			downloaded.status,
+			200,
+			"on GET of file, server should respond with 200 ok",
+		);
+		t.matchSnapshot(
+			downloadedResponse,
+			"on GET of package, response should match snapshot",
+		);
+	},
 );
 
-tap.test('packages - get package overview - scoped', async (t) => {
-    const formData = new FormData();
-    formData.append('package', fs.createReadStream(FIXTURE_PKG));
+tap.test("packages - get package overview - scoped", async (t) => {
+	const formData = new FormData();
+	formData.append("package", fs.createReadStream(FIXTURE_PKG));
 
-    // PUT files on server
-    const uploaded = await fetch(`${address}/pkg/@cuz/fuzz/8.4.1/`, {
-        method: 'PUT',
-        body: formData,
-        headers: { ...headers, ...formData.getHeaders() },
-        redirect: 'manual',
-    });
+	// PUT files on server
+	const uploaded = await fetch(`${address}/pkg/@cuz/fuzz/8.4.1/`, {
+		method: "PUT",
+		body: formData,
+		headers: { ...headers, ...formData.getHeaders() },
+		redirect: "manual",
+	});
 
-    t.equal(
-        uploaded.status,
-        303,
-        'on PUT of package, server should respond with a 303 redirect',
-    );
-    t.equal(
-        uploaded.headers.get('location'),
-        `/pkg/@cuz/fuzz/8.4.1`,
-        'on PUT of package, server should respond with a location header',
-    );
+	t.equal(
+		uploaded.status,
+		303,
+		"on PUT of package, server should respond with a 303 redirect",
+	);
+	t.equal(
+		uploaded.headers.get("location"),
+		`/pkg/@cuz/fuzz/8.4.1`,
+		"on PUT of package, server should respond with a location header",
+	);
 
-    // GET package overview from server
-    const downloaded = await fetch(`${address}/pkg/@cuz/fuzz/8.4.1/`, {
-        method: 'GET',
-    });
-    const downloadedResponse = await downloaded.json();
+	// GET package overview from server
+	const downloaded = await fetch(`${address}/pkg/@cuz/fuzz/8.4.1/`, {
+		method: "GET",
+	});
+	const downloadedResponse = await downloaded.json();
 
-    t.equal(
-        downloaded.status,
-        200,
-        'on GET, server should respond with 200 ok',
-    );
-    t.matchSnapshot(
-        downloadedResponse,
-        'on GET, response should match snapshot',
-    );
+	t.equal(downloaded.status, 200, "on GET, server should respond with 200 ok");
+	t.matchSnapshot(downloadedResponse, "on GET, response should match snapshot");
 });
 
-tap.test('packages - get package overview - non scoped', async (t) => {
-    const formData = new FormData();
-    formData.append('package', fs.createReadStream(FIXTURE_PKG));
+tap.test("packages - get package overview - non scoped", async (t) => {
+	const formData = new FormData();
+	formData.append("package", fs.createReadStream(FIXTURE_PKG));
 
-    // PUT files on server
-    const uploaded = await fetch(`${address}/pkg/fuzz/8.4.1/`, {
-        method: 'PUT',
-        body: formData,
-        headers: { ...headers, ...formData.getHeaders() },
-        redirect: 'manual',
-    });
+	// PUT files on server
+	const uploaded = await fetch(`${address}/pkg/fuzz/8.4.1/`, {
+		method: "PUT",
+		body: formData,
+		headers: { ...headers, ...formData.getHeaders() },
+		redirect: "manual",
+	});
 
-    t.equal(
-        uploaded.status,
-        303,
-        'on PUT of package, server should respond with a 303 redirect',
-    );
-    t.equal(
-        uploaded.headers.get('location'),
-        `/pkg/fuzz/8.4.1`,
-        'on PUT of package, server should respond with a location header',
-    );
+	t.equal(
+		uploaded.status,
+		303,
+		"on PUT of package, server should respond with a 303 redirect",
+	);
+	t.equal(
+		uploaded.headers.get("location"),
+		`/pkg/fuzz/8.4.1`,
+		"on PUT of package, server should respond with a location header",
+	);
 
-    // GET package overview from server
-    const downloaded = await fetch(`${address}/pkg/fuzz/8.4.1/`, {
-        method: 'GET',
-    });
-    const downloadedResponse = await downloaded.json();
+	// GET package overview from server
+	const downloaded = await fetch(`${address}/pkg/fuzz/8.4.1/`, {
+		method: "GET",
+	});
+	const downloadedResponse = await downloaded.json();
 
-    t.equal(
-        downloaded.status,
-        200,
-        'on GET, server should respond with 200 ok',
-    );
-    t.matchSnapshot(
-        downloadedResponse,
-        'on GET, response should match snapshot',
-    );
+	t.equal(downloaded.status, 200, "on GET, server should respond with 200 ok");
+	t.matchSnapshot(downloadedResponse, "on GET, response should match snapshot");
 });
 
-tap.test('packages - get package versions - scoped', async (t) => {
-    // PUT files on server
+tap.test("packages - get package versions - scoped", async (t) => {
+	// PUT files on server
 
-    const formDataA = new FormData();
-    formDataA.append('package', fs.createReadStream(FIXTURE_PKG));
-    await fetch(`${address}/pkg/@cuz/fuzz/7.3.2/`, {
-        method: 'PUT',
-        body: formDataA,
-        headers: { ...headers, ...formDataA.getHeaders() },
-        redirect: 'manual',
-    });
+	const formDataA = new FormData();
+	formDataA.append("package", fs.createReadStream(FIXTURE_PKG));
+	await fetch(`${address}/pkg/@cuz/fuzz/7.3.2/`, {
+		method: "PUT",
+		body: formDataA,
+		headers: { ...headers, ...formDataA.getHeaders() },
+		redirect: "manual",
+	});
 
-    const formDataB = new FormData();
-    formDataB.append('package', fs.createReadStream(FIXTURE_PKG));
-    await fetch(`${address}/pkg/@cuz/fuzz/8.4.1/`, {
-        method: 'PUT',
-        body: formDataB,
-        headers: { ...headers, ...formDataB.getHeaders() },
-        redirect: 'manual',
-    });
+	const formDataB = new FormData();
+	formDataB.append("package", fs.createReadStream(FIXTURE_PKG));
+	await fetch(`${address}/pkg/@cuz/fuzz/8.4.1/`, {
+		method: "PUT",
+		body: formDataB,
+		headers: { ...headers, ...formDataB.getHeaders() },
+		redirect: "manual",
+	});
 
-    const formDataC = new FormData();
-    formDataC.append('package', fs.createReadStream(FIXTURE_PKG));
-    await fetch(`${address}/pkg/@cuz/fuzz/8.5.1/`, {
-        method: 'PUT',
-        body: formDataC,
-        headers: { ...headers, ...formDataC.getHeaders() },
-        redirect: 'manual',
-    });
+	const formDataC = new FormData();
+	formDataC.append("package", fs.createReadStream(FIXTURE_PKG));
+	await fetch(`${address}/pkg/@cuz/fuzz/8.5.1/`, {
+		method: "PUT",
+		body: formDataC,
+		headers: { ...headers, ...formDataC.getHeaders() },
+		redirect: "manual",
+	});
 
-    // GET version overview from server
-    const downloaded = await fetch(`${address}/pkg/@cuz/fuzz/`, {
-        method: 'GET',
-    });
-    const downloadedResponse = await downloaded.json();
+	// GET version overview from server
+	const downloaded = await fetch(`${address}/pkg/@cuz/fuzz/`, {
+		method: "GET",
+	});
+	const downloadedResponse = await downloaded.json();
 
-    t.equal(
-        downloaded.status,
-        200,
-        'on GET, server should respond with 200 ok',
-    );
-    t.matchSnapshot(
-        downloadedResponse,
-        'on GET, response should match snapshot',
-    );
+	t.equal(downloaded.status, 200, "on GET, server should respond with 200 ok");
+	t.matchSnapshot(downloadedResponse, "on GET, response should match snapshot");
 });
 
-tap.test('packages - get package versions - non scoped', async (t) => {
-    // PUT files on server
+tap.test("packages - get package versions - non scoped", async (t) => {
+	// PUT files on server
 
-    const formDataA = new FormData();
-    formDataA.append('package', fs.createReadStream(FIXTURE_PKG));
-    await fetch(`${address}/pkg/fuzz/7.3.2/`, {
-        method: 'PUT',
-        body: formDataA,
-        headers: { ...headers, ...formDataA.getHeaders() },
-        redirect: 'manual',
-    });
+	const formDataA = new FormData();
+	formDataA.append("package", fs.createReadStream(FIXTURE_PKG));
+	await fetch(`${address}/pkg/fuzz/7.3.2/`, {
+		method: "PUT",
+		body: formDataA,
+		headers: { ...headers, ...formDataA.getHeaders() },
+		redirect: "manual",
+	});
 
-    const formDataB = new FormData();
-    formDataB.append('package', fs.createReadStream(FIXTURE_PKG));
-    await fetch(`${address}/pkg/fuzz/8.4.1/`, {
-        method: 'PUT',
-        body: formDataB,
-        headers: { ...headers, ...formDataB.getHeaders() },
-        redirect: 'manual',
-    });
+	const formDataB = new FormData();
+	formDataB.append("package", fs.createReadStream(FIXTURE_PKG));
+	await fetch(`${address}/pkg/fuzz/8.4.1/`, {
+		method: "PUT",
+		body: formDataB,
+		headers: { ...headers, ...formDataB.getHeaders() },
+		redirect: "manual",
+	});
 
-    const formDataC = new FormData();
-    formDataC.append('package', fs.createReadStream(FIXTURE_PKG));
-    await fetch(`${address}/pkg/fuzz/8.5.1/`, {
-        method: 'PUT',
-        body: formDataC,
-        headers: { ...headers, ...formDataC.getHeaders() },
-        redirect: 'manual',
-    });
+	const formDataC = new FormData();
+	formDataC.append("package", fs.createReadStream(FIXTURE_PKG));
+	await fetch(`${address}/pkg/fuzz/8.5.1/`, {
+		method: "PUT",
+		body: formDataC,
+		headers: { ...headers, ...formDataC.getHeaders() },
+		redirect: "manual",
+	});
 
-    // GET version overview from server
-    const downloaded = await fetch(`${address}/pkg/fuzz/`, {
-        method: 'GET',
-    });
-    const downloadedResponse = await downloaded.json();
+	// GET version overview from server
+	const downloaded = await fetch(`${address}/pkg/fuzz/`, {
+		method: "GET",
+	});
+	const downloadedResponse = await downloaded.json();
 
-    t.equal(
-        downloaded.status,
-        200,
-        'on GET, server should respond with 200 ok',
-    );
-    t.matchSnapshot(
-        downloadedResponse,
-        'on GET, response should match snapshot',
-    );
+	t.equal(downloaded.status, 200, "on GET, server should respond with 200 ok");
+	t.matchSnapshot(downloadedResponse, "on GET, response should match snapshot");
 });
 
-tap.test('packages - configure max size', async (t) => {
-    const sink = new Sink();
-    const service = new Server({ sink, pkgMaxFileSize: 10 });
+tap.test("packages - configure max size", async (t) => {
+	const sink = new Sink();
+	const service = new Server({ sink, pkgMaxFileSize: 10 });
 
-    const app = fastify({
-        ignoreTrailingSlash: true,
-        forceCloseConnections: true,
-    });
-    t.after(() => app.close());
+	const app = fastify({
+		ignoreTrailingSlash: true,
+		forceCloseConnections: true,
+	});
+	t.after(() => app.close());
 
-    app.register(service.api());
+	app.register(service.api());
 
-    const address = await app.listen({ port: 0, host: '127.0.0.1' });
-    t.after(() => app.close());
+	const address = await app.listen({ port: 0, host: "127.0.0.1" });
+	t.after(() => app.close());
 
-    const loginFormData = new FormData();
-    loginFormData.append('key', 'change_me');
-    const res = await fetch(`${address}/auth/login`, {
-        method: 'POST',
-        body: loginFormData,
-        headers: loginFormData.getHeaders(),
-    });
+	const loginFormData = new FormData();
+	loginFormData.append("key", "change_me");
+	const res = await fetch(`${address}/auth/login`, {
+		method: "POST",
+		body: loginFormData,
+		headers: loginFormData.getHeaders(),
+	});
 
-    const { token } = /** @type {{ token: string }} */ (await res.json());
-    const headers = { Authorization: `Bearer ${token}` };
+	const { token } = /** @type {{ token: string }} */ (await res.json());
+	const headers = { Authorization: `Bearer ${token}` };
 
-    const formData = new FormData();
-    formData.append('package', fs.createReadStream(FIXTURE_PKG));
+	const formData = new FormData();
+	formData.append("package", fs.createReadStream(FIXTURE_PKG));
 
-    // PUT files on server
-    const uploaded = await fetch(`${address}/pkg/fuzz/8.4.1/`, {
-        method: 'PUT',
-        body: formData,
-        headers: { ...headers, ...formData.getHeaders() },
-        redirect: 'manual',
-    });
+	// PUT files on server
+	const uploaded = await fetch(`${address}/pkg/fuzz/8.4.1/`, {
+		method: "PUT",
+		body: formData,
+		headers: { ...headers, ...formData.getHeaders() },
+		redirect: "manual",
+	});
 
-    t.equal(
-        uploaded.status,
-        413,
-        'Expected to be told that the content is too large',
-    );
+	t.equal(
+		uploaded.status,
+		413,
+		"Expected to be told that the content is too large",
+	);
 });
