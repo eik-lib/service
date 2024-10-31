@@ -49,7 +49,7 @@
     "@fastify/cors": "8.5.0",
     "@fastify/jwt": "7.2.4",
     "convict": "6.2.4",
-    "fastify": "4.28.1",
+    "fastify": "5.1.0",
     "http-errors": "2.0.0",
     "js-yaml": "4.1.0",
     "pino": "8.21.0"
