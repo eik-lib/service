@@ -62,7 +62,7 @@
     "@types/mime": "3.0.4",
     "@types/readable-stream": "4.0.18",
     "cross-env": "7.0.3",
-    "eslint": "9.11.1",
+    "eslint": "9.13.0",
     "form-data": "4.0.1",
     "node-fetch": "3.3.2",
     "npm-run-all2": "5.0.2",
