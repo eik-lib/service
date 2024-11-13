@@ -1,3 +1,23 @@
+# [4.0.0](https://github.com/eik-lib/service/compare/v3.0.0...v4.0.0) (2024-11-13)
+
+
+### Bug Fixes
+
+* add content type parser for multipart/form-data ([b629f76](https://github.com/eik-lib/service/commit/b629f762da4e7ad916efd61d73fbebffef67cfeb))
+
+
+### chore
+
+* upgrade pino ([ec4ecde](https://github.com/eik-lib/service/commit/ec4ecdea4ba0069d9c6d38a322a17a15df5259a3))
+* upgrade to Fastify 5 ([37ec354](https://github.com/eik-lib/service/commit/37ec3541c1b2764b71cc74ec14f37ab2feca1ea1))
+
+
+### BREAKING CHANGES
+
+* no longer supports the content type `multipart`.
+* Requires Node 20
+* requires fastify 5.x
+
 # [3.0.0](https://github.com/eik-lib/service/compare/v2.3.2...v3.0.0) (2024-08-22)
 
 
