@@ -1,3 +1,17 @@
+# [5.0.0](https://github.com/eik-lib/service/compare/v4.0.0...v5.0.0) (2024-11-15)
+
+
+### Bug Fixes
+
+* set minimum engine ([8d339a3](https://github.com/eik-lib/service/commit/8d339a33b902d916d9a7fe526e6cf05b3553d621))
+* update eik dependencies ([9c8f3af](https://github.com/eik-lib/service/commit/9c8f3afc22cae7139f1baa879d4d40f9ad8c7371))
+
+
+### BREAKING CHANGES
+
+* returns mimetype text/javascript instead of the deprecated application/javascript.
+* Requires Node >=20.5.0.
+
 # [4.0.0](https://github.com/eik-lib/service/compare/v3.0.0...v4.0.0) (2024-11-13)
 
 
