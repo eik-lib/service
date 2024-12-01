@@ -64,7 +64,7 @@
     "@eik/typescript-config": "1.0.0",
     "@types/readable-stream": "4.0.18",
     "cross-env": "7.0.3",
-    "eslint": "9.14.0",
+    "eslint": "9.16.0",
     "form-data": "4.0.1",
     "node-fetch": "3.3.2",
     "npm-run-all2": "7.0.1",
