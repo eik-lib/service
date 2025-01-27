@@ -1,3 +1,10 @@
+## [5.0.10](https://github.com/eik-lib/service/compare/v5.0.9...v5.0.10) (2025-01-27)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @fastify/jwt to v9.0.3 ([#623](https://github.com/eik-lib/service/issues/623)) ([0688ba5](https://github.com/eik-lib/service/commit/0688ba55b98a793df0c847bea0834e7c401ca244))
+
 ## [5.0.9](https://github.com/eik-lib/service/compare/v5.0.8...v5.0.9) (2025-01-20)
 
 
