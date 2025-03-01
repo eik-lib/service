@@ -58,7 +58,7 @@
     "pino": "9.6.0"
   },
   "devDependencies": {
-    "@eik/eslint-config": "1.0.7",
+    "@eik/eslint-config": "1.0.10",
     "@eik/prettier-config": "1.0.1",
     "@eik/semantic-release-config": "1.0.0",
     "@eik/typescript-config": "1.0.0",
