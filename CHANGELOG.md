@@ -1,3 +1,10 @@
+## [5.0.16](https://github.com/eik-lib/service/compare/v5.0.15...v5.0.16) (2025-03-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @fastify/cors to v10.1.0 ([#631](https://github.com/eik-lib/service/issues/631)) ([71e4165](https://github.com/eik-lib/service/commit/71e4165bb01ba9a7a9472dea57f2ec41dccab718))
+
 ## [5.0.15](https://github.com/eik-lib/service/compare/v5.0.14...v5.0.15) (2025-02-17)
 
 
