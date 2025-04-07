@@ -1,3 +1,10 @@
+## [5.0.19](https://github.com/eik-lib/service/compare/v5.0.18...v5.0.19) (2025-04-07)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @eik/core to v2.0.8 ([#637](https://github.com/eik-lib/service/issues/637)) ([198b7ec](https://github.com/eik-lib/service/commit/198b7ec2f3d881ac5d22437498b7c929f3a157fb))
+
 ## [5.0.18](https://github.com/eik-lib/service/compare/v5.0.17...v5.0.18) (2025-03-31)
 
 
