@@ -46,7 +46,7 @@
   "dependencies": {
     "@eik/core": "2.0.25",
     "@eik/sink": "1.2.5",
-    "@eik/sink-file-system": "2.0.10",
+    "@eik/sink-file-system": "2.0.13",
     "@eik/sink-memory": "2.0.11",
     "@fastify/compress": "8.1.0",
     "@fastify/cors": "10.1.0",
