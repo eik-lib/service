@@ -1,3 +1,10 @@
+## [5.0.50](https://github.com/eik-lib/service/compare/v5.0.49...v5.0.50) (2025-09-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @eik/sink-memory to v2.0.12 ([#680](https://github.com/eik-lib/service/issues/680)) ([5298cef](https://github.com/eik-lib/service/commit/5298cef1e37fcf908dbfa893e7d75fa2701727bd))
+
 ## [5.0.49](https://github.com/eik-lib/service/compare/v5.0.48...v5.0.49) (2025-09-15)
 
 
