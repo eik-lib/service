@@ -240,6 +240,31 @@ tap.test(
 			downloadedResponse,
 			"on GET of file, response should match snapshot",
 		);
+
+		// GET file through stale-while-revalidate alias from server
+		const staleWhileRevalidate = await fetch(
+			`${address}${alias.headers.get("location").replace("v8", "~8")}/main/index.js`,
+			{
+				method: "GET",
+				redirect: "manual",
+			},
+		);
+
+		const staleWhileRevalidateResponse = await staleWhileRevalidate.text();
+		t.equal(
+			staleWhileRevalidate.status,
+			200,
+			"on GET of stale-while-revalidate alias, server should respond with 200 ok",
+		);
+		t.match(
+			staleWhileRevalidate.headers.get("cache-control"),
+			/stale-while-revalidate/,
+			"Expected stale-while-revalidate directive in cache-control header",
+		);
+		t.matchSnapshot(
+			staleWhileRevalidateResponse,
+			"on GET of stale-while-revalidate alias, response should match file snapshot",
+		);
 	},
 );
 
@@ -325,6 +350,31 @@ tap.test(
 		t.matchSnapshot(
 			downloadedResponse,
 			"on GET of file, response should match snapshot",
+		);
+
+		// GET file through stale-while-revalidate alias from server
+		const staleWhileRevalidate = await fetch(
+			`${address}${alias.headers.get("location").replace("v8", "~8")}/main/index.js`,
+			{
+				method: "GET",
+				redirect: "manual",
+			},
+		);
+
+		const staleWhileRevalidateResponse = await staleWhileRevalidate.text();
+		t.equal(
+			staleWhileRevalidate.status,
+			200,
+			"on GET of stale-while-revalidate alias, server should respond with 200 ok",
+		);
+		t.match(
+			staleWhileRevalidate.headers.get("cache-control"),
+			/stale-while-revalidate/,
+			"Expected stale-while-revalidate directive in cache-control header",
+		);
+		t.matchSnapshot(
+			staleWhileRevalidateResponse,
+			"on GET of stale-while-revalidate alias, response should match file snapshot",
 		);
 	},
 );
