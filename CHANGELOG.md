@@ -1,3 +1,10 @@
+# [5.1.0](https://github.com/eik-lib/service/compare/v5.0.54...v5.1.0) (2025-10-13)
+
+
+### Features
+
+* add variant of alias GET routes that use stale-while-revalidate ([#688](https://github.com/eik-lib/service/issues/688)) ([b94cb4e](https://github.com/eik-lib/service/commit/b94cb4ec7146d916f96adfbcd7eb6bc7eb5b4924))
+
 ## [5.0.54](https://github.com/eik-lib/service/compare/v5.0.53...v5.0.54) (2025-10-13)
 
 
