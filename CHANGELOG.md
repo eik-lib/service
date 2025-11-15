@@ -1,3 +1,10 @@
+## [5.1.3](https://github.com/eik-lib/service/compare/v5.1.2...v5.1.3) (2025-11-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency js-yaml to v4.1.1 [security] ([#695](https://github.com/eik-lib/service/issues/695)) ([3884e19](https://github.com/eik-lib/service/commit/3884e192c94e2ec19aa3a0d386d6b8bbbf2c76d7))
+
 ## [5.1.2](https://github.com/eik-lib/service/compare/v5.1.1...v5.1.2) (2025-11-10)
 
 
