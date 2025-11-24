@@ -53,7 +53,7 @@
     "@fastify/jwt": "10.0.0",
     "convict": "6.2.4",
     "fastify": "5.6.1",
-    "http-errors": "2.0.0",
+    "http-errors": "2.0.1",
     "js-yaml": "4.1.1",
     "pino": "9.7.0"
   },
