@@ -1,3 +1,10 @@
+## [5.1.4](https://github.com/eik-lib/service/compare/v5.1.3...v5.1.4) (2025-11-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency http-errors to v2.0.1 ([#697](https://github.com/eik-lib/service/issues/697)) ([d0a1754](https://github.com/eik-lib/service/commit/d0a1754778d1379a148086863549f2f963cc0611))
+
 ## [5.1.3](https://github.com/eik-lib/service/compare/v5.1.2...v5.1.3) (2025-11-15)
 
 
