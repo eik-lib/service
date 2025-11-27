@@ -1,3 +1,10 @@
+## [5.1.5](https://github.com/eik-lib/service/compare/v5.1.4...v5.1.5) (2025-11-27)
+
+
+### Bug Fixes
+
+* update pino, fastify ([853916e](https://github.com/eik-lib/service/commit/853916e1a3ba6bec51d023049ff4dcfa6ff40333))
+
 ## [5.1.4](https://github.com/eik-lib/service/compare/v5.1.3...v5.1.4) (2025-11-24)
 
 
