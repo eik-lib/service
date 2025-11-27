@@ -52,10 +52,10 @@
     "@fastify/cors": "10.1.0",
     "@fastify/jwt": "10.0.0",
     "convict": "6.2.4",
-    "fastify": "5.6.1",
+    "fastify": "5.6.2",
     "http-errors": "2.0.1",
     "js-yaml": "4.1.1",
-    "pino": "9.7.0"
+    "pino": "10.1.0"
   },
   "devDependencies": {
     "@eik/eslint-config": "1.0.23",
