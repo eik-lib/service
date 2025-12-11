@@ -44,7 +44,7 @@
   },
   "homepage": "https://github.com/eik-lib/service#readme",
   "dependencies": {
-    "@eik/core": "2.1.2",
+    "@eik/core": "2.1.8",
     "@eik/sink": "1.2.5",
     "@eik/sink-file-system": "2.0.13",
     "@eik/sink-memory": "2.0.12",
@@ -60,7 +60,7 @@
   "devDependencies": {
     "@eik/eslint-config": "1.0.23",
     "@eik/prettier-config": "1.0.1",
-    "@eik/semantic-release-config": "1.0.9",
+    "@eik/semantic-release-config": "1.0.10",
     "@eik/typescript-config": "1.0.0",
     "@types/readable-stream": "4.0.22",
     "cross-env": "10.1.0",
