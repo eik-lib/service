@@ -1,3 +1,10 @@
+## [5.1.6](https://github.com/eik-lib/service/compare/v5.1.5...v5.1.6) (2025-12-11)
+
+
+### Bug Fixes
+
+* updating @eik/core ([2a6c447](https://github.com/eik-lib/service/commit/2a6c447bcf5ae9ff3de9671a9e1568dd91723e9c))
+
 ## [5.1.5](https://github.com/eik-lib/service/compare/v5.1.4...v5.1.5) (2025-11-27)
 
 
