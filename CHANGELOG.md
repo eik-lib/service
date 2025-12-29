@@ -1,3 +1,10 @@
+## [5.1.11](https://github.com/eik-lib/service/compare/v5.1.10...v5.1.11) (2025-12-29)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @fastify/compress to v8.3.1 ([#704](https://github.com/eik-lib/service/issues/704)) ([0208a4d](https://github.com/eik-lib/service/commit/0208a4dfe36bdad1b6221d8d7c2d8b9b27a2e81b))
+
 ## [5.1.10](https://github.com/eik-lib/service/compare/v5.1.9...v5.1.10) (2025-12-29)
 
 
