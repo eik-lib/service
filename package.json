@@ -44,7 +44,7 @@
   },
   "homepage": "https://github.com/eik-lib/service#readme",
   "dependencies": {
-    "@eik/core": "2.1.11",
+    "@eik/core": "2.1.12",
     "@eik/sink": "1.2.5",
     "@eik/sink-file-system": "2.0.16",
     "@eik/sink-memory": "2.0.14",
