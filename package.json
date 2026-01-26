@@ -1,6 +1,6 @@
 {
   "name": "@eik/service",
-  "version": "5.1.15",
+  "version": "5.1.16",
   "description": "Eik REST API as a standalone HTTP service",
   "type": "module",
   "main": "./lib/main.js",
