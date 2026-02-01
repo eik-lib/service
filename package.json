@@ -60,7 +60,7 @@
   "devDependencies": {
     "@eik/eslint-config": "1.0.25",
     "@eik/prettier-config": "1.0.1",
-    "@eik/semantic-release-config": "1.0.10",
+    "@eik/semantic-release-config": "1.0.12",
     "@eik/typescript-config": "1.0.0",
     "@types/readable-stream": "4.0.22",
     "cross-env": "10.1.0",
