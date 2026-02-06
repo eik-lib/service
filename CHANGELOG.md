@@ -1,3 +1,14 @@
+## [5.1.21](https://github.com/eik-lib/service/compare/v5.1.20...v5.1.21) (2026-02-06)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @eik/core to v2.1.21 ([#717](https://github.com/eik-lib/service/issues/717)) [skip ci] ([8eac5f5](https://github.com/eik-lib/service/commit/8eac5f5e55ed911070b25e993e038f8b6c53f500))
+* **deps:** update dependency @eik/sink-file-system to v2.0.20 ([#718](https://github.com/eik-lib/service/issues/718)) ([04452ea](https://github.com/eik-lib/service/commit/04452ea147402d81fc7c122e0861d3a6bc1e8f8c))
+* **deps:** update dependency @eik/sink-memory to v2.0.18 ([#719](https://github.com/eik-lib/service/issues/719)) [skip ci] ([29bc516](https://github.com/eik-lib/service/commit/29bc516333346590665bd1faae2966ab542da346))
+* **deps:** update dependency fastify to v5.7.4 ([#720](https://github.com/eik-lib/service/issues/720)) [skip ci] ([3cf4574](https://github.com/eik-lib/service/commit/3cf457498188c919cc96c03b079416c183dda29e))
+* **deps:** update dependency pino to v10.3.0 ([#721](https://github.com/eik-lib/service/issues/721)) [skip ci] ([859d0ca](https://github.com/eik-lib/service/commit/859d0ca3f2c323d37b3644502d433992fd363e29))
+
 ## [5.1.20](https://github.com/eik-lib/service/compare/v5.1.19...v5.1.20) (2026-02-03)
 
 
