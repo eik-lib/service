@@ -47,7 +47,7 @@
     "@eik/core": "2.1.15",
     "@eik/sink": "1.2.5",
     "@eik/sink-file-system": "2.0.16",
-    "@eik/sink-memory": "2.0.15",
+    "@eik/sink-memory": "2.0.18",
     "@fastify/compress": "8.3.1",
     "@fastify/cors": "10.1.0",
     "@fastify/jwt": "10.0.0",
