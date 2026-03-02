@@ -55,7 +55,7 @@
     "fastify": "5.7.4",
     "http-errors": "2.0.1",
     "js-yaml": "4.1.1",
-    "pino": "10.3.0"
+    "pino": "10.3.1"
   },
   "devDependencies": {
     "@eik/eslint-config": "1.0.25",
