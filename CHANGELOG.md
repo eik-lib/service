@@ -1,3 +1,10 @@
+## [5.1.28](https://github.com/eik-lib/service/compare/v5.1.27...v5.1.28) (2026-03-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency pino to v10.3.1 ([#730](https://github.com/eik-lib/service/issues/730)) ([2200cc8](https://github.com/eik-lib/service/commit/2200cc878b9a03734be89a49f8df73eb491adda5))
+
 ## [5.1.27](https://github.com/eik-lib/service/compare/v5.1.26...v5.1.27) (2026-03-02)
 
 
