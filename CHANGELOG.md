@@ -1,3 +1,10 @@
+## [5.1.34](https://github.com/eik-lib/service/compare/v5.1.33...v5.1.34) (2026-03-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency convict to v6.2.5 ([#736](https://github.com/eik-lib/service/issues/736)) ([20b1046](https://github.com/eik-lib/service/commit/20b10460b0899c11a569f53a28ceb1d2f323b40e))
+
 ## [5.1.33](https://github.com/eik-lib/service/compare/v5.1.32...v5.1.33) (2026-03-23)
 
 
