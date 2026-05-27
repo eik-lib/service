@@ -1,3 +1,10 @@
+## [5.1.52](https://github.com/eik-lib/service/compare/v5.1.51...v5.1.52) (2026-05-27)
+
+
+### Bug Fixes
+
+* Bump dependencies ([#758](https://github.com/eik-lib/service/issues/758)) ([8033f28](https://github.com/eik-lib/service/commit/8033f28362da2c2a59634d9ac4e47c22b6483584))
+
 ## [5.1.51](https://github.com/eik-lib/service/compare/v5.1.50...v5.1.51) (2026-05-25)
 
 
