@@ -1,6 +1,4 @@
-import FormData from "form-data";
 import fastify from "fastify";
-import fetch from "node-fetch";
 import path from "path";
 import tap from "tap";
 import url from "url";
@@ -51,20 +49,19 @@ tap.test("compression - assets should have content-encoding: br", async (t) => {
 	let res = await fetch(`${address}/auth/login`, {
 		method: "POST",
 		body: formData,
-		headers: formData.getHeaders(),
 	});
 	const login = /** @type {{ token: string }} */ (await res.json());
 	headers = { Authorization: `Bearer ${login.token}` };
 
 	formData = new FormData();
-	formData.append("package", fs.createReadStream(FIXTURE_PKG));
+	formData.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 
 	// PUT files on server
 	res = await fetch(`${address}/pkg/@cuz/fuzz/1.4.8`, {
 		method: "PUT",
 		body: formData,
 		redirect: "manual",
-		headers: { ...headers, ...formData.getHeaders() },
+		headers: { ...headers },
 	});
 	t.equal(res.status, 303, "Expected to PUT OK");
 

@@ -1,6 +1,4 @@
-import FormData from "form-data";
 import fastify from "fastify";
-import fetch from "node-fetch";
 import path from "path";
 import tap from "tap";
 import url from "url";
@@ -43,7 +41,6 @@ tap.before(async () => {
 	const res = await fetch(`${address}/auth/login`, {
 		method: "POST",
 		body: formData,
-		headers: formData.getHeaders(),
 	});
 	const login = /** @type {{ token: string }} */ (await res.json());
 	headers = { Authorization: `Bearer ${login.token}` };
@@ -64,7 +61,7 @@ tap.test(
 
 		// Simulate a slow write process by delaying each chunk written
 		// to the sink with something between 10 and 100 + (buffer count) ms.
-		sink.writeDelayChunks = (count) => {
+		sink.writeDelayChunks = (count = 0) => {
 			const max = 100 + count;
 			const min = 10;
 			return Math.floor(Math.random() * max) + min;
@@ -73,13 +70,15 @@ tap.test(
 		const formData = new FormData();
 		formData.append(
 			"package",
-			fs.createReadStream(path.join(__dirname, "../fixtures/archive.tgz")),
+			new Blob([
+				fs.readFileSync(path.join(__dirname, "../fixtures/archive.tgz")),
+			]),
 		);
 
 		const res = await fetch(`${address}/pkg/frazz/2.1.4`, {
 			method: "PUT",
 			body: formData,
-			headers: { ...headers, ...formData.getHeaders() },
+			headers: { ...headers },
 		});
 
 		const obj = await res.json();
@@ -94,7 +93,7 @@ tap.test(
 
 		// Simulate a slow write process by delaying each chunk written
 		// to the sink with something between 10 and 100 + (buffer count) ms.
-		sink.writeDelayChunks = (count) => {
+		sink.writeDelayChunks = (count = 0) => {
 			const max = 100 + count;
 			const min = 10;
 			return Math.floor(Math.random() * max) + min;
@@ -103,15 +102,15 @@ tap.test(
 		const formData = new FormData();
 		formData.append(
 			"package",
-			fs.createReadStream(
-				path.join(__dirname, "../fixtures/archive-small.tgz"),
-			),
+			new Blob([
+				fs.readFileSync(path.join(__dirname, "../fixtures/archive-small.tgz")),
+			]),
 		);
 
 		const res = await fetch(`${address}/pkg/brazz/7.1.3`, {
 			method: "PUT",
 			body: formData,
-			headers: { ...headers, ...formData.getHeaders() },
+			headers: { ...headers },
 		});
 
 		const obj = await res.json();
@@ -135,13 +134,15 @@ tap.test(
 		const formData = new FormData();
 		formData.append(
 			"package",
-			fs.createReadStream(path.join(__dirname, "../fixtures/archive.tgz")),
+			new Blob([
+				fs.readFileSync(path.join(__dirname, "../fixtures/archive.tgz")),
+			]),
 		);
 
 		const res = await fetch(`${address}/pkg/frazz/2.1.4`, {
 			method: "PUT",
 			body: formData,
-			headers: { ...headers, ...formData.getHeaders() },
+			headers: { ...headers },
 		});
 
 		const obj = await res.json();
@@ -165,15 +166,15 @@ tap.test(
 		const formData = new FormData();
 		formData.append(
 			"package",
-			fs.createReadStream(
-				path.join(__dirname, "../fixtures/archive-small.tgz"),
-			),
+			new Blob([
+				fs.readFileSync(path.join(__dirname, "../fixtures/archive-small.tgz")),
+			]),
 		);
 
 		const res = await fetch(`${address}/pkg/brazz/7.1.3`, {
 			method: "PUT",
 			body: formData,
-			headers: { ...headers, ...formData.getHeaders() },
+			headers: { ...headers },
 		});
 
 		const obj = await res.json();

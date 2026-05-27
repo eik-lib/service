@@ -1,6 +1,4 @@
-import FormData from "form-data";
 import fastify from "fastify";
-import fetch from "node-fetch";
 import tap from "tap";
 
 import Sink from "./utils/sink.js";
@@ -41,7 +39,6 @@ tap.test('auth - authenticate - legal "key" value', async (t) => {
 	const response = await fetch(`${address}/auth/login`, {
 		method: "POST",
 		body: formData,
-		headers: formData.getHeaders(),
 	});
 
 	const { token } = /** @type {{ token: string }} */ (await response.json());
@@ -64,7 +61,6 @@ tap.test('auth - authenticate - illegal "key" value', async (t) => {
 	const response = await fetch(`${address}/auth/login`, {
 		method: "POST",
 		body: formData,
-		headers: formData.getHeaders(),
 	});
 
 	t.equal(

@@ -1,6 +1,4 @@
-import FormData from "form-data";
 import fastify from "fastify";
-import fetch from "node-fetch";
 import path from "path";
 import tap from "tap";
 import url from "url";
@@ -48,7 +46,6 @@ tap.before(async () => {
 	const res = await fetch(`${address}/auth/login`, {
 		method: "POST",
 		body: formData,
-		headers: formData.getHeaders(),
 	});
 	const login = /** @type {{ token: string }} */ (await res.json());
 	headers = { Authorization: `Bearer ${login.token}` };
@@ -64,17 +61,17 @@ tap.teardown(async () => {
 
 tap.test("cache-control - alias package - scoped", async (t) => {
 	const formDataA = new FormData();
-	formDataA.append("package", fs.createReadStream(FIXTURE_PKG));
+	formDataA.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 
 	const formDataB = new FormData();
-	formDataB.append("package", fs.createReadStream(FIXTURE_PKG));
+	formDataB.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 
 	// PUT files on server
 	await fetch(`${address}/pkg/@cuz/fuzz/8.4.1`, {
 		method: "PUT",
 		body: formDataA,
 		redirect: "manual",
-		headers: { ...headers, ...formDataA.getHeaders() },
+		headers: { ...headers },
 	});
 
 	// PUT files on server
@@ -82,7 +79,7 @@ tap.test("cache-control - alias package - scoped", async (t) => {
 		method: "PUT",
 		body: formDataB,
 		redirect: "manual",
-		headers: { ...headers, ...formDataB.getHeaders() },
+		headers: { ...headers },
 	});
 
 	// PUT alias on server
@@ -92,7 +89,7 @@ tap.test("cache-control - alias package - scoped", async (t) => {
 	const alias = await fetch(`${address}/pkg/@cuz/fuzz/v8`, {
 		method: "PUT",
 		body: aliasFormData,
-		headers: { ...headers, ...aliasFormData.getHeaders() },
+		headers: { ...headers },
 		redirect: "manual",
 	});
 	t.equal(

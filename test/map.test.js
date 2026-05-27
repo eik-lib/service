@@ -1,6 +1,4 @@
-import FormData from "form-data";
 import fastify from "fastify";
-import fetch from "node-fetch";
 import path from "path";
 import tap from "tap";
 import url from "url";
@@ -43,7 +41,6 @@ tap.before(async () => {
 	const res = await fetch(`${address}/auth/login`, {
 		method: "POST",
 		body: formData,
-		headers: formData.getHeaders(),
 	});
 	const login = /** @type {{ token: string }} */ (await res.json());
 	headers = { Authorization: `Bearer ${login.token}` };
@@ -59,13 +56,12 @@ tap.teardown(async () => {
 
 tap.test("import-map - no auth token on PUT - scoped", async (t) => {
 	const formData = new FormData();
-	formData.append("map", fs.createReadStream(FIXTURE_MAP));
+	formData.append("map", new Blob([fs.readFileSync(FIXTURE_MAP)]));
 
 	// PUT map on server
 	const uploaded = await fetch(`${address}/map/@cuz/buzz/4.2.2`, {
 		method: "PUT",
 		body: formData,
-		headers: formData.getHeaders(),
 		redirect: "manual",
 	});
 
@@ -78,13 +74,12 @@ tap.test("import-map - no auth token on PUT - scoped", async (t) => {
 
 tap.test("import-map - no auth token on PUT - non scoped", async (t) => {
 	const formData = new FormData();
-	formData.append("map", fs.createReadStream(FIXTURE_MAP));
+	formData.append("map", new Blob([fs.readFileSync(FIXTURE_MAP)]));
 
 	// PUT map on server
 	const uploaded = await fetch(`${address}/map/buzz/4.2.2`, {
 		method: "PUT",
 		body: formData,
-		headers: formData.getHeaders(),
 		redirect: "manual",
 	});
 
@@ -99,13 +94,13 @@ tap.test(
 	"import-map - put map -> get map - scoped successfully uploaded",
 	async (t) => {
 		const formData = new FormData();
-		formData.append("map", fs.createReadStream(FIXTURE_MAP));
+		formData.append("map", new Blob([fs.readFileSync(FIXTURE_MAP)]));
 
 		// PUT map on server
 		const uploaded = await fetch(`${address}/map/@cuz/buzz/4.2.2`, {
 			method: "PUT",
 			body: formData,
-			headers: { ...headers, ...formData.getHeaders() },
+			headers: { ...headers },
 			redirect: "manual",
 		});
 
@@ -143,13 +138,13 @@ tap.test(
 	"import-map - put map -> get map - non scoped successfully uploaded",
 	async (t) => {
 		const formData = new FormData();
-		formData.append("map", fs.createReadStream(FIXTURE_MAP));
+		formData.append("map", new Blob([fs.readFileSync(FIXTURE_MAP)]));
 
 		// PUT map on server
 		const uploaded = await fetch(`${address}/map/buzz/4.2.2`, {
 			method: "PUT",
 			body: formData,
-			headers: { ...headers, ...formData.getHeaders() },
+			headers: { ...headers },
 			redirect: "manual",
 		});
 
@@ -187,29 +182,29 @@ tap.test("import-map - get map versions - scoped", async (t) => {
 	// PUT map on server
 
 	const formDataA = new FormData();
-	formDataA.append("map", fs.createReadStream(FIXTURE_MAP));
+	formDataA.append("map", new Blob([fs.readFileSync(FIXTURE_MAP)]));
 	await fetch(`${address}/map/@cuz/buzz/4.2.2`, {
 		method: "PUT",
 		body: formDataA,
-		headers: { ...headers, ...formDataA.getHeaders() },
+		headers: { ...headers },
 		redirect: "manual",
 	});
 
 	const formDataB = new FormData();
-	formDataB.append("map", fs.createReadStream(FIXTURE_MAP));
+	formDataB.append("map", new Blob([fs.readFileSync(FIXTURE_MAP)]));
 	await fetch(`${address}/map/@cuz/buzz/5.2.2`, {
 		method: "PUT",
 		body: formDataB,
-		headers: { ...headers, ...formDataB.getHeaders() },
+		headers: { ...headers },
 		redirect: "manual",
 	});
 
 	const formDataC = new FormData();
-	formDataC.append("map", fs.createReadStream(FIXTURE_MAP));
+	formDataC.append("map", new Blob([fs.readFileSync(FIXTURE_MAP)]));
 	await fetch(`${address}/map/@cuz/buzz/4.9.2`, {
 		method: "PUT",
 		body: formDataC,
-		headers: { ...headers, ...formDataC.getHeaders() },
+		headers: { ...headers },
 		redirect: "manual",
 	});
 
@@ -235,29 +230,29 @@ tap.test("import-map - get map versions - non scoped", async (t) => {
 	// PUT map on server
 
 	const formDataA = new FormData();
-	formDataA.append("map", fs.createReadStream(FIXTURE_MAP));
+	formDataA.append("map", new Blob([fs.readFileSync(FIXTURE_MAP)]));
 	await fetch(`${address}/map/buzz/4.2.2`, {
 		method: "PUT",
 		body: formDataA,
-		headers: { ...headers, ...formDataA.getHeaders() },
+		headers: { ...headers },
 		redirect: "manual",
 	});
 
 	const formDataB = new FormData();
-	formDataB.append("map", fs.createReadStream(FIXTURE_MAP));
+	formDataB.append("map", new Blob([fs.readFileSync(FIXTURE_MAP)]));
 	await fetch(`${address}/map/buzz/5.2.2`, {
 		method: "PUT",
 		body: formDataB,
-		headers: { ...headers, ...formDataB.getHeaders() },
+		headers: { ...headers },
 		redirect: "manual",
 	});
 
 	const formDataC = new FormData();
-	formDataC.append("map", fs.createReadStream(FIXTURE_MAP));
+	formDataC.append("map", new Blob([fs.readFileSync(FIXTURE_MAP)]));
 	await fetch(`${address}/map/buzz/4.9.2`, {
 		method: "PUT",
 		body: formDataC,
-		headers: { ...headers, ...formDataC.getHeaders() },
+		headers: { ...headers },
 		redirect: "manual",
 	});
 

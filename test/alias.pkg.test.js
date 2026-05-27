@@ -1,6 +1,4 @@
-import FormData from "form-data";
 import fastify from "fastify";
-import fetch from "node-fetch";
 import path from "path";
 import tap from "tap";
 import url from "url";
@@ -45,7 +43,6 @@ tap.before(async () => {
 	const res = await fetch(`${address}/auth/login`, {
 		method: "POST",
 		body: formData,
-		headers: formData.getHeaders(),
 	});
 	const login = /** @type {{ token: string }} */ (await res.json());
 	headers = { Authorization: `Bearer ${login.token}` };
@@ -67,7 +64,6 @@ tap.test("alias package - no auth token on PUT - scoped", async (t) => {
 	const alias = await fetch(`${address}/pkg/@cuz/fuzz/v8`, {
 		method: "PUT",
 		body: aliasFormData,
-		headers: aliasFormData.getHeaders(),
 	});
 
 	t.equal(
@@ -85,7 +81,6 @@ tap.test("alias package - no auth token on PUT - non scoped", async (t) => {
 	const alias = await fetch(`${address}/pkg/fuzz/v8`, {
 		method: "PUT",
 		body: aliasFormData,
-		headers: aliasFormData.getHeaders(),
 	});
 
 	t.equal(
@@ -103,7 +98,6 @@ tap.test("alias package - no auth token on POST - scoped", async (t) => {
 	const alias = await fetch(`${address}/pkg/@cuz/fuzz/v8`, {
 		method: "POST",
 		body: aliasFormData,
-		headers: aliasFormData.getHeaders(),
 	});
 
 	t.equal(
@@ -121,7 +115,6 @@ tap.test("alias package - no auth token on POST - non scoped", async (t) => {
 	const alias = await fetch(`${address}/pkg/fuzz/v8`, {
 		method: "POST",
 		body: aliasFormData,
-		headers: aliasFormData.getHeaders(),
 	});
 
 	t.equal(
@@ -161,13 +154,13 @@ tap.test(
 	"alias package - put alias, then get file overview through alias - scoped",
 	async (t) => {
 		const pkgFormData = new FormData();
-		pkgFormData.append("package", fs.createReadStream(FIXTURE_PKG));
+		pkgFormData.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 
 		// PUT files on server
 		const uploaded = await fetch(`${address}/pkg/@cuz/fuzz/8.4.1`, {
 			method: "PUT",
 			body: pkgFormData,
-			headers: { ...headers, ...pkgFormData.getHeaders() },
+			headers: { ...headers },
 			redirect: "manual",
 		});
 
@@ -189,7 +182,7 @@ tap.test(
 		const alias = await fetch(`${address}/pkg/@cuz/fuzz/v8`, {
 			method: "PUT",
 			body: aliasFormData,
-			headers: { ...headers, ...aliasFormData.getHeaders() },
+			headers: { ...headers },
 			redirect: "manual",
 		});
 
@@ -247,13 +240,13 @@ tap.test(
 	"alias package - put alias, then get file overview through alias - non scoped",
 	async (t) => {
 		const pkgFormData = new FormData();
-		pkgFormData.append("package", fs.createReadStream(FIXTURE_PKG));
+		pkgFormData.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 
 		// PUT files on server
 		const uploaded = await fetch(`${address}/pkg/fuzz/8.4.1`, {
 			method: "PUT",
 			body: pkgFormData,
-			headers: { ...headers, ...pkgFormData.getHeaders() },
+			headers: { ...headers },
 			redirect: "manual",
 		});
 
@@ -275,7 +268,7 @@ tap.test(
 		const alias = await fetch(`${address}/pkg/fuzz/v8`, {
 			method: "PUT",
 			body: aliasFormData,
-			headers: { ...headers, ...aliasFormData.getHeaders() },
+			headers: { ...headers },
 			redirect: "manual",
 		});
 
@@ -333,13 +326,13 @@ tap.test(
 	"alias package - put alias, then get file through alias - scoped",
 	async (t) => {
 		const pkgFormData = new FormData();
-		pkgFormData.append("package", fs.createReadStream(FIXTURE_PKG));
+		pkgFormData.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 
 		// PUT files on server
 		const uploaded = await fetch(`${address}/pkg/@cuz/fuzz/8.4.1`, {
 			method: "PUT",
 			body: pkgFormData,
-			headers: { ...headers, ...pkgFormData.getHeaders() },
+			headers: { ...headers },
 			redirect: "manual",
 		});
 
@@ -361,7 +354,7 @@ tap.test(
 		const alias = await fetch(`${address}/pkg/@cuz/fuzz/v8`, {
 			method: "PUT",
 			body: aliasFormData,
-			headers: { ...headers, ...aliasFormData.getHeaders() },
+			headers: { ...headers },
 			redirect: "manual",
 		});
 
@@ -415,7 +408,7 @@ tap.test(
 
 		// GET file through stale-while-revalidate alias from server
 		const staleWhileRevalidate = await fetch(
-			`${address}${alias.headers.get("location").replace("v8", "~8")}/main/index.js`,
+			`${address}${(alias.headers.get("location") || "").replace("v8", "~8")}/main/index.js`,
 			{
 				method: "GET",
 				redirect: "manual",
@@ -444,13 +437,13 @@ tap.test(
 	"alias package - put alias, then get file through alias - non scoped",
 	async (t) => {
 		const pkgFormData = new FormData();
-		pkgFormData.append("package", fs.createReadStream(FIXTURE_PKG));
+		pkgFormData.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 
 		// PUT files on server
 		const uploaded = await fetch(`${address}/pkg/fuzz/8.4.1`, {
 			method: "PUT",
 			body: pkgFormData,
-			headers: { ...headers, ...pkgFormData.getHeaders() },
+			headers: { ...headers },
 			redirect: "manual",
 		});
 
@@ -472,7 +465,7 @@ tap.test(
 		const alias = await fetch(`${address}/pkg/fuzz/v8`, {
 			method: "PUT",
 			body: aliasFormData,
-			headers: { ...headers, ...aliasFormData.getHeaders() },
+			headers: { ...headers },
 			redirect: "manual",
 		});
 
@@ -526,7 +519,7 @@ tap.test(
 
 		// GET file through stale-while-revalidate alias from server
 		const staleWhileRevalidate = await fetch(
-			`${address}${alias.headers.get("location").replace("v8", "~8")}/main/index.js`,
+			`${address}${(alias.headers.get("location") || "").replace("v8", "~8")}/main/index.js`,
 			{
 				method: "GET",
 				redirect: "manual",
@@ -556,20 +549,20 @@ tap.test(
 	async (t) => {
 		// PUT packages on server
 		const pkgFormDataA = new FormData();
-		pkgFormDataA.append("package", fs.createReadStream(FIXTURE_PKG));
+		pkgFormDataA.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 		await fetch(`${address}/pkg/@cuz/fuzz/8.4.1`, {
 			method: "PUT",
 			body: pkgFormDataA,
-			headers: { ...headers, ...pkgFormDataA.getHeaders() },
+			headers: { ...headers },
 			redirect: "manual",
 		});
 
 		const pkgFormDataB = new FormData();
-		pkgFormDataB.append("package", fs.createReadStream(FIXTURE_PKG));
+		pkgFormDataB.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 		await fetch(`${address}/pkg/@cuz/fuzz/8.8.9`, {
 			method: "PUT",
 			body: pkgFormDataB,
-			headers: { ...headers, ...pkgFormDataB.getHeaders() },
+			headers: { ...headers },
 			redirect: "manual",
 		});
 
@@ -580,7 +573,7 @@ tap.test(
 		const aliasA = await fetch(`${address}/pkg/@cuz/fuzz/v8`, {
 			method: "PUT",
 			body: aliasFormDataA,
-			headers: { ...headers, ...aliasFormDataA.getHeaders() },
+			headers: { ...headers },
 		});
 
 		const aliasResponseA = /** @type {{ version: string; name: String; }} */ (
@@ -605,7 +598,7 @@ tap.test(
 		const aliasB = await fetch(`${address}/pkg/@cuz/fuzz/v8`, {
 			method: "POST",
 			body: aliasFormDataB,
-			headers: { ...headers, ...aliasFormDataB.getHeaders() },
+			headers: { ...headers },
 		});
 
 		const aliasResponseB = /** @type {{ version: string; name: String; }} */ (
@@ -630,20 +623,20 @@ tap.test(
 	async (t) => {
 		// PUT packages on server
 		const pkgFormDataA = new FormData();
-		pkgFormDataA.append("package", fs.createReadStream(FIXTURE_PKG));
+		pkgFormDataA.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 		await fetch(`${address}/pkg/fuzz/8.4.1`, {
 			method: "PUT",
 			body: pkgFormDataA,
-			headers: { ...headers, ...pkgFormDataA.getHeaders() },
+			headers: { ...headers },
 			redirect: "manual",
 		});
 
 		const pkgFormDataB = new FormData();
-		pkgFormDataB.append("package", fs.createReadStream(FIXTURE_PKG));
+		pkgFormDataB.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 		await fetch(`${address}/pkg/fuzz/8.8.9`, {
 			method: "PUT",
 			body: pkgFormDataB,
-			headers: { ...headers, ...pkgFormDataB.getHeaders() },
+			headers: { ...headers },
 			redirect: "manual",
 		});
 
@@ -654,7 +647,7 @@ tap.test(
 		const aliasA = await fetch(`${address}/pkg/fuzz/v8`, {
 			method: "PUT",
 			body: aliasFormDataA,
-			headers: { ...headers, ...aliasFormDataA.getHeaders() },
+			headers: { ...headers },
 		});
 
 		const aliasResponseA = /** @type {{ version: string; name: String; }} */ (
@@ -679,7 +672,7 @@ tap.test(
 		const aliasB = await fetch(`${address}/pkg/fuzz/v8`, {
 			method: "POST",
 			body: aliasFormDataB,
-			headers: { ...headers, ...aliasFormDataB.getHeaders() },
+			headers: { ...headers },
 		});
 
 		const aliasResponseB = /** @type {{ version: string; name: String; }} */ (
@@ -703,13 +696,13 @@ tap.test(
 	"alias package - put alias, then delete alias, then get file through alias - scoped",
 	async (t) => {
 		const pkgFormData = new FormData();
-		pkgFormData.append("package", fs.createReadStream(FIXTURE_PKG));
+		pkgFormData.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 
 		// PUT files on server
 		const uploaded = await fetch(`${address}/pkg/@cuz/fuzz/8.4.1`, {
 			method: "PUT",
 			body: pkgFormData,
-			headers: { ...headers, ...pkgFormData.getHeaders() },
+			headers: { ...headers },
 			redirect: "manual",
 		});
 
@@ -731,7 +724,7 @@ tap.test(
 		const alias = await fetch(`${address}/pkg/@cuz/fuzz/v8`, {
 			method: "PUT",
 			body: aliasFormData,
-			headers: { ...headers, ...aliasFormData.getHeaders() },
+			headers: { ...headers },
 		});
 
 		const aliasResponse = /** @type {{ version: string; name: String; }} */ (
@@ -779,13 +772,13 @@ tap.test(
 	"alias package - put alias, then delete alias, then get file through alias - non scoped",
 	async (t) => {
 		const pkgFormData = new FormData();
-		pkgFormData.append("package", fs.createReadStream(FIXTURE_PKG));
+		pkgFormData.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 
 		// PUT files on server
 		const uploaded = await fetch(`${address}/pkg/fuzz/8.4.1`, {
 			method: "PUT",
 			body: pkgFormData,
-			headers: { ...headers, ...pkgFormData.getHeaders() },
+			headers: { ...headers },
 			redirect: "manual",
 		});
 
@@ -807,7 +800,7 @@ tap.test(
 		const alias = await fetch(`${address}/pkg/fuzz/v8`, {
 			method: "PUT",
 			body: aliasFormData,
-			headers: { ...headers, ...aliasFormData.getHeaders() },
+			headers: { ...headers },
 		});
 
 		const aliasResponse = /** @type {{ version: string; name: String; }} */ (

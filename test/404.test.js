@@ -1,6 +1,4 @@
-import FormData from "form-data";
 import fastify from "fastify";
-import fetch from "node-fetch";
 import tap from "tap";
 
 import Sink from "./utils/sink.js";
@@ -41,7 +39,6 @@ tap.test("404 - POST request to non existing pathname", async (t) => {
 	const response = await fetch(`${address}/non/existent`, {
 		method: "POST",
 		body: formData,
-		headers: formData.getHeaders(),
 	});
 
 	t.equal(response.status, 404, "server should respond with a 404 Not found");

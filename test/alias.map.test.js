@@ -1,6 +1,4 @@
-import FormData from "form-data";
 import fastify from "fastify";
-import fetch from "node-fetch";
 import path from "path";
 import tap from "tap";
 import url from "url";
@@ -50,7 +48,6 @@ tap.before(async () => {
 	const res = await fetch(`${address}/auth/login`, {
 		method: "POST",
 		body: formData,
-		headers: formData.getHeaders(),
 	});
 	const login = /** @type {{ token: string }} */ (await res.json());
 	headers = { Authorization: `Bearer ${login.token}` };
@@ -72,7 +69,6 @@ tap.test("alias map - no auth token on PUT - scoped", async (t) => {
 	const alias = await fetch(`${address}/map/@cuz/fuzz/v8`, {
 		method: "PUT",
 		body: aliasFormData,
-		headers: aliasFormData.getHeaders(),
 	});
 
 	t.equal(
@@ -90,7 +86,6 @@ tap.test("alias map - no auth token on PUT - non scoped", async (t) => {
 	const alias = await fetch(`${address}/map/fuzz/v8`, {
 		method: "PUT",
 		body: aliasFormData,
-		headers: aliasFormData.getHeaders(),
 	});
 
 	t.equal(
@@ -108,7 +103,6 @@ tap.test("alias map - no auth token on POST - scoped", async (t) => {
 	const alias = await fetch(`${address}/map/@cuz/fuzz/v8`, {
 		method: "POST",
 		body: aliasFormData,
-		headers: aliasFormData.getHeaders(),
 	});
 
 	t.equal(
@@ -126,7 +120,6 @@ tap.test("alias map - no auth token on POST - non scoped", async (t) => {
 	const alias = await fetch(`${address}/map/fuzz/v8`, {
 		method: "POST",
 		body: aliasFormData,
-		headers: aliasFormData.getHeaders(),
 	});
 
 	t.equal(
@@ -169,12 +162,12 @@ tap.test(
 	async (t) => {
 		// PUT map on server
 		const pkgFormData = new FormData();
-		pkgFormData.append("map", fs.createReadStream(FIXTURE_MAP));
+		pkgFormData.append("map", new Blob([fs.readFileSync(FIXTURE_MAP)]));
 
 		const uploaded = await fetch(`${address}/map/@cuz/fuzz/8.4.1`, {
 			method: "PUT",
 			body: pkgFormData,
-			headers: { ...headers, ...pkgFormData.getHeaders() },
+			headers: { ...headers },
 			redirect: "manual",
 		});
 
@@ -196,7 +189,7 @@ tap.test(
 		const alias = await fetch(`${address}/map/@cuz/fuzz/v8`, {
 			method: "PUT",
 			body: aliasFormData,
-			headers: { ...headers, ...aliasFormData.getHeaders() },
+			headers: { ...headers },
 			redirect: "manual",
 		});
 
@@ -255,12 +248,12 @@ tap.test(
 	async (t) => {
 		// PUT map on server
 		const pkgFormData = new FormData();
-		pkgFormData.append("map", fs.createReadStream(FIXTURE_MAP));
+		pkgFormData.append("map", new Blob([fs.readFileSync(FIXTURE_MAP)]));
 
 		const uploaded = await fetch(`${address}/map/fuzz/8.4.1`, {
 			method: "PUT",
 			body: pkgFormData,
-			headers: { ...headers, ...pkgFormData.getHeaders() },
+			headers: { ...headers },
 			redirect: "manual",
 		});
 
@@ -282,7 +275,7 @@ tap.test(
 		const alias = await fetch(`${address}/map/fuzz/v8`, {
 			method: "PUT",
 			body: aliasFormData,
-			headers: { ...headers, ...aliasFormData.getHeaders() },
+			headers: { ...headers },
 			redirect: "manual",
 		});
 
@@ -341,20 +334,20 @@ tap.test(
 	async (t) => {
 		// PUT maps on server
 		const pkgFormDataA = new FormData();
-		pkgFormDataA.append("map", fs.createReadStream(FIXTURE_MAP));
+		pkgFormDataA.append("map", new Blob([fs.readFileSync(FIXTURE_MAP)]));
 		await fetch(`${address}/map/@cuz/fuzz/8.4.1`, {
 			method: "PUT",
 			body: pkgFormDataA,
-			headers: { ...headers, ...pkgFormDataA.getHeaders() },
+			headers: { ...headers },
 			redirect: "manual",
 		});
 
 		const pkgFormDataB = new FormData();
-		pkgFormDataB.append("map", fs.createReadStream(FIXTURE_MAP_B));
+		pkgFormDataB.append("map", new Blob([fs.readFileSync(FIXTURE_MAP_B)]));
 		await fetch(`${address}/map/@cuz/fuzz/8.8.9`, {
 			method: "PUT",
 			body: pkgFormDataB,
-			headers: { ...headers, ...pkgFormDataB.getHeaders() },
+			headers: { ...headers },
 			redirect: "manual",
 		});
 
@@ -365,7 +358,7 @@ tap.test(
 		const aliasA = await fetch(`${address}/map/@cuz/fuzz/v8`, {
 			method: "PUT",
 			body: aliasFormDataA,
-			headers: { ...headers, ...aliasFormDataA.getHeaders() },
+			headers: { ...headers },
 		});
 
 		const aliasResponseA = /** @type {{ imports: { fuzz: string }}} */ (
@@ -385,7 +378,7 @@ tap.test(
 		const aliasB = await fetch(`${address}/map/@cuz/fuzz/v8`, {
 			method: "POST",
 			body: aliasFormDataB,
-			headers: { ...headers, ...aliasFormDataB.getHeaders() },
+			headers: { ...headers },
 		});
 
 		const aliasResponseB = /** @type {{ imports: { fuzz: string }}} */ (
@@ -405,20 +398,20 @@ tap.test(
 	async (t) => {
 		// PUT maps on server
 		const pkgFormDataA = new FormData();
-		pkgFormDataA.append("map", fs.createReadStream(FIXTURE_MAP));
+		pkgFormDataA.append("map", new Blob([fs.readFileSync(FIXTURE_MAP)]));
 		await fetch(`${address}/map/fuzz/8.4.1`, {
 			method: "PUT",
 			body: pkgFormDataA,
-			headers: { ...headers, ...pkgFormDataA.getHeaders() },
+			headers: { ...headers },
 			redirect: "manual",
 		});
 
 		const pkgFormDataB = new FormData();
-		pkgFormDataB.append("map", fs.createReadStream(FIXTURE_MAP_B));
+		pkgFormDataB.append("map", new Blob([fs.readFileSync(FIXTURE_MAP_B)]));
 		await fetch(`${address}/map/fuzz/8.8.9`, {
 			method: "PUT",
 			body: pkgFormDataB,
-			headers: { ...headers, ...pkgFormDataB.getHeaders() },
+			headers: { ...headers },
 			redirect: "manual",
 		});
 
@@ -429,7 +422,7 @@ tap.test(
 		const aliasA = await fetch(`${address}/map/fuzz/v8`, {
 			method: "PUT",
 			body: aliasFormDataA,
-			headers: { ...headers, ...aliasFormDataA.getHeaders() },
+			headers: { ...headers },
 		});
 
 		const aliasResponseA = /** @type {{ imports: { fuzz: string }}} */ (
@@ -449,7 +442,7 @@ tap.test(
 		const aliasB = await fetch(`${address}/map/fuzz/v8`, {
 			method: "POST",
 			body: aliasFormDataB,
-			headers: { ...headers, ...aliasFormDataB.getHeaders() },
+			headers: { ...headers },
 		});
 
 		const aliasResponseB = /** @type {{ imports: { fuzz: string }}} */ (
@@ -469,12 +462,12 @@ tap.test(
 	async (t) => {
 		// PUT map on server
 		const pkgFormData = new FormData();
-		pkgFormData.append("map", fs.createReadStream(FIXTURE_MAP));
+		pkgFormData.append("map", new Blob([fs.readFileSync(FIXTURE_MAP)]));
 
 		const uploaded = await fetch(`${address}/map/@cuz/fuzz/8.4.1`, {
 			method: "PUT",
 			body: pkgFormData,
-			headers: { ...headers, ...pkgFormData.getHeaders() },
+			headers: { ...headers },
 			redirect: "manual",
 		});
 
@@ -496,7 +489,7 @@ tap.test(
 		const alias = await fetch(`${address}/map/@cuz/fuzz/v8`, {
 			method: "PUT",
 			body: aliasFormData,
-			headers: { ...headers, ...aliasFormData.getHeaders() },
+			headers: { ...headers },
 		});
 
 		const aliasResponse = /** @type {{ imports: { fuzz: string }}} */ (
@@ -540,12 +533,12 @@ tap.test(
 	async (t) => {
 		// PUT map on server
 		const pkgFormData = new FormData();
-		pkgFormData.append("map", fs.createReadStream(FIXTURE_MAP));
+		pkgFormData.append("map", new Blob([fs.readFileSync(FIXTURE_MAP)]));
 
 		const uploaded = await fetch(`${address}/map/fuzz/8.4.1`, {
 			method: "PUT",
 			body: pkgFormData,
-			headers: { ...headers, ...pkgFormData.getHeaders() },
+			headers: { ...headers },
 			redirect: "manual",
 		});
 
@@ -567,7 +560,7 @@ tap.test(
 		const alias = await fetch(`${address}/map/fuzz/v8`, {
 			method: "PUT",
 			body: aliasFormData,
-			headers: { ...headers, ...aliasFormData.getHeaders() },
+			headers: { ...headers },
 		});
 
 		const aliasResponse = /** @type {{ imports: { fuzz: string }}} */ (

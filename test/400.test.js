@@ -1,6 +1,5 @@
-import FormData from "form-data";
+import http from "node:http";
 import fastify from "fastify";
-import fetch from "node-fetch";
 import path from "path";
 import tap from "tap";
 import url from "url";
@@ -48,20 +47,19 @@ tap.test("400 - GET request with non-existing hostname", async (t) => {
 	const res = await fetch(`${address}/auth/login`, {
 		method: "POST",
 		body: formData,
-		headers: formData.getHeaders(),
 	});
 
 	const { token } = /** @type {{ token: string }} */ (await res.json());
 
 	formData = new FormData();
-	formData.append("package", fs.createReadStream(FIXTURE_PKG));
+	formData.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 
 	// PUT files on server so we don't get 404
 	const uploaded = await fetch(`${address}/pkg/@cuz/fuzz/1.4.8`, {
 		method: "PUT",
 		body: formData,
 		redirect: "manual",
-		headers: { ...formData.getHeaders(), Authorization: `Bearer ${token}` },
+		headers: { Authorization: `Bearer ${token}` },
 	});
 
 	t.equal(
@@ -75,13 +73,22 @@ tap.test("400 - GET request with non-existing hostname", async (t) => {
 		"on PUT of package, server should respond with a location header",
 	);
 
-	// GET file from server
-	const response = await fetch(`${address}/pkg/@cuz/fuzz/1.4.8/main/index.js`, {
-		method: "GET",
-		headers: {
-			Host: "leethaxorz.ai",
-		},
+	// GET file from server with a non-existing hostname (native fetch forbids
+	// setting the Host header, so use node:http directly)
+	const { port, hostname } = new URL(address);
+	const status = await new Promise((resolve) => {
+		const req = http.request(
+			{
+				hostname,
+				port,
+				path: "/pkg/@cuz/fuzz/1.4.8/main/index.js",
+				method: "GET",
+				headers: { Host: "leethaxorz.ai" },
+			},
+			(res) => resolve(res.statusCode),
+		);
+		req.end();
 	});
 
-	t.equal(response.status, 400, "server should respond with a 400 Bad Request");
+	t.equal(status, 400, "server should respond with a 400 Bad Request");
 });
