@@ -1,6 +1,4 @@
-import FormData from "form-data";
 import fastify from "fastify";
-import fetch from "node-fetch";
 import path from "path";
 import tap from "tap";
 import url from "url";
@@ -45,7 +43,6 @@ tap.before(async () => {
 	const res = await fetch(`${address}/auth/login`, {
 		method: "POST",
 		body: formData,
-		headers: formData.getHeaders(),
 	});
 	const login = /** @type {{ token: string }} */ (await res.json());
 	headers = { Authorization: `Bearer ${login.token}` };
@@ -61,14 +58,13 @@ tap.teardown(async () => {
 
 tap.test("packages - no auth token on PUT - scoped", async (t) => {
 	const formData = new FormData();
-	formData.append("package", fs.createReadStream(FIXTURE_PKG));
+	formData.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 
 	// PUT files on server
 	const uploaded = await fetch(`${address}/pkg/@cuz/fuzz/1.4.8`, {
 		method: "PUT",
 		body: formData,
 		redirect: "manual",
-		headers: formData.getHeaders(),
 	});
 
 	t.equal(
@@ -80,14 +76,13 @@ tap.test("packages - no auth token on PUT - scoped", async (t) => {
 
 tap.test("packages - no auth token on PUT - non scoped", async (t) => {
 	const formData = new FormData();
-	formData.append("package", fs.createReadStream(FIXTURE_PKG));
+	formData.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 
 	// PUT files on server
 	const uploaded = await fetch(`${address}/pkg/fuzz/1.4.8`, {
 		method: "PUT",
 		body: formData,
 		redirect: "manual",
-		headers: formData.getHeaders(),
 	});
 
 	t.equal(
@@ -101,14 +96,14 @@ tap.test(
 	"packages - put pkg -> get file - scoped successfully uploaded",
 	async (t) => {
 		const formData = new FormData();
-		formData.append("package", fs.createReadStream(FIXTURE_PKG));
+		formData.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 
 		// PUT files on server
 		const uploaded = await fetch(`${address}/pkg/@cuz/fuzz/1.4.8`, {
 			method: "PUT",
 			body: formData,
 			redirect: "manual",
-			headers: { ...headers, ...formData.getHeaders() },
+			headers: { ...headers },
 		});
 
 		t.equal(
@@ -147,13 +142,13 @@ tap.test(
 	"packages - put pkg -> get file - non scoped successfully uploaded",
 	async (t) => {
 		const formData = new FormData();
-		formData.append("package", fs.createReadStream(FIXTURE_PKG));
+		formData.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 
 		// PUT files on server
 		const uploaded = await fetch(`${address}/pkg/fuzz/8.4.1`, {
 			method: "PUT",
 			body: formData,
-			headers: { ...headers, ...formData.getHeaders() },
+			headers: { ...headers },
 			redirect: "manual",
 		});
 
@@ -188,13 +183,13 @@ tap.test(
 
 tap.test("packages - get package overview - scoped", async (t) => {
 	const formData = new FormData();
-	formData.append("package", fs.createReadStream(FIXTURE_PKG));
+	formData.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 
 	// PUT files on server
 	const uploaded = await fetch(`${address}/pkg/@cuz/fuzz/8.4.1/`, {
 		method: "PUT",
 		body: formData,
-		headers: { ...headers, ...formData.getHeaders() },
+		headers: { ...headers },
 		redirect: "manual",
 	});
 
@@ -221,13 +216,13 @@ tap.test("packages - get package overview - scoped", async (t) => {
 
 tap.test("packages - get package overview - non scoped", async (t) => {
 	const formData = new FormData();
-	formData.append("package", fs.createReadStream(FIXTURE_PKG));
+	formData.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 
 	// PUT files on server
 	const uploaded = await fetch(`${address}/pkg/fuzz/8.4.1/`, {
 		method: "PUT",
 		body: formData,
-		headers: { ...headers, ...formData.getHeaders() },
+		headers: { ...headers },
 		redirect: "manual",
 	});
 
@@ -256,29 +251,29 @@ tap.test("packages - get package versions - scoped", async (t) => {
 	// PUT files on server
 
 	const formDataA = new FormData();
-	formDataA.append("package", fs.createReadStream(FIXTURE_PKG));
+	formDataA.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 	await fetch(`${address}/pkg/@cuz/fuzz/7.3.2/`, {
 		method: "PUT",
 		body: formDataA,
-		headers: { ...headers, ...formDataA.getHeaders() },
+		headers: { ...headers },
 		redirect: "manual",
 	});
 
 	const formDataB = new FormData();
-	formDataB.append("package", fs.createReadStream(FIXTURE_PKG));
+	formDataB.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 	await fetch(`${address}/pkg/@cuz/fuzz/8.4.1/`, {
 		method: "PUT",
 		body: formDataB,
-		headers: { ...headers, ...formDataB.getHeaders() },
+		headers: { ...headers },
 		redirect: "manual",
 	});
 
 	const formDataC = new FormData();
-	formDataC.append("package", fs.createReadStream(FIXTURE_PKG));
+	formDataC.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 	await fetch(`${address}/pkg/@cuz/fuzz/8.5.1/`, {
 		method: "PUT",
 		body: formDataC,
-		headers: { ...headers, ...formDataC.getHeaders() },
+		headers: { ...headers },
 		redirect: "manual",
 	});
 
@@ -296,29 +291,29 @@ tap.test("packages - get package versions - non scoped", async (t) => {
 	// PUT files on server
 
 	const formDataA = new FormData();
-	formDataA.append("package", fs.createReadStream(FIXTURE_PKG));
+	formDataA.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 	await fetch(`${address}/pkg/fuzz/7.3.2/`, {
 		method: "PUT",
 		body: formDataA,
-		headers: { ...headers, ...formDataA.getHeaders() },
+		headers: { ...headers },
 		redirect: "manual",
 	});
 
 	const formDataB = new FormData();
-	formDataB.append("package", fs.createReadStream(FIXTURE_PKG));
+	formDataB.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 	await fetch(`${address}/pkg/fuzz/8.4.1/`, {
 		method: "PUT",
 		body: formDataB,
-		headers: { ...headers, ...formDataB.getHeaders() },
+		headers: { ...headers },
 		redirect: "manual",
 	});
 
 	const formDataC = new FormData();
-	formDataC.append("package", fs.createReadStream(FIXTURE_PKG));
+	formDataC.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 	await fetch(`${address}/pkg/fuzz/8.5.1/`, {
 		method: "PUT",
 		body: formDataC,
-		headers: { ...headers, ...formDataC.getHeaders() },
+		headers: { ...headers },
 		redirect: "manual",
 	});
 
@@ -352,20 +347,19 @@ tap.test("packages - configure max size", async (t) => {
 	const res = await fetch(`${address}/auth/login`, {
 		method: "POST",
 		body: loginFormData,
-		headers: loginFormData.getHeaders(),
 	});
 
 	const { token } = /** @type {{ token: string }} */ (await res.json());
 	const headers = { Authorization: `Bearer ${token}` };
 
 	const formData = new FormData();
-	formData.append("package", fs.createReadStream(FIXTURE_PKG));
+	formData.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 
 	// PUT files on server
 	const uploaded = await fetch(`${address}/pkg/fuzz/8.4.1/`, {
 		method: "PUT",
 		body: formData,
-		headers: { ...headers, ...formData.getHeaders() },
+		headers: { ...headers },
 		redirect: "manual",
 	});
 

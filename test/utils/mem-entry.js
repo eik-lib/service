@@ -1,6 +1,7 @@
 import crypto from "node:crypto";
 
 const Entry = class Entry {
+	/** @param {{ mimeType?: string, payload?: Buffer[] }} options */
 	constructor({ mimeType = "application/octet-stream", payload = [] } = {}) {
 		this._mimeType = mimeType;
 		this._payload = payload;

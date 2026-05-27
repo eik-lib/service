@@ -1,6 +1,4 @@
-import FormData from "form-data";
 import fastify from "fastify";
-import fetch from "node-fetch";
 import path from "path";
 import tap from "tap";
 import url from "url";
@@ -51,7 +49,6 @@ tap.before(async () => {
 	const res = await fetch(`${address}/auth/login`, {
 		method: "POST",
 		body: formData,
-		headers: formData.getHeaders(),
 	});
 	const login = /** @type {{ token: string }} */ (await res.json());
 	headers = { Authorization: `Bearer ${login.token}` };
@@ -67,13 +64,13 @@ tap.teardown(async () => {
 
 tap.test("query params - package", async (t) => {
 	const formData = new FormData();
-	formData.append("package", fs.createReadStream(FIXTURE_PKG));
+	formData.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 
 	// PUT files on server
 	await fetch(`${address}/pkg/fuzz/8.4.1`, {
 		method: "PUT",
 		body: formData,
-		headers: { ...headers, ...formData.getHeaders() },
+		headers: { ...headers },
 		redirect: "manual",
 	});
 
@@ -94,13 +91,13 @@ tap.test("query params - package", async (t) => {
 
 tap.test("query params - NPM package", async (t) => {
 	const formData = new FormData();
-	formData.append("package", fs.createReadStream(FIXTURE_PKG));
+	formData.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 
 	// PUT files on server
 	await fetch(`${address}/npm/fuzz/8.4.1`, {
 		method: "PUT",
 		body: formData,
-		headers: { ...headers, ...formData.getHeaders() },
+		headers: { ...headers },
 		redirect: "manual",
 	});
 
@@ -121,13 +118,13 @@ tap.test("query params - NPM package", async (t) => {
 
 tap.test("query params - map", async (t) => {
 	const formData = new FormData();
-	formData.append("map", fs.createReadStream(FIXTURE_MAP));
+	formData.append("map", new Blob([fs.readFileSync(FIXTURE_MAP)]));
 
 	// PUT map on server
 	await fetch(`${address}/map/buzz/4.2.2`, {
 		method: "PUT",
 		body: formData,
-		headers: { ...headers, ...formData.getHeaders() },
+		headers: { ...headers },
 		redirect: "manual",
 	});
 

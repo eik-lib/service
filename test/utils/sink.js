@@ -6,7 +6,7 @@ import mime from "mime";
 import path from "node:path";
 import Entry from "./mem-entry.js";
 
-function toUrlPathname(pathname) {
+function toUrlPathname(/** @type {string} */ pathname) {
 	return pathname.replace(/\\/g, "/");
 }
 
@@ -34,16 +34,20 @@ export default class SinkTest extends Sink {
 
 		this._counter = this._metrics.counter(counterMetric);
 
-		// eslint-disable-next-line no-unused-vars
-		this._writeDelayResolve = (a) => -1;
-		// eslint-disable-next-line no-unused-vars
-		this._writeDelayChunks = (a) => -1;
+		/** @type {(count?: number) => number} */
+		this._writeDelayResolve = () => -1;
+		/** @type {(count?: number) => number} */
+		this._writeDelayChunks = () => -1;
 	}
 
 	get metrics() {
 		return this._metrics;
 	}
 
+	/**
+	 * @param {string} filePath
+	 * @param {any} payload
+	 */
 	set(filePath, payload) {
 		const pathname = toUrlPathname(path.join(this._rootPath, filePath));
 		const mimeType = mime.getType(pathname) || "application/octet-stream";
@@ -59,6 +63,7 @@ export default class SinkTest extends Sink {
 		this._state.set(pathname, entry);
 	}
 
+	/** @param {string} filePath */
 	get(filePath) {
 		const pathname = toUrlPathname(path.join(this._rootPath, filePath));
 		if (this._state.has(pathname)) {
@@ -69,7 +74,7 @@ export default class SinkTest extends Sink {
 	}
 
 	dump() {
-		return Array.from(this._state.entries());
+		return [...this._state.entries()];
 	}
 
 	clear() {
@@ -82,12 +87,13 @@ export default class SinkTest extends Sink {
 
 		this._counter = this._metrics.counter(counterMetric);
 
-		// eslint-disable-next-line no-unused-vars
-		this._writeDelayResolve = (a) => -1;
-		// eslint-disable-next-line no-unused-vars
-		this._writeDelayChunks = (a) => -1;
+		/** @type {(count?: number) => number} */
+		this._writeDelayResolve = () => -1;
+		/** @type {(count?: number) => number} */
+		this._writeDelayChunks = () => -1;
 	}
 
+	/** @param {any} items */
 	load(items) {
 		if (!Array.isArray(items)) {
 			throw new Error('Argument "items" must be an Array');
@@ -96,7 +102,7 @@ export default class SinkTest extends Sink {
 	}
 
 	/**
-	 * @param {(count: number) => number} fn
+	 * @param {(count?: number) => number} fn
 	 */
 	set writeDelayResolve(fn) {
 		if (typeof fn !== "function") {
@@ -106,7 +112,7 @@ export default class SinkTest extends Sink {
 	}
 
 	/**
-	 * @param {(count: number) => number} fn
+	 * @param {(count?: number) => number} fn
 	 */
 	set writeDelayChunks(fn) {
 		if (typeof fn !== "function") {
@@ -117,6 +123,10 @@ export default class SinkTest extends Sink {
 
 	// Common SINK API
 
+	/**
+	 * @param {string} filePath
+	 * @param {string} contentType
+	 */
 	write(filePath, contentType) {
 		return new Promise((resolve, reject) => {
 			const operation = "write";
@@ -139,6 +149,7 @@ export default class SinkTest extends Sink {
 			}
 
 			const chunkDelay = this._writeDelayChunks;
+			/** @type {any[]} */
 			const payload = [];
 			let count = 0;
 			const stream = new Writable({
@@ -186,6 +197,7 @@ export default class SinkTest extends Sink {
 		});
 	}
 
+	/** @param {string} filePath */
 	read(filePath) {
 		return new Promise((resolve, reject) => {
 			const operation = "read";
@@ -215,7 +227,7 @@ export default class SinkTest extends Sink {
 
 			file.stream = new Readable({
 				read() {
-					payload.forEach((item) => {
+					payload.forEach((/** @type {any} */ item) => {
 						this.push(item);
 					});
 					this.push(null);
@@ -236,6 +248,10 @@ export default class SinkTest extends Sink {
 		});
 	}
 
+	/**
+	 * @param {string} filePath
+	 * @returns {Promise<void>}
+	 */
 	delete(filePath) {
 		return new Promise((resolve, reject) => {
 			const operation = "delete";
@@ -257,7 +273,7 @@ export default class SinkTest extends Sink {
 			}
 
 			// Delete recursively
-			Array.from(this._state.keys()).forEach((key) => {
+			[...this._state.keys()].forEach((key) => {
 				if (key.startsWith(pathname)) {
 					this._state.delete(key);
 				}
@@ -275,6 +291,10 @@ export default class SinkTest extends Sink {
 		});
 	}
 
+	/**
+	 * @param {string} filePath
+	 * @returns {Promise<void>}
+	 */
 	exist(filePath) {
 		return new Promise((resolve, reject) => {
 			const operation = "exist";

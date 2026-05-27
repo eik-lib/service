@@ -1,6 +1,4 @@
-import FormData from "form-data";
 import fastify from "fastify";
-import fetch from "node-fetch";
 import path from "path";
 import tap from "tap";
 import url from "url";
@@ -51,7 +49,6 @@ tap.before(async () => {
 	const res = await fetch(`${address}/auth/login`, {
 		method: "POST",
 		body: formData,
-		headers: formData.getHeaders(),
 	});
 	const login = /** @type {{ token: string }} */ (await res.json());
 	headers = { Authorization: `Bearer ${login.token}` };
@@ -72,7 +69,6 @@ tap.test("cache-control - auth post", async (t) => {
 	const response = await fetch(`${address}/auth/login`, {
 		method: "POST",
 		body: formData,
-		headers: formData.getHeaders(),
 	});
 
 	t.equal(
@@ -84,14 +80,14 @@ tap.test("cache-control - auth post", async (t) => {
 
 tap.test("cache-control - package - non-scoped", async (t) => {
 	const formData = new FormData();
-	formData.append("package", fs.createReadStream(FIXTURE_PKG));
+	formData.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 
 	// PUT files on server
 	const uploaded = await fetch(`${address}/pkg/fuzz/1.4.8`, {
 		method: "PUT",
 		body: formData,
 		redirect: "manual",
-		headers: { ...headers, ...formData.getHeaders() },
+		headers: { ...headers },
 	});
 	t.equal(
 		uploaded.headers.get("cache-control"),
@@ -145,14 +141,14 @@ tap.test("cache-control - package - non-scoped", async (t) => {
 
 tap.test("cache-control - package - scoped", async (t) => {
 	const formData = new FormData();
-	formData.append("package", fs.createReadStream(FIXTURE_PKG));
+	formData.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 
 	// PUT files on server
 	const uploaded = await fetch(`${address}/pkg/@cuz/fuzz/1.4.8`, {
 		method: "PUT",
 		body: formData,
 		redirect: "manual",
-		headers: { ...headers, ...formData.getHeaders() },
+		headers: { ...headers },
 	});
 	t.equal(
 		uploaded.headers.get("cache-control"),
@@ -206,14 +202,14 @@ tap.test("cache-control - package - scoped", async (t) => {
 
 tap.test("cache-control - npm package - non-scoped", async (t) => {
 	const formData = new FormData();
-	formData.append("package", fs.createReadStream(FIXTURE_PKG));
+	formData.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 
 	// PUT files on server
 	const uploaded = await fetch(`${address}/npm/fuzz/1.4.8`, {
 		method: "PUT",
 		body: formData,
 		redirect: "manual",
-		headers: { ...headers, ...formData.getHeaders() },
+		headers: { ...headers },
 	});
 	t.equal(
 		uploaded.headers.get("cache-control"),
@@ -267,14 +263,14 @@ tap.test("cache-control - npm package - non-scoped", async (t) => {
 
 tap.test("cache-control - npm package - scoped", async (t) => {
 	const formData = new FormData();
-	formData.append("package", fs.createReadStream(FIXTURE_PKG));
+	formData.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 
 	// PUT files on server
 	const uploaded = await fetch(`${address}/npm/@cuz/fuzz/1.4.8`, {
 		method: "PUT",
 		body: formData,
 		redirect: "manual",
-		headers: { ...headers, ...formData.getHeaders() },
+		headers: { ...headers },
 	});
 	t.equal(
 		uploaded.headers.get("cache-control"),
@@ -328,13 +324,13 @@ tap.test("cache-control - npm package - scoped", async (t) => {
 
 tap.test("cache-control - map - non-scoped", async (t) => {
 	const formData = new FormData();
-	formData.append("map", fs.createReadStream(FIXTURE_MAP));
+	formData.append("map", new Blob([fs.readFileSync(FIXTURE_MAP)]));
 
 	// PUT map on server
 	const uploaded = await fetch(`${address}/map/buzz/4.2.2`, {
 		method: "PUT",
 		body: formData,
-		headers: { ...headers, ...formData.getHeaders() },
+		headers: { ...headers },
 		redirect: "manual",
 	});
 	t.equal(
@@ -379,13 +375,13 @@ tap.test("cache-control - map - non-scoped", async (t) => {
 
 tap.test("cache-control - map - scoped", async (t) => {
 	const formData = new FormData();
-	formData.append("map", fs.createReadStream(FIXTURE_MAP));
+	formData.append("map", new Blob([fs.readFileSync(FIXTURE_MAP)]));
 
 	// PUT map on server
 	const uploaded = await fetch(`${address}/map/@cuz/buzz/4.2.2`, {
 		method: "PUT",
 		body: formData,
-		headers: { ...headers, ...formData.getHeaders() },
+		headers: { ...headers },
 		redirect: "manual",
 	});
 	t.equal(
@@ -430,17 +426,17 @@ tap.test("cache-control - map - scoped", async (t) => {
 
 tap.test("cache-control - alias package - non-scoped", async (t) => {
 	const formDataA = new FormData();
-	formDataA.append("package", fs.createReadStream(FIXTURE_PKG));
+	formDataA.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 
 	const formDataB = new FormData();
-	formDataB.append("package", fs.createReadStream(FIXTURE_PKG));
+	formDataB.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 
 	// PUT files on server
 	await fetch(`${address}/pkg/fuzz/8.4.1`, {
 		method: "PUT",
 		body: formDataA,
 		redirect: "manual",
-		headers: { ...headers, ...formDataA.getHeaders() },
+		headers: { ...headers },
 	});
 
 	// PUT files on server
@@ -448,7 +444,7 @@ tap.test("cache-control - alias package - non-scoped", async (t) => {
 		method: "PUT",
 		body: formDataB,
 		redirect: "manual",
-		headers: { ...headers, ...formDataB.getHeaders() },
+		headers: { ...headers },
 	});
 
 	// PUT alias on server
@@ -458,7 +454,7 @@ tap.test("cache-control - alias package - non-scoped", async (t) => {
 	const alias = await fetch(`${address}/pkg/fuzz/v8`, {
 		method: "PUT",
 		body: aliasFormData,
-		headers: { ...headers, ...aliasFormData.getHeaders() },
+		headers: { ...headers },
 		redirect: "manual",
 	});
 	t.equal(
@@ -485,7 +481,7 @@ tap.test("cache-control - alias package - non-scoped", async (t) => {
 	const updated = await fetch(`${address}/pkg/fuzz/v8`, {
 		method: "POST",
 		body: aliasFormDataB,
-		headers: { ...headers, ...aliasFormDataB.getHeaders() },
+		headers: { ...headers },
 		redirect: "manual",
 	});
 	t.equal(
@@ -508,17 +504,17 @@ tap.test("cache-control - alias package - non-scoped", async (t) => {
 
 tap.test("cache-control - alias package - scoped", async (t) => {
 	const formDataA = new FormData();
-	formDataA.append("package", fs.createReadStream(FIXTURE_PKG));
+	formDataA.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 
 	const formDataB = new FormData();
-	formDataB.append("package", fs.createReadStream(FIXTURE_PKG));
+	formDataB.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 
 	// PUT files on server
 	await fetch(`${address}/pkg/@cuz/fuzz/8.4.1`, {
 		method: "PUT",
 		body: formDataA,
 		redirect: "manual",
-		headers: { ...headers, ...formDataA.getHeaders() },
+		headers: { ...headers },
 	});
 
 	// PUT files on server
@@ -526,7 +522,7 @@ tap.test("cache-control - alias package - scoped", async (t) => {
 		method: "PUT",
 		body: formDataB,
 		redirect: "manual",
-		headers: { ...headers, ...formDataB.getHeaders() },
+		headers: { ...headers },
 	});
 
 	// PUT alias on server
@@ -536,7 +532,7 @@ tap.test("cache-control - alias package - scoped", async (t) => {
 	const alias = await fetch(`${address}/pkg/@cuz/fuzz/v8`, {
 		method: "PUT",
 		body: aliasFormData,
-		headers: { ...headers, ...aliasFormData.getHeaders() },
+		headers: { ...headers },
 		redirect: "manual",
 	});
 	t.equal(
@@ -563,7 +559,7 @@ tap.test("cache-control - alias package - scoped", async (t) => {
 	const updated = await fetch(`${address}/pkg/@cuz/fuzz/v8`, {
 		method: "POST",
 		body: aliasFormDataB,
-		headers: { ...headers, ...aliasFormDataB.getHeaders() },
+		headers: { ...headers },
 		redirect: "manual",
 	});
 	t.equal(
@@ -586,17 +582,17 @@ tap.test("cache-control - alias package - scoped", async (t) => {
 
 tap.test("cache-control - alias NPM package - non-scoped", async (t) => {
 	const formDataA = new FormData();
-	formDataA.append("package", fs.createReadStream(FIXTURE_PKG));
+	formDataA.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 
 	const formDataB = new FormData();
-	formDataB.append("package", fs.createReadStream(FIXTURE_PKG));
+	formDataB.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 
 	// PUT files on server
 	await fetch(`${address}/npm/fuzz/8.4.1`, {
 		method: "PUT",
 		body: formDataA,
 		redirect: "manual",
-		headers: { ...headers, ...formDataA.getHeaders() },
+		headers: { ...headers },
 	});
 
 	// PUT files on server
@@ -604,7 +600,7 @@ tap.test("cache-control - alias NPM package - non-scoped", async (t) => {
 		method: "PUT",
 		body: formDataB,
 		redirect: "manual",
-		headers: { ...headers, ...formDataB.getHeaders() },
+		headers: { ...headers },
 	});
 
 	// PUT alias on server
@@ -614,7 +610,7 @@ tap.test("cache-control - alias NPM package - non-scoped", async (t) => {
 	const alias = await fetch(`${address}/npm/fuzz/v8`, {
 		method: "PUT",
 		body: aliasFormData,
-		headers: { ...headers, ...aliasFormData.getHeaders() },
+		headers: { ...headers },
 		redirect: "manual",
 	});
 	t.equal(
@@ -641,7 +637,7 @@ tap.test("cache-control - alias NPM package - non-scoped", async (t) => {
 	const updated = await fetch(`${address}/npm/fuzz/v8`, {
 		method: "POST",
 		body: aliasFormDataB,
-		headers: { ...headers, ...aliasFormDataB.getHeaders() },
+		headers: { ...headers },
 		redirect: "manual",
 	});
 	t.equal(
@@ -664,17 +660,17 @@ tap.test("cache-control - alias NPM package - non-scoped", async (t) => {
 
 tap.test("cache-control - alias NPM package - scoped", async (t) => {
 	const formDataA = new FormData();
-	formDataA.append("package", fs.createReadStream(FIXTURE_PKG));
+	formDataA.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 
 	const formDataB = new FormData();
-	formDataB.append("package", fs.createReadStream(FIXTURE_PKG));
+	formDataB.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 
 	// PUT files on server
 	await fetch(`${address}/npm/@cuz/fuzz/8.4.1`, {
 		method: "PUT",
 		body: formDataA,
 		redirect: "manual",
-		headers: { ...headers, ...formDataA.getHeaders() },
+		headers: { ...headers },
 	});
 
 	// PUT files on server
@@ -682,7 +678,7 @@ tap.test("cache-control - alias NPM package - scoped", async (t) => {
 		method: "PUT",
 		body: formDataB,
 		redirect: "manual",
-		headers: { ...headers, ...formDataB.getHeaders() },
+		headers: { ...headers },
 	});
 
 	// PUT alias on server
@@ -692,7 +688,7 @@ tap.test("cache-control - alias NPM package - scoped", async (t) => {
 	const alias = await fetch(`${address}/npm/@cuz/fuzz/v8`, {
 		method: "PUT",
 		body: aliasFormData,
-		headers: { ...headers, ...aliasFormData.getHeaders() },
+		headers: { ...headers },
 		redirect: "manual",
 	});
 	t.equal(
@@ -719,7 +715,7 @@ tap.test("cache-control - alias NPM package - scoped", async (t) => {
 	const updated = await fetch(`${address}/npm/@cuz/fuzz/v8`, {
 		method: "POST",
 		body: aliasFormDataB,
-		headers: { ...headers, ...aliasFormDataB.getHeaders() },
+		headers: { ...headers },
 		redirect: "manual",
 	});
 	t.equal(
@@ -742,23 +738,23 @@ tap.test("cache-control - alias NPM package - scoped", async (t) => {
 
 tap.test("cache-control - alias map - non-scoped", async (t) => {
 	const formDataA = new FormData();
-	formDataA.append("map", fs.createReadStream(FIXTURE_MAP));
+	formDataA.append("map", new Blob([fs.readFileSync(FIXTURE_MAP)]));
 
 	const formDataB = new FormData();
-	formDataB.append("map", fs.createReadStream(FIXTURE_MAP));
+	formDataB.append("map", new Blob([fs.readFileSync(FIXTURE_MAP)]));
 
 	// PUT maps on server
 	await fetch(`${address}/map/buzz/4.2.2`, {
 		method: "PUT",
 		body: formDataA,
-		headers: { ...headers, ...formDataA.getHeaders() },
+		headers: { ...headers },
 		redirect: "manual",
 	});
 
 	await fetch(`${address}/map/buzz/4.4.2`, {
 		method: "PUT",
 		body: formDataB,
-		headers: { ...headers, ...formDataB.getHeaders() },
+		headers: { ...headers },
 		redirect: "manual",
 	});
 
@@ -769,7 +765,7 @@ tap.test("cache-control - alias map - non-scoped", async (t) => {
 	const alias = await fetch(`${address}/map/buzz/v4`, {
 		method: "PUT",
 		body: aliasFormData,
-		headers: { ...headers, ...aliasFormData.getHeaders() },
+		headers: { ...headers },
 		redirect: "manual",
 	});
 	t.equal(
@@ -796,7 +792,7 @@ tap.test("cache-control - alias map - non-scoped", async (t) => {
 	const updated = await fetch(`${address}/map/buzz/v4`, {
 		method: "POST",
 		body: aliasFormDataB,
-		headers: { ...headers, ...aliasFormDataB.getHeaders() },
+		headers: { ...headers },
 		redirect: "manual",
 	});
 	t.equal(
@@ -819,23 +815,23 @@ tap.test("cache-control - alias map - non-scoped", async (t) => {
 
 tap.test("cache-control - alias map - scoped", async (t) => {
 	const formDataA = new FormData();
-	formDataA.append("map", fs.createReadStream(FIXTURE_MAP));
+	formDataA.append("map", new Blob([fs.readFileSync(FIXTURE_MAP)]));
 
 	const formDataB = new FormData();
-	formDataB.append("map", fs.createReadStream(FIXTURE_MAP));
+	formDataB.append("map", new Blob([fs.readFileSync(FIXTURE_MAP)]));
 
 	// PUT maps on server
 	await fetch(`${address}/map/@cuz/buzz/4.2.2`, {
 		method: "PUT",
 		body: formDataA,
-		headers: { ...headers, ...formDataA.getHeaders() },
+		headers: { ...headers },
 		redirect: "manual",
 	});
 
 	await fetch(`${address}/map/@cuz/buzz/4.4.2`, {
 		method: "PUT",
 		body: formDataB,
-		headers: { ...headers, ...formDataB.getHeaders() },
+		headers: { ...headers },
 		redirect: "manual",
 	});
 
@@ -846,7 +842,7 @@ tap.test("cache-control - alias map - scoped", async (t) => {
 	const alias = await fetch(`${address}/map/@cuz/buzz/v4`, {
 		method: "PUT",
 		body: aliasFormData,
-		headers: { ...headers, ...aliasFormData.getHeaders() },
+		headers: { ...headers },
 		redirect: "manual",
 	});
 	t.equal(
@@ -873,7 +869,7 @@ tap.test("cache-control - alias map - scoped", async (t) => {
 	const updated = await fetch(`${address}/map/@cuz/buzz/v4`, {
 		method: "POST",
 		body: aliasFormDataB,
-		headers: { ...headers, ...aliasFormDataB.getHeaders() },
+		headers: { ...headers },
 		redirect: "manual",
 	});
 	t.equal(

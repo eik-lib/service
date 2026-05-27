@@ -1,7 +1,8 @@
 {
   "extends": "@eik/typescript-config/module.json",
-  "include": ["./lib/**/*.js"],
+  "include": ["./lib/**/*.js", "./declarations.d.ts"],
   "compilerOptions": {
-    "outDir": "types"
+    "outDir": "types",
+    "rootDir": "./lib"
   }
 }

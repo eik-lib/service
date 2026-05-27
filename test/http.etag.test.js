@@ -1,5 +1,4 @@
 import fastify from "fastify";
-import fetch from "node-fetch";
 import tap from "tap";
 
 import Sink from "./utils/sink.js";
@@ -61,7 +60,7 @@ tap.test('ETag - pkg:get - ETag and "If-None-Match" is matching', async (t) => {
 	const resB = await fetch(url, {
 		method: "GET",
 		headers: {
-			"If-None-Match": resA.headers.get("etag"),
+			"If-None-Match": resA.headers.get("etag") || "",
 		},
 	});
 	const bodyB = await resB.text();
@@ -190,7 +189,7 @@ tap.test('ETag - pkg:log - ETag and "If-None-Match" is matching', async (t) => {
 	const resB = await fetch(url, {
 		method: "GET",
 		headers: {
-			"If-None-Match": resA.headers.get("etag"),
+			"If-None-Match": resA.headers.get("etag") || "",
 		},
 	});
 	const bodyB = await resB.text();
@@ -319,7 +318,7 @@ tap.test('ETag - map:get - ETag and "If-None-Match" is matching', async (t) => {
 	const resB = await fetch(url, {
 		method: "GET",
 		headers: {
-			"If-None-Match": resA.headers.get("etag"),
+			"If-None-Match": resA.headers.get("etag") || "",
 		},
 	});
 	const bodyB = await resB.text();
