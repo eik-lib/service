@@ -1,6 +1,6 @@
 import fastify from "fastify";
 import path from "path";
-import tap from "tap";
+import { test, before, after, afterEach } from "node:test";
 import url from "url";
 import fs from "fs";
 
@@ -9,11 +9,7 @@ import Server from "../lib/main.js";
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
-// Ignore the timestamp for "created" field in the snapshots
-tap.cleanSnapshot = (s) => {
-	const regex = /"created": [0-9]+,/gi;
-	return s.replace(regex, '"created": -1,');
-};
+const RE_CREATED = /"created":[0-9]+,/gi;
 
 /** @type {import('fastify').FastifyInstance} */
 let app;
@@ -24,12 +20,12 @@ let headers;
 /** @type {Sink} */
 let sink;
 
-tap.before(async () => {
+before(async () => {
 	sink = new Sink();
 	const service = new Server({ sink });
 
 	app = fastify({
-		ignoreTrailingSlash: true,
+		routerOptions: { ignoreTrailingSlash: true },
 		forceCloseConnections: true,
 	});
 	app.register(service.api());
@@ -46,138 +42,118 @@ tap.before(async () => {
 	headers = { Authorization: `Bearer ${login.token}` };
 });
 
-tap.afterEach(() => {
+afterEach(() => {
 	sink.clear();
 });
 
-tap.teardown(async () => {
+after(async () => {
 	await app.close();
 });
 
-tap.test(
-	"Sink is slow and irregular - Writing medium sized package",
-	async (t) => {
-		t.setTimeout(20_000_000);
+test("Sink is slow and irregular - Writing medium sized package", async (t) => {
+	// Simulate a slow write process by delaying each chunk written
+	// to the sink with something between 10 and 100 + (buffer count) ms.
+	sink.writeDelayChunks = (count = 0) => {
+		const max = 100 + count;
+		const min = 10;
+		return Math.floor(Math.random() * max) + min;
+	};
 
-		// Simulate a slow write process by delaying each chunk written
-		// to the sink with something between 10 and 100 + (buffer count) ms.
-		sink.writeDelayChunks = (count = 0) => {
-			const max = 100 + count;
-			const min = 10;
-			return Math.floor(Math.random() * max) + min;
-		};
+	const formData = new FormData();
+	formData.append(
+		"package",
+		new Blob([
+			fs.readFileSync(path.join(__dirname, "../fixtures/archive.tgz")),
+		]),
+	);
 
-		const formData = new FormData();
-		formData.append(
-			"package",
-			new Blob([
-				fs.readFileSync(path.join(__dirname, "../fixtures/archive.tgz")),
-			]),
-		);
+	const res = await fetch(`${address}/pkg/frazz/2.1.4`, {
+		method: "PUT",
+		body: formData,
+		headers: { ...headers },
+	});
 
-		const res = await fetch(`${address}/pkg/frazz/2.1.4`, {
-			method: "PUT",
-			body: formData,
-			headers: { ...headers },
-		});
+	const obj = await res.json();
+	t.assert.snapshot(JSON.stringify(obj).replace(RE_CREATED, '"created": -1,'));
+});
 
-		const obj = await res.json();
-		t.matchSnapshot(obj, "on GET of package, response should match snapshot");
-	},
-);
+test("Sink is slow and irregular - Writing small sized package", async (t) => {
+	// Simulate a slow write process by delaying each chunk written
+	// to the sink with something between 10 and 100 + (buffer count) ms.
+	sink.writeDelayChunks = (count = 0) => {
+		const max = 100 + count;
+		const min = 10;
+		return Math.floor(Math.random() * max) + min;
+	};
 
-tap.test(
-	"Sink is slow and irregular - Writing small sized package",
-	async (t) => {
-		t.setTimeout(20_000_000);
+	const formData = new FormData();
+	formData.append(
+		"package",
+		new Blob([
+			fs.readFileSync(path.join(__dirname, "../fixtures/archive-small.tgz")),
+		]),
+	);
 
-		// Simulate a slow write process by delaying each chunk written
-		// to the sink with something between 10 and 100 + (buffer count) ms.
-		sink.writeDelayChunks = (count = 0) => {
-			const max = 100 + count;
-			const min = 10;
-			return Math.floor(Math.random() * max) + min;
-		};
+	const res = await fetch(`${address}/pkg/brazz/7.1.3`, {
+		method: "PUT",
+		body: formData,
+		headers: { ...headers },
+	});
 
-		const formData = new FormData();
-		formData.append(
-			"package",
-			new Blob([
-				fs.readFileSync(path.join(__dirname, "../fixtures/archive-small.tgz")),
-			]),
-		);
+	const obj = await res.json();
+	t.assert.snapshot(JSON.stringify(obj).replace(RE_CREATED, '"created": -1,'));
+});
 
-		const res = await fetch(`${address}/pkg/brazz/7.1.3`, {
-			method: "PUT",
-			body: formData,
-			headers: { ...headers },
-		});
+test("Sink is slow to construct writer - Writing medium sized package", async (t) => {
+	// Simulate a slow creation of the sink write operation by delaying
+	// it something between 20 and 100ms.
+	sink.writeDelayResolve = () => {
+		const max = 100;
+		const min = 20;
+		return Math.floor(Math.random() * max) + min;
+	};
 
-		const obj = await res.json();
-		t.matchSnapshot(obj, "on GET of package, response should match snapshot");
-	},
-);
+	const formData = new FormData();
+	formData.append(
+		"package",
+		new Blob([
+			fs.readFileSync(path.join(__dirname, "../fixtures/archive.tgz")),
+		]),
+	);
 
-tap.test(
-	"Sink is slow to construct writer - Writing medium sized package",
-	async (t) => {
-		t.setTimeout(20_000_000);
+	const res = await fetch(`${address}/pkg/frazz/2.1.4`, {
+		method: "PUT",
+		body: formData,
+		headers: { ...headers },
+	});
 
-		// Simulate a slow creation of the sink write operation by delaying
-		// it something between 20 and 100ms.
-		sink.writeDelayResolve = () => {
-			const max = 100;
-			const min = 20;
-			return Math.floor(Math.random() * max) + min;
-		};
+	const obj = await res.json();
+	t.assert.snapshot(JSON.stringify(obj).replace(RE_CREATED, '"created": -1,'));
+});
 
-		const formData = new FormData();
-		formData.append(
-			"package",
-			new Blob([
-				fs.readFileSync(path.join(__dirname, "../fixtures/archive.tgz")),
-			]),
-		);
+test("Sink is slow to construct writer - Writing small sized package", async (t) => {
+	// Simulate a slow creation of the sink write operation by delaying
+	// it something between 20 and 100ms.
+	sink.writeDelayResolve = () => {
+		const max = 100;
+		const min = 20;
+		return Math.floor(Math.random() * max) + min;
+	};
 
-		const res = await fetch(`${address}/pkg/frazz/2.1.4`, {
-			method: "PUT",
-			body: formData,
-			headers: { ...headers },
-		});
+	const formData = new FormData();
+	formData.append(
+		"package",
+		new Blob([
+			fs.readFileSync(path.join(__dirname, "../fixtures/archive-small.tgz")),
+		]),
+	);
 
-		const obj = await res.json();
-		t.matchSnapshot(obj, "on GET of package, response should match snapshot");
-	},
-);
+	const res = await fetch(`${address}/pkg/brazz/7.1.3`, {
+		method: "PUT",
+		body: formData,
+		headers: { ...headers },
+	});
 
-tap.test(
-	"Sink is slow to construct writer - Writing small sized package",
-	async (t) => {
-		t.setTimeout(20_000_000);
-
-		// Simulate a slow creation of the sink write operation by delaying
-		// it something between 20 and 100ms.
-		sink.writeDelayResolve = () => {
-			const max = 100;
-			const min = 20;
-			return Math.floor(Math.random() * max) + min;
-		};
-
-		const formData = new FormData();
-		formData.append(
-			"package",
-			new Blob([
-				fs.readFileSync(path.join(__dirname, "../fixtures/archive-small.tgz")),
-			]),
-		);
-
-		const res = await fetch(`${address}/pkg/brazz/7.1.3`, {
-			method: "PUT",
-			body: formData,
-			headers: { ...headers },
-		});
-
-		const obj = await res.json();
-		t.matchSnapshot(obj, "on GET of package, response should match snapshot");
-	},
-);
+	const obj = await res.json();
+	t.assert.snapshot(JSON.stringify(obj).replace(RE_CREATED, '"created": -1,'));
+});

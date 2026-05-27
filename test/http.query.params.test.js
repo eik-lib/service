@@ -1,6 +1,7 @@
 import fastify from "fastify";
 import path from "path";
-import tap from "tap";
+import { test, before, after, afterEach } from "node:test";
+import assert from "node:assert/strict";
 import url from "url";
 import fs from "fs";
 
@@ -17,12 +18,6 @@ const FIXTURE_MAP = path.resolve(
 	"import-map.json",
 );
 
-// Ignore the timestamp for "created" field in the snapshots
-tap.cleanSnapshot = (s) => {
-	const regex = /"created": [0-9]+,/gi;
-	return s.replace(regex, '"created": -1,');
-};
-
 /** @type {import('fastify').FastifyInstance} */
 let app;
 /** @type {string} */
@@ -32,12 +27,12 @@ let headers;
 /** @type {Sink} */
 let sink;
 
-tap.before(async () => {
+before(async () => {
 	sink = new Sink();
 	const service = new Server({ sink });
 
 	app = fastify({
-		ignoreTrailingSlash: true,
+		routerOptions: { ignoreTrailingSlash: true },
 		forceCloseConnections: true,
 	});
 	app.register(service.api());
@@ -54,15 +49,15 @@ tap.before(async () => {
 	headers = { Authorization: `Bearer ${login.token}` };
 });
 
-tap.afterEach(() => {
+afterEach(() => {
 	sink.clear();
 });
 
-tap.teardown(async () => {
+after(async () => {
 	await app.close();
 });
 
-tap.test("query params - package", async (t) => {
+test("query params - package", async () => {
 	const formData = new FormData();
 	formData.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 
@@ -82,14 +77,14 @@ tap.test("query params - package", async (t) => {
 		},
 	);
 
-	t.equal(
+	assert.strictEqual(
 		downloaded.status,
 		200,
 		"on GET of file, server should respond with 200 ok",
 	);
 });
 
-tap.test("query params - NPM package", async (t) => {
+test("query params - NPM package", async () => {
 	const formData = new FormData();
 	formData.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 
@@ -109,14 +104,14 @@ tap.test("query params - NPM package", async (t) => {
 		},
 	);
 
-	t.equal(
+	assert.strictEqual(
 		downloaded.status,
 		200,
 		"on GET of file, server should respond with 200 ok",
 	);
 });
 
-tap.test("query params - map", async (t) => {
+test("query params - map", async () => {
 	const formData = new FormData();
 	formData.append("map", new Blob([fs.readFileSync(FIXTURE_MAP)]));
 
@@ -133,7 +128,7 @@ tap.test("query params - map", async (t) => {
 		method: "GET",
 	});
 
-	t.equal(
+	assert.strictEqual(
 		downloaded.status,
 		200,
 		"on GET of file, server should respond with 200 ok",

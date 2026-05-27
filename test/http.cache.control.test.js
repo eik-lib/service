@@ -1,6 +1,7 @@
 import fastify from "fastify";
 import path from "path";
-import tap from "tap";
+import { test, before, after, afterEach } from "node:test";
+import assert from "node:assert/strict";
 import url from "url";
 import fs from "fs";
 
@@ -17,12 +18,6 @@ const FIXTURE_MAP = path.resolve(
 	"import-map.json",
 );
 
-// Ignore the timestamp for "created" field in the snapshots
-tap.cleanSnapshot = (s) => {
-	const regex = /"created": [0-9]+,/gi;
-	return s.replace(regex, '"created": -1,');
-};
-
 /** @type {import('fastify').FastifyInstance} */
 let app;
 /** @type {string} */
@@ -32,12 +27,12 @@ let headers;
 /** @type {Sink} */
 let sink;
 
-tap.before(async () => {
+before(async () => {
 	sink = new Sink();
 	const service = new Server({ sink });
 
 	app = fastify({
-		ignoreTrailingSlash: true,
+		routerOptions: { ignoreTrailingSlash: true },
 		forceCloseConnections: true,
 	});
 	app.register(service.api());
@@ -54,15 +49,15 @@ tap.before(async () => {
 	headers = { Authorization: `Bearer ${login.token}` };
 });
 
-tap.afterEach(() => {
+afterEach(() => {
 	sink.clear();
 });
 
-tap.teardown(async () => {
+after(async () => {
 	await app.close();
 });
 
-tap.test("cache-control - auth post", async (t) => {
+test("cache-control - auth post", async () => {
 	const formData = new FormData();
 	formData.append("key", "change_me");
 
@@ -71,14 +66,14 @@ tap.test("cache-control - auth post", async (t) => {
 		body: formData,
 	});
 
-	t.equal(
+	assert.strictEqual(
 		response.headers.get("cache-control"),
 		"no-store",
 		'should be "no-store"',
 	);
 });
 
-tap.test("cache-control - package - non-scoped", async (t) => {
+test("cache-control - package - non-scoped", async () => {
 	const formData = new FormData();
 	formData.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 
@@ -89,7 +84,7 @@ tap.test("cache-control - package - non-scoped", async (t) => {
 		redirect: "manual",
 		headers: { ...headers },
 	});
-	t.equal(
+	assert.strictEqual(
 		uploaded.headers.get("cache-control"),
 		"no-store",
 		'should be "no-store"',
@@ -99,7 +94,7 @@ tap.test("cache-control - package - non-scoped", async (t) => {
 	const fetched = await fetch(`${address}/pkg/fuzz/1.4.8/main/index.js`, {
 		method: "GET",
 	});
-	t.equal(
+	assert.strictEqual(
 		fetched.headers.get("cache-control"),
 		"public, max-age=31536000, immutable",
 		'should be "public, max-age=31536000, immutable"',
@@ -112,7 +107,7 @@ tap.test("cache-control - package - non-scoped", async (t) => {
 			method: "GET",
 		},
 	);
-	t.equal(
+	assert.strictEqual(
 		nonExisting.headers.get("cache-control"),
 		"public, max-age=5",
 		'should be "public, max-age=5"',
@@ -122,7 +117,7 @@ tap.test("cache-control - package - non-scoped", async (t) => {
 	const overview = await fetch(`${address}/pkg/fuzz/1.4.8`, {
 		method: "GET",
 	});
-	t.equal(
+	assert.strictEqual(
 		overview.headers.get("cache-control"),
 		"no-cache",
 		'should be "no-cache"',
@@ -132,14 +127,14 @@ tap.test("cache-control - package - non-scoped", async (t) => {
 	const versions = await fetch(`${address}/pkg/fuzz`, {
 		method: "GET",
 	});
-	t.equal(
+	assert.strictEqual(
 		versions.headers.get("cache-control"),
 		"no-cache",
 		'should be "no-cache"',
 	);
 });
 
-tap.test("cache-control - package - scoped", async (t) => {
+test("cache-control - package - scoped", async () => {
 	const formData = new FormData();
 	formData.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 
@@ -150,7 +145,7 @@ tap.test("cache-control - package - scoped", async (t) => {
 		redirect: "manual",
 		headers: { ...headers },
 	});
-	t.equal(
+	assert.strictEqual(
 		uploaded.headers.get("cache-control"),
 		"no-store",
 		'should be "no-store"',
@@ -160,7 +155,7 @@ tap.test("cache-control - package - scoped", async (t) => {
 	const fetched = await fetch(`${address}/pkg/@cuz/fuzz/1.4.8/main/index.js`, {
 		method: "GET",
 	});
-	t.equal(
+	assert.strictEqual(
 		fetched.headers.get("cache-control"),
 		"public, max-age=31536000, immutable",
 		'should be "public, max-age=31536000, immutable"',
@@ -173,7 +168,7 @@ tap.test("cache-control - package - scoped", async (t) => {
 			method: "GET",
 		},
 	);
-	t.equal(
+	assert.strictEqual(
 		nonExisting.headers.get("cache-control"),
 		"public, max-age=5",
 		'should be "public, max-age=5"',
@@ -183,7 +178,7 @@ tap.test("cache-control - package - scoped", async (t) => {
 	const overview = await fetch(`${address}/pkg/@cuz/fuzz/1.4.8`, {
 		method: "GET",
 	});
-	t.equal(
+	assert.strictEqual(
 		overview.headers.get("cache-control"),
 		"no-cache",
 		'should be "no-cache"',
@@ -193,14 +188,14 @@ tap.test("cache-control - package - scoped", async (t) => {
 	const versions = await fetch(`${address}/pkg/@cuz/fuzz`, {
 		method: "GET",
 	});
-	t.equal(
+	assert.strictEqual(
 		versions.headers.get("cache-control"),
 		"no-cache",
 		'should be "no-cache"',
 	);
 });
 
-tap.test("cache-control - npm package - non-scoped", async (t) => {
+test("cache-control - npm package - non-scoped", async () => {
 	const formData = new FormData();
 	formData.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 
@@ -211,7 +206,7 @@ tap.test("cache-control - npm package - non-scoped", async (t) => {
 		redirect: "manual",
 		headers: { ...headers },
 	});
-	t.equal(
+	assert.strictEqual(
 		uploaded.headers.get("cache-control"),
 		"no-store",
 		'should be "no-store"',
@@ -221,7 +216,7 @@ tap.test("cache-control - npm package - non-scoped", async (t) => {
 	const fetched = await fetch(`${address}/npm/fuzz/1.4.8/main/index.js`, {
 		method: "GET",
 	});
-	t.equal(
+	assert.strictEqual(
 		fetched.headers.get("cache-control"),
 		"public, max-age=31536000, immutable",
 		'should be "public, max-age=31536000, immutable"',
@@ -234,7 +229,7 @@ tap.test("cache-control - npm package - non-scoped", async (t) => {
 			method: "GET",
 		},
 	);
-	t.equal(
+	assert.strictEqual(
 		nonExisting.headers.get("cache-control"),
 		"public, max-age=5",
 		'should be "public, max-age=5"',
@@ -244,7 +239,7 @@ tap.test("cache-control - npm package - non-scoped", async (t) => {
 	const overview = await fetch(`${address}/npm/fuzz/1.4.8`, {
 		method: "GET",
 	});
-	t.equal(
+	assert.strictEqual(
 		overview.headers.get("cache-control"),
 		"no-cache",
 		'should be "no-cache"',
@@ -254,14 +249,14 @@ tap.test("cache-control - npm package - non-scoped", async (t) => {
 	const versions = await fetch(`${address}/npm/fuzz`, {
 		method: "GET",
 	});
-	t.equal(
+	assert.strictEqual(
 		versions.headers.get("cache-control"),
 		"no-cache",
 		'should be "no-cache"',
 	);
 });
 
-tap.test("cache-control - npm package - scoped", async (t) => {
+test("cache-control - npm package - scoped", async () => {
 	const formData = new FormData();
 	formData.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 
@@ -272,7 +267,7 @@ tap.test("cache-control - npm package - scoped", async (t) => {
 		redirect: "manual",
 		headers: { ...headers },
 	});
-	t.equal(
+	assert.strictEqual(
 		uploaded.headers.get("cache-control"),
 		"no-store",
 		'should be "no-store"',
@@ -282,7 +277,7 @@ tap.test("cache-control - npm package - scoped", async (t) => {
 	const fetched = await fetch(`${address}/npm/@cuz/fuzz/1.4.8/main/index.js`, {
 		method: "GET",
 	});
-	t.equal(
+	assert.strictEqual(
 		fetched.headers.get("cache-control"),
 		"public, max-age=31536000, immutable",
 		'should be "public, max-age=31536000, immutable"',
@@ -295,7 +290,7 @@ tap.test("cache-control - npm package - scoped", async (t) => {
 			method: "GET",
 		},
 	);
-	t.equal(
+	assert.strictEqual(
 		nonExisting.headers.get("cache-control"),
 		"public, max-age=5",
 		'should be "public, max-age=5"',
@@ -305,7 +300,7 @@ tap.test("cache-control - npm package - scoped", async (t) => {
 	const overview = await fetch(`${address}/npm/@cuz/fuzz/1.4.8`, {
 		method: "GET",
 	});
-	t.equal(
+	assert.strictEqual(
 		overview.headers.get("cache-control"),
 		"no-cache",
 		'should be "no-cache"',
@@ -315,14 +310,14 @@ tap.test("cache-control - npm package - scoped", async (t) => {
 	const versions = await fetch(`${address}/npm/@cuz/fuzz`, {
 		method: "GET",
 	});
-	t.equal(
+	assert.strictEqual(
 		versions.headers.get("cache-control"),
 		"no-cache",
 		'should be "no-cache"',
 	);
 });
 
-tap.test("cache-control - map - non-scoped", async (t) => {
+test("cache-control - map - non-scoped", async () => {
 	const formData = new FormData();
 	formData.append("map", new Blob([fs.readFileSync(FIXTURE_MAP)]));
 
@@ -333,7 +328,7 @@ tap.test("cache-control - map - non-scoped", async (t) => {
 		headers: { ...headers },
 		redirect: "manual",
 	});
-	t.equal(
+	assert.strictEqual(
 		uploaded.headers.get("cache-control"),
 		"no-store",
 		'should be "no-store"',
@@ -343,7 +338,7 @@ tap.test("cache-control - map - non-scoped", async (t) => {
 	const fetched = await fetch(`${address}/map/buzz/4.2.2`, {
 		method: "GET",
 	});
-	t.equal(
+	assert.strictEqual(
 		fetched.headers.get("cache-control"),
 		"public, max-age=31536000, immutable",
 		'should be "public, max-age=31536000, immutable"',
@@ -356,7 +351,7 @@ tap.test("cache-control - map - non-scoped", async (t) => {
 			method: "GET",
 		},
 	);
-	t.equal(
+	assert.strictEqual(
 		nonExisting.headers.get("cache-control"),
 		"public, max-age=5",
 		'should be "public, max-age=5"',
@@ -366,14 +361,14 @@ tap.test("cache-control - map - non-scoped", async (t) => {
 	const versions = await fetch(`${address}/map/buzz`, {
 		method: "GET",
 	});
-	t.equal(
+	assert.strictEqual(
 		versions.headers.get("cache-control"),
 		"no-cache",
 		'should be "no-cache"',
 	);
 });
 
-tap.test("cache-control - map - scoped", async (t) => {
+test("cache-control - map - scoped", async () => {
 	const formData = new FormData();
 	formData.append("map", new Blob([fs.readFileSync(FIXTURE_MAP)]));
 
@@ -384,7 +379,7 @@ tap.test("cache-control - map - scoped", async (t) => {
 		headers: { ...headers },
 		redirect: "manual",
 	});
-	t.equal(
+	assert.strictEqual(
 		uploaded.headers.get("cache-control"),
 		"no-store",
 		'should be "no-store"',
@@ -394,7 +389,7 @@ tap.test("cache-control - map - scoped", async (t) => {
 	const fetched = await fetch(`${address}/map/@cuz/buzz/4.2.2`, {
 		method: "GET",
 	});
-	t.equal(
+	assert.strictEqual(
 		fetched.headers.get("cache-control"),
 		"public, max-age=31536000, immutable",
 		'should be "public, max-age=31536000, immutable"',
@@ -407,7 +402,7 @@ tap.test("cache-control - map - scoped", async (t) => {
 			method: "GET",
 		},
 	);
-	t.equal(
+	assert.strictEqual(
 		nonExisting.headers.get("cache-control"),
 		"public, max-age=5",
 		'should be "public, max-age=5"',
@@ -417,14 +412,14 @@ tap.test("cache-control - map - scoped", async (t) => {
 	const versions = await fetch(`${address}/map/@cuz/buzz`, {
 		method: "GET",
 	});
-	t.equal(
+	assert.strictEqual(
 		versions.headers.get("cache-control"),
 		"no-cache",
 		'should be "no-cache"',
 	);
 });
 
-tap.test("cache-control - alias package - non-scoped", async (t) => {
+test("cache-control - alias package - non-scoped", async () => {
 	const formDataA = new FormData();
 	formDataA.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 
@@ -457,7 +452,7 @@ tap.test("cache-control - alias package - non-scoped", async (t) => {
 		headers: { ...headers },
 		redirect: "manual",
 	});
-	t.equal(
+	assert.strictEqual(
 		alias.headers.get("cache-control"),
 		"no-store",
 		'should be "no-store"',
@@ -468,7 +463,7 @@ tap.test("cache-control - alias package - non-scoped", async (t) => {
 		method: "GET",
 		redirect: "manual",
 	});
-	t.equal(
+	assert.strictEqual(
 		redirect.headers.get("cache-control"),
 		"public, max-age=1200",
 		'should be "public, max-age=1200"',
@@ -484,7 +479,7 @@ tap.test("cache-control - alias package - non-scoped", async (t) => {
 		headers: { ...headers },
 		redirect: "manual",
 	});
-	t.equal(
+	assert.strictEqual(
 		updated.headers.get("cache-control"),
 		"no-store",
 		'should be "no-store"',
@@ -495,14 +490,14 @@ tap.test("cache-control - alias package - non-scoped", async (t) => {
 		method: "DELETE",
 		headers,
 	});
-	t.equal(
+	assert.strictEqual(
 		deleted.headers.get("cache-control"),
 		"no-store",
 		'should be "no-cache"',
 	);
 });
 
-tap.test("cache-control - alias package - scoped", async (t) => {
+test("cache-control - alias package - scoped", async () => {
 	const formDataA = new FormData();
 	formDataA.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 
@@ -535,7 +530,7 @@ tap.test("cache-control - alias package - scoped", async (t) => {
 		headers: { ...headers },
 		redirect: "manual",
 	});
-	t.equal(
+	assert.strictEqual(
 		alias.headers.get("cache-control"),
 		"no-store",
 		'should be "no-store"',
@@ -546,7 +541,7 @@ tap.test("cache-control - alias package - scoped", async (t) => {
 		method: "GET",
 		redirect: "manual",
 	});
-	t.equal(
+	assert.strictEqual(
 		redirect.headers.get("cache-control"),
 		"public, max-age=1200",
 		'should be "public, max-age=1200"',
@@ -562,7 +557,7 @@ tap.test("cache-control - alias package - scoped", async (t) => {
 		headers: { ...headers },
 		redirect: "manual",
 	});
-	t.equal(
+	assert.strictEqual(
 		updated.headers.get("cache-control"),
 		"no-store",
 		'should be "no-store"',
@@ -573,14 +568,14 @@ tap.test("cache-control - alias package - scoped", async (t) => {
 		method: "DELETE",
 		headers,
 	});
-	t.equal(
+	assert.strictEqual(
 		deleted.headers.get("cache-control"),
 		"no-store",
 		'should be "no-cache"',
 	);
 });
 
-tap.test("cache-control - alias NPM package - non-scoped", async (t) => {
+test("cache-control - alias NPM package - non-scoped", async () => {
 	const formDataA = new FormData();
 	formDataA.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 
@@ -613,7 +608,7 @@ tap.test("cache-control - alias NPM package - non-scoped", async (t) => {
 		headers: { ...headers },
 		redirect: "manual",
 	});
-	t.equal(
+	assert.strictEqual(
 		alias.headers.get("cache-control"),
 		"no-store",
 		'should be "no-store"',
@@ -624,7 +619,7 @@ tap.test("cache-control - alias NPM package - non-scoped", async (t) => {
 		method: "GET",
 		redirect: "manual",
 	});
-	t.equal(
+	assert.strictEqual(
 		redirect.headers.get("cache-control"),
 		"public, max-age=1200",
 		'should be "public, max-age=1200"',
@@ -640,7 +635,7 @@ tap.test("cache-control - alias NPM package - non-scoped", async (t) => {
 		headers: { ...headers },
 		redirect: "manual",
 	});
-	t.equal(
+	assert.strictEqual(
 		updated.headers.get("cache-control"),
 		"no-store",
 		'should be "no-store"',
@@ -651,14 +646,14 @@ tap.test("cache-control - alias NPM package - non-scoped", async (t) => {
 		method: "DELETE",
 		headers,
 	});
-	t.equal(
+	assert.strictEqual(
 		deleted.headers.get("cache-control"),
 		"no-store",
 		'should be "no-cache"',
 	);
 });
 
-tap.test("cache-control - alias NPM package - scoped", async (t) => {
+test("cache-control - alias NPM package - scoped", async () => {
 	const formDataA = new FormData();
 	formDataA.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 
@@ -691,7 +686,7 @@ tap.test("cache-control - alias NPM package - scoped", async (t) => {
 		headers: { ...headers },
 		redirect: "manual",
 	});
-	t.equal(
+	assert.strictEqual(
 		alias.headers.get("cache-control"),
 		"no-store",
 		'should be "no-store"',
@@ -702,7 +697,7 @@ tap.test("cache-control - alias NPM package - scoped", async (t) => {
 		method: "GET",
 		redirect: "manual",
 	});
-	t.equal(
+	assert.strictEqual(
 		redirect.headers.get("cache-control"),
 		"public, max-age=1200",
 		'should be "public, max-age=1200"',
@@ -718,7 +713,7 @@ tap.test("cache-control - alias NPM package - scoped", async (t) => {
 		headers: { ...headers },
 		redirect: "manual",
 	});
-	t.equal(
+	assert.strictEqual(
 		updated.headers.get("cache-control"),
 		"no-store",
 		'should be "no-store"',
@@ -729,14 +724,14 @@ tap.test("cache-control - alias NPM package - scoped", async (t) => {
 		method: "DELETE",
 		headers,
 	});
-	t.equal(
+	assert.strictEqual(
 		deleted.headers.get("cache-control"),
 		"no-store",
 		'should be "no-cache"',
 	);
 });
 
-tap.test("cache-control - alias map - non-scoped", async (t) => {
+test("cache-control - alias map - non-scoped", async () => {
 	const formDataA = new FormData();
 	formDataA.append("map", new Blob([fs.readFileSync(FIXTURE_MAP)]));
 
@@ -768,7 +763,7 @@ tap.test("cache-control - alias map - non-scoped", async (t) => {
 		headers: { ...headers },
 		redirect: "manual",
 	});
-	t.equal(
+	assert.strictEqual(
 		alias.headers.get("cache-control"),
 		"no-store",
 		'should be "no-store"',
@@ -779,7 +774,7 @@ tap.test("cache-control - alias map - non-scoped", async (t) => {
 		method: "GET",
 		redirect: "manual",
 	});
-	t.equal(
+	assert.strictEqual(
 		redirect.headers.get("cache-control"),
 		"public, max-age=1200",
 		'should be "public, max-age=1200"',
@@ -795,7 +790,7 @@ tap.test("cache-control - alias map - non-scoped", async (t) => {
 		headers: { ...headers },
 		redirect: "manual",
 	});
-	t.equal(
+	assert.strictEqual(
 		updated.headers.get("cache-control"),
 		"no-store",
 		'should be "no-store"',
@@ -806,14 +801,14 @@ tap.test("cache-control - alias map - non-scoped", async (t) => {
 		method: "DELETE",
 		headers,
 	});
-	t.equal(
+	assert.strictEqual(
 		deleted.headers.get("cache-control"),
 		"no-store",
 		'should be "no-cache"',
 	);
 });
 
-tap.test("cache-control - alias map - scoped", async (t) => {
+test("cache-control - alias map - scoped", async () => {
 	const formDataA = new FormData();
 	formDataA.append("map", new Blob([fs.readFileSync(FIXTURE_MAP)]));
 
@@ -845,7 +840,7 @@ tap.test("cache-control - alias map - scoped", async (t) => {
 		headers: { ...headers },
 		redirect: "manual",
 	});
-	t.equal(
+	assert.strictEqual(
 		alias.headers.get("cache-control"),
 		"no-store",
 		'should be "no-store"',
@@ -856,7 +851,7 @@ tap.test("cache-control - alias map - scoped", async (t) => {
 		method: "GET",
 		redirect: "manual",
 	});
-	t.equal(
+	assert.strictEqual(
 		redirect.headers.get("cache-control"),
 		"public, max-age=1200",
 		'should be "public, max-age=1200"',
@@ -872,7 +867,7 @@ tap.test("cache-control - alias map - scoped", async (t) => {
 		headers: { ...headers },
 		redirect: "manual",
 	});
-	t.equal(
+	assert.strictEqual(
 		updated.headers.get("cache-control"),
 		"no-store",
 		'should be "no-store"',
@@ -883,7 +878,7 @@ tap.test("cache-control - alias map - scoped", async (t) => {
 		method: "DELETE",
 		headers,
 	});
-	t.equal(
+	assert.strictEqual(
 		deleted.headers.get("cache-control"),
 		"no-store",
 		'should be "no-cache"',

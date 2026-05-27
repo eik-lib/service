@@ -1,6 +1,7 @@
 import fastify from "fastify";
 import path from "path";
-import tap from "tap";
+import { test, before, after, afterEach } from "node:test";
+import assert from "node:assert/strict";
 import url from "url";
 import fs from "fs";
 
@@ -11,11 +12,7 @@ const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
 const FIXTURE_PKG = path.resolve(__dirname, "..", "fixtures", "archive.tgz");
 
-// Ignore the timestamp for "created" field in the snapshots
-tap.cleanSnapshot = (s) => {
-	const regex = /"created": [0-9]+,/gi;
-	return s.replace(regex, '"created": -1,');
-};
+const RE_CREATED = /"created":[0-9]+,/gi;
 
 /** @type {import('fastify').FastifyInstance} */
 let app;
@@ -26,12 +23,12 @@ let headers;
 /** @type {Sink} */
 let sink;
 
-tap.before(async () => {
+before(async () => {
 	sink = new Sink();
 	const service = new Server({ sink });
 
 	app = fastify({
-		ignoreTrailingSlash: true,
+		routerOptions: { ignoreTrailingSlash: true },
 		forceCloseConnections: true,
 	});
 	app.register(service.api());
@@ -48,15 +45,15 @@ tap.before(async () => {
 	headers = { Authorization: `Bearer ${login.token}` };
 });
 
-tap.afterEach(() => {
+afterEach(() => {
 	sink.clear();
 });
 
-tap.teardown(async () => {
+after(async () => {
 	await app.close();
 });
 
-tap.test("alias package - no auth token on PUT - scoped", async (t) => {
+test("alias package - no auth token on PUT - scoped", async () => {
 	// PUT alias on server
 	const aliasFormData = new FormData();
 	aliasFormData.append("version", "8.4.1");
@@ -66,14 +63,14 @@ tap.test("alias package - no auth token on PUT - scoped", async (t) => {
 		body: aliasFormData,
 	});
 
-	t.equal(
+	assert.strictEqual(
 		alias.status,
 		401,
 		"on PUT of alias, server should respond with a 401 Unauthorized",
 	);
 });
 
-tap.test("alias package - no auth token on PUT - non scoped", async (t) => {
+test("alias package - no auth token on PUT - non scoped", async () => {
 	// PUT alias on server
 	const aliasFormData = new FormData();
 	aliasFormData.append("version", "8.4.1");
@@ -83,14 +80,14 @@ tap.test("alias package - no auth token on PUT - non scoped", async (t) => {
 		body: aliasFormData,
 	});
 
-	t.equal(
+	assert.strictEqual(
 		alias.status,
 		401,
 		"on PUT of alias, server should respond with a 401 Unauthorized",
 	);
 });
 
-tap.test("alias package - no auth token on POST - scoped", async (t) => {
+test("alias package - no auth token on POST - scoped", async () => {
 	// POST alias on server
 	const aliasFormData = new FormData();
 	aliasFormData.append("version", "8.4.1");
@@ -100,14 +97,14 @@ tap.test("alias package - no auth token on POST - scoped", async (t) => {
 		body: aliasFormData,
 	});
 
-	t.equal(
+	assert.strictEqual(
 		alias.status,
 		401,
 		"on POST of alias, server should respond with a 401 Unauthorized",
 	);
 });
 
-tap.test("alias package - no auth token on POST - non scoped", async (t) => {
+test("alias package - no auth token on POST - non scoped", async () => {
 	// POST alias on server
 	const aliasFormData = new FormData();
 	aliasFormData.append("version", "8.4.1");
@@ -117,729 +114,691 @@ tap.test("alias package - no auth token on POST - non scoped", async (t) => {
 		body: aliasFormData,
 	});
 
-	t.equal(
+	assert.strictEqual(
 		alias.status,
 		401,
 		"on POST of alias, server should respond with a 401 Unauthorized",
 	);
 });
 
-tap.test("alias package - no auth token on DELETE - scoped", async (t) => {
+test("alias package - no auth token on DELETE - scoped", async () => {
 	// DELETE alias on server
 	const alias = await fetch(`${address}/pkg/@cuz/fuzz/v8`, {
 		method: "DELETE",
 	});
 
-	t.equal(
+	assert.strictEqual(
 		alias.status,
 		401,
 		"on DELETE of alias, server should respond with a 401 Unauthorized",
 	);
 });
 
-tap.test("alias package - no auth token on DELETE - non scoped", async (t) => {
+test("alias package - no auth token on DELETE - non scoped", async () => {
 	// DELETE alias on server
 	const alias = await fetch(`${address}/pkg/fuzz/v8`, {
 		method: "DELETE",
 	});
 
-	t.equal(
+	assert.strictEqual(
 		alias.status,
 		401,
 		"on DELETE of alias, server should respond with a 401 Unauthorized",
 	);
 });
 
-tap.test(
-	"alias package - put alias, then get file overview through alias - scoped",
-	async (t) => {
-		const pkgFormData = new FormData();
-		pkgFormData.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
+test("alias package - put alias, then get file overview through alias - scoped", async (t) => {
+	const pkgFormData = new FormData();
+	pkgFormData.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 
-		// PUT files on server
-		const uploaded = await fetch(`${address}/pkg/@cuz/fuzz/8.4.1`, {
-			method: "PUT",
-			body: pkgFormData,
-			headers: { ...headers },
-			redirect: "manual",
-		});
+	// PUT files on server
+	const uploaded = await fetch(`${address}/pkg/@cuz/fuzz/8.4.1`, {
+		method: "PUT",
+		body: pkgFormData,
+		headers: { ...headers },
+		redirect: "manual",
+	});
 
-		t.equal(
-			uploaded.status,
-			303,
-			"on PUT of package, server should respond with a 303 redirect",
-		);
-		t.equal(
-			uploaded.headers.get("location"),
-			`/pkg/@cuz/fuzz/8.4.1`,
-			"on PUT of package, server should respond with a location header",
-		);
+	assert.strictEqual(
+		uploaded.status,
+		303,
+		"on PUT of package, server should respond with a 303 redirect",
+	);
+	assert.strictEqual(
+		uploaded.headers.get("location"),
+		`/pkg/@cuz/fuzz/8.4.1`,
+		"on PUT of package, server should respond with a location header",
+	);
 
-		// PUT alias on server
-		const aliasFormData = new FormData();
-		aliasFormData.append("version", "8.4.1");
+	// PUT alias on server
+	const aliasFormData = new FormData();
+	aliasFormData.append("version", "8.4.1");
 
-		const alias = await fetch(`${address}/pkg/@cuz/fuzz/v8`, {
-			method: "PUT",
-			body: aliasFormData,
-			headers: { ...headers },
-			redirect: "manual",
-		});
+	const alias = await fetch(`${address}/pkg/@cuz/fuzz/v8`, {
+		method: "PUT",
+		body: aliasFormData,
+		headers: { ...headers },
+		redirect: "manual",
+	});
 
-		t.equal(
-			alias.status,
-			303,
-			"on PUT of alias, server should respond with a 303 redirect",
-		);
-		t.equal(
-			alias.headers.get("location"),
-			`/pkg/@cuz/fuzz/v8`,
-			"on PUT of alias, server should respond with a location header",
-		);
+	assert.strictEqual(
+		alias.status,
+		303,
+		"on PUT of alias, server should respond with a 303 redirect",
+	);
+	assert.strictEqual(
+		alias.headers.get("location"),
+		`/pkg/@cuz/fuzz/v8`,
+		"on PUT of alias, server should respond with a location header",
+	);
 
-		// GET file through alias from server
-		const redirect = await fetch(`${address}${alias.headers.get("location")}`, {
+	// GET file through alias from server
+	const redirect = await fetch(`${address}${alias.headers.get("location")}`, {
+		method: "GET",
+		redirect: "manual",
+	});
+
+	assert.strictEqual(
+		redirect.status,
+		302,
+		"on GET of file through alias, server should respond with a 302 redirect",
+	);
+	assert.strictEqual(
+		redirect.headers.get("location"),
+		`/pkg/@cuz/fuzz/8.4.1`,
+		"on GET of file through alias, server should respond with a location header",
+	);
+
+	// GET file from server
+	const downloaded = await fetch(
+		`${address}${redirect.headers.get("location")}`,
+		{
+			method: "GET",
+		},
+	);
+
+	const downloadedResponse = await downloaded.json();
+
+	assert.strictEqual(
+		downloaded.status,
+		200,
+		"on GET of file, server should respond with 200 ok",
+	);
+	t.assert.snapshot(
+		JSON.stringify(downloadedResponse).replace(RE_CREATED, '"created": -1,'),
+	);
+});
+
+test("alias package - put alias, then get file overview through alias - non scoped", async (t) => {
+	const pkgFormData = new FormData();
+	pkgFormData.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
+
+	// PUT files on server
+	const uploaded = await fetch(`${address}/pkg/fuzz/8.4.1`, {
+		method: "PUT",
+		body: pkgFormData,
+		headers: { ...headers },
+		redirect: "manual",
+	});
+
+	assert.strictEqual(
+		uploaded.status,
+		303,
+		"on PUT of package, server should respond with a 303 redirect",
+	);
+	assert.strictEqual(
+		uploaded.headers.get("location"),
+		`/pkg/fuzz/8.4.1`,
+		"on PUT of package, server should respond with a location header",
+	);
+
+	// PUT alias on server
+	const aliasFormData = new FormData();
+	aliasFormData.append("version", "8.4.1");
+
+	const alias = await fetch(`${address}/pkg/fuzz/v8`, {
+		method: "PUT",
+		body: aliasFormData,
+		headers: { ...headers },
+		redirect: "manual",
+	});
+
+	assert.strictEqual(
+		alias.status,
+		303,
+		"on PUT of alias, server should respond with a 303 redirect",
+	);
+	assert.strictEqual(
+		alias.headers.get("location"),
+		`/pkg/fuzz/v8`,
+		"on PUT of alias, server should respond with a location header",
+	);
+
+	// GET file through alias from server
+	const redirect = await fetch(`${address}${alias.headers.get("location")}`, {
+		method: "GET",
+		redirect: "manual",
+	});
+
+	assert.strictEqual(
+		redirect.status,
+		302,
+		"on GET of file through alias, server should respond with a 302 redirect",
+	);
+	assert.strictEqual(
+		redirect.headers.get("location"),
+		`/pkg/fuzz/8.4.1`,
+		"on GET of file through alias, server should respond with a location header",
+	);
+
+	// GET file from server
+	const downloaded = await fetch(
+		`${address}${redirect.headers.get("location")}`,
+		{
+			method: "GET",
+		},
+	);
+
+	const downloadedResponse = await downloaded.json();
+
+	assert.strictEqual(
+		downloaded.status,
+		200,
+		"on GET of file, server should respond with 200 ok",
+	);
+	t.assert.snapshot(
+		JSON.stringify(downloadedResponse).replace(RE_CREATED, '"created": -1,'),
+	);
+});
+
+test("alias package - put alias, then get file through alias - scoped", async (t) => {
+	const pkgFormData = new FormData();
+	pkgFormData.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
+
+	// PUT files on server
+	const uploaded = await fetch(`${address}/pkg/@cuz/fuzz/8.4.1`, {
+		method: "PUT",
+		body: pkgFormData,
+		headers: { ...headers },
+		redirect: "manual",
+	});
+
+	assert.strictEqual(
+		uploaded.status,
+		303,
+		"on PUT of package, server should respond with a 303 redirect",
+	);
+	assert.strictEqual(
+		uploaded.headers.get("location"),
+		`/pkg/@cuz/fuzz/8.4.1`,
+		"on PUT of package, server should respond with a location header",
+	);
+
+	// PUT alias on server
+	const aliasFormData = new FormData();
+	aliasFormData.append("version", "8.4.1");
+
+	const alias = await fetch(`${address}/pkg/@cuz/fuzz/v8`, {
+		method: "PUT",
+		body: aliasFormData,
+		headers: { ...headers },
+		redirect: "manual",
+	});
+
+	assert.strictEqual(
+		alias.status,
+		303,
+		"on PUT of alias, server should respond with a 303 redirect",
+	);
+	assert.strictEqual(
+		alias.headers.get("location"),
+		`/pkg/@cuz/fuzz/v8`,
+		"on PUT of alias, server should respond with a location header",
+	);
+
+	// GET file through alias from server
+	const redirect = await fetch(`${address}/pkg/@cuz/fuzz/v8/main/index.js`, {
+		method: "GET",
+		redirect: "manual",
+	});
+
+	assert.strictEqual(
+		redirect.status,
+		302,
+		"on GET of file through alias, server should respond with a 302 redirect",
+	);
+	assert.strictEqual(
+		redirect.headers.get("location"),
+		`/pkg/@cuz/fuzz/8.4.1/main/index.js`,
+		"on GET of file through alias, server should respond with a location header",
+	);
+
+	// GET file from server
+	const downloaded = await fetch(
+		`${address}${redirect.headers.get("location")}`,
+		{
+			method: "GET",
+		},
+	);
+
+	const downloadedResponse = await downloaded.text();
+
+	assert.strictEqual(
+		downloaded.status,
+		200,
+		"on GET of file, server should respond with 200 ok",
+	);
+	t.assert.snapshot(downloadedResponse);
+
+	// GET file through stale-while-revalidate alias from server
+	const staleWhileRevalidate = await fetch(
+		`${address}${(alias.headers.get("location") || "").replace("v8", "~8")}/main/index.js`,
+		{
 			method: "GET",
 			redirect: "manual",
-		});
+		},
+	);
 
-		t.equal(
-			redirect.status,
-			302,
-			"on GET of file through alias, server should respond with a 302 redirect",
-		);
-		t.equal(
-			redirect.headers.get("location"),
-			`/pkg/@cuz/fuzz/8.4.1`,
-			"on GET of file through alias, server should respond with a location header",
-		);
+	const staleWhileRevalidateResponse = await staleWhileRevalidate.text();
+	assert.strictEqual(
+		staleWhileRevalidate.status,
+		200,
+		"on GET of stale-while-revalidate alias, server should respond with 200 ok",
+	);
+	assert.match(
+		staleWhileRevalidate.headers.get("cache-control") || "",
+		/stale-while-revalidate/,
+		"Expected stale-while-revalidate directive in cache-control header",
+	);
+	t.assert.snapshot(staleWhileRevalidateResponse);
+});
 
-		// GET file from server
-		const downloaded = await fetch(
-			`${address}${redirect.headers.get("location")}`,
-			{
-				method: "GET",
-			},
-		);
+test("alias package - put alias, then get file through alias - non scoped", async (t) => {
+	const pkgFormData = new FormData();
+	pkgFormData.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 
-		const downloadedResponse = await downloaded.json();
+	// PUT files on server
+	const uploaded = await fetch(`${address}/pkg/fuzz/8.4.1`, {
+		method: "PUT",
+		body: pkgFormData,
+		headers: { ...headers },
+		redirect: "manual",
+	});
 
-		t.equal(
-			downloaded.status,
-			200,
-			"on GET of file, server should respond with 200 ok",
-		);
-		t.matchSnapshot(
-			downloadedResponse,
-			"on GET of file, response should match snapshot",
-		);
-	},
-);
+	assert.strictEqual(
+		uploaded.status,
+		303,
+		"on PUT of package, server should respond with a 303 redirect",
+	);
+	assert.strictEqual(
+		uploaded.headers.get("location"),
+		`/pkg/fuzz/8.4.1`,
+		"on PUT of package, server should respond with a location header",
+	);
 
-tap.test(
-	"alias package - put alias, then get file overview through alias - non scoped",
-	async (t) => {
-		const pkgFormData = new FormData();
-		pkgFormData.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
+	// PUT alias on server
+	const aliasFormData = new FormData();
+	aliasFormData.append("version", "8.4.1");
 
-		// PUT files on server
-		const uploaded = await fetch(`${address}/pkg/fuzz/8.4.1`, {
-			method: "PUT",
-			body: pkgFormData,
-			headers: { ...headers },
-			redirect: "manual",
-		});
+	const alias = await fetch(`${address}/pkg/fuzz/v8`, {
+		method: "PUT",
+		body: aliasFormData,
+		headers: { ...headers },
+		redirect: "manual",
+	});
 
-		t.equal(
-			uploaded.status,
-			303,
-			"on PUT of package, server should respond with a 303 redirect",
-		);
-		t.equal(
-			uploaded.headers.get("location"),
-			`/pkg/fuzz/8.4.1`,
-			"on PUT of package, server should respond with a location header",
-		);
+	assert.strictEqual(
+		alias.status,
+		303,
+		"on PUT of alias, server should respond with a 303 redirect",
+	);
+	assert.strictEqual(
+		alias.headers.get("location"),
+		`/pkg/fuzz/v8`,
+		"on PUT of alias, server should respond with a location header",
+	);
 
-		// PUT alias on server
-		const aliasFormData = new FormData();
-		aliasFormData.append("version", "8.4.1");
+	// GET file through alias from server
+	const redirect = await fetch(`${address}/pkg/fuzz/v8/main/index.js`, {
+		method: "GET",
+		redirect: "manual",
+	});
 
-		const alias = await fetch(`${address}/pkg/fuzz/v8`, {
-			method: "PUT",
-			body: aliasFormData,
-			headers: { ...headers },
-			redirect: "manual",
-		});
+	assert.strictEqual(
+		redirect.status,
+		302,
+		"on GET of file through alias, server should respond with a 302 redirect",
+	);
+	assert.strictEqual(
+		redirect.headers.get("location"),
+		`/pkg/fuzz/8.4.1/main/index.js`,
+		"on GET of file through alias, server should respond with a location header",
+	);
 
-		t.equal(
-			alias.status,
-			303,
-			"on PUT of alias, server should respond with a 303 redirect",
-		);
-		t.equal(
-			alias.headers.get("location"),
-			`/pkg/fuzz/v8`,
-			"on PUT of alias, server should respond with a location header",
-		);
+	// GET file from server
+	const downloaded = await fetch(
+		`${address}${redirect.headers.get("location")}`,
+		{
+			method: "GET",
+		},
+	);
 
-		// GET file through alias from server
-		const redirect = await fetch(`${address}${alias.headers.get("location")}`, {
+	const downloadedResponse = await downloaded.text();
+
+	assert.strictEqual(
+		downloaded.status,
+		200,
+		"on GET of file, server should respond with 200 ok",
+	);
+	t.assert.snapshot(downloadedResponse);
+
+	// GET file through stale-while-revalidate alias from server
+	const staleWhileRevalidate = await fetch(
+		`${address}${(alias.headers.get("location") || "").replace("v8", "~8")}/main/index.js`,
+		{
 			method: "GET",
 			redirect: "manual",
-		});
-
-		t.equal(
-			redirect.status,
-			302,
-			"on GET of file through alias, server should respond with a 302 redirect",
-		);
-		t.equal(
-			redirect.headers.get("location"),
-			`/pkg/fuzz/8.4.1`,
-			"on GET of file through alias, server should respond with a location header",
-		);
-
-		// GET file from server
-		const downloaded = await fetch(
-			`${address}${redirect.headers.get("location")}`,
-			{
-				method: "GET",
-			},
-		);
-
-		const downloadedResponse = await downloaded.json();
-
-		t.equal(
-			downloaded.status,
-			200,
-			"on GET of file, server should respond with 200 ok",
-		);
-		t.matchSnapshot(
-			downloadedResponse,
-			"on GET of file, response should match snapshot",
-		);
-	},
-);
-
-tap.test(
-	"alias package - put alias, then get file through alias - scoped",
-	async (t) => {
-		const pkgFormData = new FormData();
-		pkgFormData.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
-
-		// PUT files on server
-		const uploaded = await fetch(`${address}/pkg/@cuz/fuzz/8.4.1`, {
-			method: "PUT",
-			body: pkgFormData,
-			headers: { ...headers },
-			redirect: "manual",
-		});
-
-		t.equal(
-			uploaded.status,
-			303,
-			"on PUT of package, server should respond with a 303 redirect",
-		);
-		t.equal(
-			uploaded.headers.get("location"),
-			`/pkg/@cuz/fuzz/8.4.1`,
-			"on PUT of package, server should respond with a location header",
-		);
-
-		// PUT alias on server
-		const aliasFormData = new FormData();
-		aliasFormData.append("version", "8.4.1");
-
-		const alias = await fetch(`${address}/pkg/@cuz/fuzz/v8`, {
-			method: "PUT",
-			body: aliasFormData,
-			headers: { ...headers },
-			redirect: "manual",
-		});
-
-		t.equal(
-			alias.status,
-			303,
-			"on PUT of alias, server should respond with a 303 redirect",
-		);
-		t.equal(
-			alias.headers.get("location"),
-			`/pkg/@cuz/fuzz/v8`,
-			"on PUT of alias, server should respond with a location header",
-		);
-
-		// GET file through alias from server
-		const redirect = await fetch(`${address}/pkg/@cuz/fuzz/v8/main/index.js`, {
-			method: "GET",
-			redirect: "manual",
-		});
-
-		t.equal(
-			redirect.status,
-			302,
-			"on GET of file through alias, server should respond with a 302 redirect",
-		);
-		t.equal(
-			redirect.headers.get("location"),
-			`/pkg/@cuz/fuzz/8.4.1/main/index.js`,
-			"on GET of file through alias, server should respond with a location header",
-		);
-
-		// GET file from server
-		const downloaded = await fetch(
-			`${address}${redirect.headers.get("location")}`,
-			{
-				method: "GET",
-			},
-		);
-
-		const downloadedResponse = await downloaded.text();
-
-		t.equal(
-			downloaded.status,
-			200,
-			"on GET of file, server should respond with 200 ok",
-		);
-		t.matchSnapshot(
-			downloadedResponse,
-			"on GET of file, response should match snapshot",
-		);
-
-		// GET file through stale-while-revalidate alias from server
-		const staleWhileRevalidate = await fetch(
-			`${address}${(alias.headers.get("location") || "").replace("v8", "~8")}/main/index.js`,
-			{
-				method: "GET",
-				redirect: "manual",
-			},
-		);
-
-		const staleWhileRevalidateResponse = await staleWhileRevalidate.text();
-		t.equal(
-			staleWhileRevalidate.status,
-			200,
-			"on GET of stale-while-revalidate alias, server should respond with 200 ok",
-		);
-		t.match(
-			staleWhileRevalidate.headers.get("cache-control"),
-			/stale-while-revalidate/,
-			"Expected stale-while-revalidate directive in cache-control header",
-		);
-		t.matchSnapshot(
-			staleWhileRevalidateResponse,
-			"on GET of stale-while-revalidate alias, response should match file snapshot",
-		);
-	},
-);
-
-tap.test(
-	"alias package - put alias, then get file through alias - non scoped",
-	async (t) => {
-		const pkgFormData = new FormData();
-		pkgFormData.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
-
-		// PUT files on server
-		const uploaded = await fetch(`${address}/pkg/fuzz/8.4.1`, {
-			method: "PUT",
-			body: pkgFormData,
-			headers: { ...headers },
-			redirect: "manual",
-		});
-
-		t.equal(
-			uploaded.status,
-			303,
-			"on PUT of package, server should respond with a 303 redirect",
-		);
-		t.equal(
-			uploaded.headers.get("location"),
-			`/pkg/fuzz/8.4.1`,
-			"on PUT of package, server should respond with a location header",
-		);
-
-		// PUT alias on server
-		const aliasFormData = new FormData();
-		aliasFormData.append("version", "8.4.1");
-
-		const alias = await fetch(`${address}/pkg/fuzz/v8`, {
-			method: "PUT",
-			body: aliasFormData,
-			headers: { ...headers },
-			redirect: "manual",
-		});
-
-		t.equal(
-			alias.status,
-			303,
-			"on PUT of alias, server should respond with a 303 redirect",
-		);
-		t.equal(
-			alias.headers.get("location"),
-			`/pkg/fuzz/v8`,
-			"on PUT of alias, server should respond with a location header",
-		);
-
-		// GET file through alias from server
-		const redirect = await fetch(`${address}/pkg/fuzz/v8/main/index.js`, {
-			method: "GET",
-			redirect: "manual",
-		});
-
-		t.equal(
-			redirect.status,
-			302,
-			"on GET of file through alias, server should respond with a 302 redirect",
-		);
-		t.equal(
-			redirect.headers.get("location"),
-			`/pkg/fuzz/8.4.1/main/index.js`,
-			"on GET of file through alias, server should respond with a location header",
-		);
-
-		// GET file from server
-		const downloaded = await fetch(
-			`${address}${redirect.headers.get("location")}`,
-			{
-				method: "GET",
-			},
-		);
-
-		const downloadedResponse = await downloaded.text();
-
-		t.equal(
-			downloaded.status,
-			200,
-			"on GET of file, server should respond with 200 ok",
-		);
-		t.matchSnapshot(
-			downloadedResponse,
-			"on GET of file, response should match snapshot",
-		);
-
-		// GET file through stale-while-revalidate alias from server
-		const staleWhileRevalidate = await fetch(
-			`${address}${(alias.headers.get("location") || "").replace("v8", "~8")}/main/index.js`,
-			{
-				method: "GET",
-				redirect: "manual",
-			},
-		);
-
-		const staleWhileRevalidateResponse = await staleWhileRevalidate.text();
-		t.equal(
-			staleWhileRevalidate.status,
-			200,
-			"on GET of stale-while-revalidate alias, server should respond with 200 ok",
-		);
-		t.match(
-			staleWhileRevalidate.headers.get("cache-control"),
-			/stale-while-revalidate/,
-			"Expected stale-while-revalidate directive in cache-control header",
-		);
-		t.matchSnapshot(
-			staleWhileRevalidateResponse,
-			"on GET of stale-while-revalidate alias, response should match file snapshot",
-		);
-	},
-);
-
-tap.test(
-	"alias package - put alias, then update alias, then get file through alias - scoped",
-	async (t) => {
-		// PUT packages on server
-		const pkgFormDataA = new FormData();
-		pkgFormDataA.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
-		await fetch(`${address}/pkg/@cuz/fuzz/8.4.1`, {
-			method: "PUT",
-			body: pkgFormDataA,
-			headers: { ...headers },
-			redirect: "manual",
-		});
-
-		const pkgFormDataB = new FormData();
-		pkgFormDataB.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
-		await fetch(`${address}/pkg/@cuz/fuzz/8.8.9`, {
-			method: "PUT",
-			body: pkgFormDataB,
-			headers: { ...headers },
-			redirect: "manual",
-		});
-
-		// PUT alias on server
-		const aliasFormDataA = new FormData();
-		aliasFormDataA.append("version", "8.4.1");
-
-		const aliasA = await fetch(`${address}/pkg/@cuz/fuzz/v8`, {
-			method: "PUT",
-			body: aliasFormDataA,
-			headers: { ...headers },
-		});
-
-		const aliasResponseA = /** @type {{ version: string; name: String; }} */ (
-			await aliasA.json()
-		);
-
-		t.equal(
-			aliasResponseA.version,
-			"8.4.1",
-			'on PUT of alias, alias should redirect to set "version"',
-		);
-		t.equal(
-			aliasResponseA.name,
-			"@cuz/fuzz",
-			'on PUT of alias, alias should redirect to set "name"',
-		);
-
-		// POST alias on server
-		const aliasFormDataB = new FormData();
-		aliasFormDataB.append("version", "8.8.9");
-
-		const aliasB = await fetch(`${address}/pkg/@cuz/fuzz/v8`, {
-			method: "POST",
-			body: aliasFormDataB,
-			headers: { ...headers },
-		});
-
-		const aliasResponseB = /** @type {{ version: string; name: String; }} */ (
-			await aliasB.json()
-		);
-
-		t.equal(
-			aliasResponseB.version,
-			"8.8.9",
-			'on POST of alias, alias should redirect to updated "version"',
-		);
-		t.equal(
-			aliasResponseB.name,
-			"@cuz/fuzz",
-			'on POST of alias, alias should redirect to set "name"',
-		);
-	},
-);
-
-tap.test(
-	"alias package - put alias, then update alias, then get file through alias - non scoped",
-	async (t) => {
-		// PUT packages on server
-		const pkgFormDataA = new FormData();
-		pkgFormDataA.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
-		await fetch(`${address}/pkg/fuzz/8.4.1`, {
-			method: "PUT",
-			body: pkgFormDataA,
-			headers: { ...headers },
-			redirect: "manual",
-		});
-
-		const pkgFormDataB = new FormData();
-		pkgFormDataB.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
-		await fetch(`${address}/pkg/fuzz/8.8.9`, {
-			method: "PUT",
-			body: pkgFormDataB,
-			headers: { ...headers },
-			redirect: "manual",
-		});
-
-		// PUT alias on server
-		const aliasFormDataA = new FormData();
-		aliasFormDataA.append("version", "8.4.1");
-
-		const aliasA = await fetch(`${address}/pkg/fuzz/v8`, {
-			method: "PUT",
-			body: aliasFormDataA,
-			headers: { ...headers },
-		});
-
-		const aliasResponseA = /** @type {{ version: string; name: String; }} */ (
-			await aliasA.json()
-		);
-
-		t.equal(
-			aliasResponseA.version,
-			"8.4.1",
-			'on PUT of alias, alias should redirect to set "version"',
-		);
-		t.equal(
-			aliasResponseA.name,
-			"fuzz",
-			'on PUT of alias, alias should redirect to set "name"',
-		);
-
-		// POST alias on server
-		const aliasFormDataB = new FormData();
-		aliasFormDataB.append("version", "8.8.9");
-
-		const aliasB = await fetch(`${address}/pkg/fuzz/v8`, {
-			method: "POST",
-			body: aliasFormDataB,
-			headers: { ...headers },
-		});
-
-		const aliasResponseB = /** @type {{ version: string; name: String; }} */ (
-			await aliasB.json()
-		);
-
-		t.equal(
-			aliasResponseB.version,
-			"8.8.9",
-			'on POST of alias, alias should redirect to updated "version"',
-		);
-		t.equal(
-			aliasResponseB.name,
-			"fuzz",
-			'on POST of alias, alias should redirect to set "name"',
-		);
-	},
-);
-
-tap.test(
-	"alias package - put alias, then delete alias, then get file through alias - scoped",
-	async (t) => {
-		const pkgFormData = new FormData();
-		pkgFormData.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
-
-		// PUT files on server
-		const uploaded = await fetch(`${address}/pkg/@cuz/fuzz/8.4.1`, {
-			method: "PUT",
-			body: pkgFormData,
-			headers: { ...headers },
-			redirect: "manual",
-		});
-
-		t.equal(
-			uploaded.status,
-			303,
-			"on PUT of package, server should respond with a 303 redirect",
-		);
-		t.equal(
-			uploaded.headers.get("location"),
-			`/pkg/@cuz/fuzz/8.4.1`,
-			"on PUT of package, server should respond with a location header",
-		);
-
-		// PUT alias on server
-		const aliasFormData = new FormData();
-		aliasFormData.append("version", "8.4.1");
-
-		const alias = await fetch(`${address}/pkg/@cuz/fuzz/v8`, {
-			method: "PUT",
-			body: aliasFormData,
-			headers: { ...headers },
-		});
-
-		const aliasResponse = /** @type {{ version: string; name: String; }} */ (
-			await alias.json()
-		);
-
-		t.equal(
-			aliasResponse.version,
-			"8.4.1",
-			'on PUT of alias, alias should redirect to set "version"',
-		);
-		t.equal(
-			aliasResponse.name,
-			"@cuz/fuzz",
-			'on PUT of alias, alias should redirect to set "name"',
-		);
-
-		// DELETE alias on server
-		const deleted = await fetch(`${address}/pkg/@cuz/fuzz/v8`, {
-			method: "DELETE",
-			headers,
-		});
-
-		t.equal(
-			deleted.status,
-			204,
-			"on DELETE of alias, server should respond with a 204 Deleted",
-		);
-
-		// GET file through alias from server
-		const errored = await fetch(`${address}/pkg/@cuz/fuzz/v8/main/index.js`, {
-			method: "GET",
-			redirect: "manual",
-		});
-
-		t.equal(
-			errored.status,
-			404,
-			"on GET of file through deleted alias, server should respond with a 404 Not Found",
-		);
-	},
-);
-
-tap.test(
-	"alias package - put alias, then delete alias, then get file through alias - non scoped",
-	async (t) => {
-		const pkgFormData = new FormData();
-		pkgFormData.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
-
-		// PUT files on server
-		const uploaded = await fetch(`${address}/pkg/fuzz/8.4.1`, {
-			method: "PUT",
-			body: pkgFormData,
-			headers: { ...headers },
-			redirect: "manual",
-		});
-
-		t.equal(
-			uploaded.status,
-			303,
-			"on PUT of package, server should respond with a 303 redirect",
-		);
-		t.equal(
-			uploaded.headers.get("location"),
-			`/pkg/fuzz/8.4.1`,
-			"on PUT of package, server should respond with a location header",
-		);
-
-		// PUT alias on server
-		const aliasFormData = new FormData();
-		aliasFormData.append("version", "8.4.1");
-
-		const alias = await fetch(`${address}/pkg/fuzz/v8`, {
-			method: "PUT",
-			body: aliasFormData,
-			headers: { ...headers },
-		});
-
-		const aliasResponse = /** @type {{ version: string; name: String; }} */ (
-			await alias.json()
-		);
-
-		t.equal(
-			aliasResponse.version,
-			"8.4.1",
-			'on PUT of alias, alias should redirect to set "version"',
-		);
-		t.equal(
-			aliasResponse.name,
-			"fuzz",
-			'on PUT of alias, alias should redirect to set "name"',
-		);
-
-		// DELETE alias on server
-		const deleted = await fetch(`${address}/pkg/fuzz/v8`, {
-			method: "DELETE",
-			headers,
-		});
-
-		t.equal(
-			deleted.status,
-			204,
-			"on DELETE of alias, server should respond with a 204 Deleted",
-		);
-
-		// GET file through alias from server
-		const errored = await fetch(`${address}/pkg/fuzz/v8/main/index.js`, {
-			method: "GET",
-			redirect: "manual",
-		});
-
-		t.equal(
-			errored.status,
-			404,
-			"on GET of file through deleted alias, server should respond with a 404 Not Found",
-		);
-	},
-);
+		},
+	);
+
+	const staleWhileRevalidateResponse = await staleWhileRevalidate.text();
+	assert.strictEqual(
+		staleWhileRevalidate.status,
+		200,
+		"on GET of stale-while-revalidate alias, server should respond with 200 ok",
+	);
+	assert.match(
+		staleWhileRevalidate.headers.get("cache-control") || "",
+		/stale-while-revalidate/,
+		"Expected stale-while-revalidate directive in cache-control header",
+	);
+	t.assert.snapshot(staleWhileRevalidateResponse);
+});
+
+test("alias package - put alias, then update alias, then get file through alias - scoped", async () => {
+	// PUT packages on server
+	const pkgFormDataA = new FormData();
+	pkgFormDataA.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
+	await fetch(`${address}/pkg/@cuz/fuzz/8.4.1`, {
+		method: "PUT",
+		body: pkgFormDataA,
+		headers: { ...headers },
+		redirect: "manual",
+	});
+
+	const pkgFormDataB = new FormData();
+	pkgFormDataB.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
+	await fetch(`${address}/pkg/@cuz/fuzz/8.8.9`, {
+		method: "PUT",
+		body: pkgFormDataB,
+		headers: { ...headers },
+		redirect: "manual",
+	});
+
+	// PUT alias on server
+	const aliasFormDataA = new FormData();
+	aliasFormDataA.append("version", "8.4.1");
+
+	const aliasA = await fetch(`${address}/pkg/@cuz/fuzz/v8`, {
+		method: "PUT",
+		body: aliasFormDataA,
+		headers: { ...headers },
+	});
+
+	const aliasResponseA = /** @type {{ version: string; name: String; }} */ (
+		await aliasA.json()
+	);
+
+	assert.strictEqual(
+		aliasResponseA.version,
+		"8.4.1",
+		'on PUT of alias, alias should redirect to set "version"',
+	);
+	assert.strictEqual(
+		aliasResponseA.name,
+		"@cuz/fuzz",
+		'on PUT of alias, alias should redirect to set "name"',
+	);
+
+	// POST alias on server
+	const aliasFormDataB = new FormData();
+	aliasFormDataB.append("version", "8.8.9");
+
+	const aliasB = await fetch(`${address}/pkg/@cuz/fuzz/v8`, {
+		method: "POST",
+		body: aliasFormDataB,
+		headers: { ...headers },
+	});
+
+	const aliasResponseB = /** @type {{ version: string; name: String; }} */ (
+		await aliasB.json()
+	);
+
+	assert.strictEqual(
+		aliasResponseB.version,
+		"8.8.9",
+		'on POST of alias, alias should redirect to updated "version"',
+	);
+	assert.strictEqual(
+		aliasResponseB.name,
+		"@cuz/fuzz",
+		'on POST of alias, alias should redirect to set "name"',
+	);
+});
+
+test("alias package - put alias, then update alias, then get file through alias - non scoped", async () => {
+	// PUT packages on server
+	const pkgFormDataA = new FormData();
+	pkgFormDataA.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
+	await fetch(`${address}/pkg/fuzz/8.4.1`, {
+		method: "PUT",
+		body: pkgFormDataA,
+		headers: { ...headers },
+		redirect: "manual",
+	});
+
+	const pkgFormDataB = new FormData();
+	pkgFormDataB.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
+	await fetch(`${address}/pkg/fuzz/8.8.9`, {
+		method: "PUT",
+		body: pkgFormDataB,
+		headers: { ...headers },
+		redirect: "manual",
+	});
+
+	// PUT alias on server
+	const aliasFormDataA = new FormData();
+	aliasFormDataA.append("version", "8.4.1");
+
+	const aliasA = await fetch(`${address}/pkg/fuzz/v8`, {
+		method: "PUT",
+		body: aliasFormDataA,
+		headers: { ...headers },
+	});
+
+	const aliasResponseA = /** @type {{ version: string; name: String; }} */ (
+		await aliasA.json()
+	);
+
+	assert.strictEqual(
+		aliasResponseA.version,
+		"8.4.1",
+		'on PUT of alias, alias should redirect to set "version"',
+	);
+	assert.strictEqual(
+		aliasResponseA.name,
+		"fuzz",
+		'on PUT of alias, alias should redirect to set "name"',
+	);
+
+	// POST alias on server
+	const aliasFormDataB = new FormData();
+	aliasFormDataB.append("version", "8.8.9");
+
+	const aliasB = await fetch(`${address}/pkg/fuzz/v8`, {
+		method: "POST",
+		body: aliasFormDataB,
+		headers: { ...headers },
+	});
+
+	const aliasResponseB = /** @type {{ version: string; name: String; }} */ (
+		await aliasB.json()
+	);
+
+	assert.strictEqual(
+		aliasResponseB.version,
+		"8.8.9",
+		'on POST of alias, alias should redirect to updated "version"',
+	);
+	assert.strictEqual(
+		aliasResponseB.name,
+		"fuzz",
+		'on POST of alias, alias should redirect to set "name"',
+	);
+});
+
+test("alias package - put alias, then delete alias, then get file through alias - scoped", async () => {
+	const pkgFormData = new FormData();
+	pkgFormData.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
+
+	// PUT files on server
+	const uploaded = await fetch(`${address}/pkg/@cuz/fuzz/8.4.1`, {
+		method: "PUT",
+		body: pkgFormData,
+		headers: { ...headers },
+		redirect: "manual",
+	});
+
+	assert.strictEqual(
+		uploaded.status,
+		303,
+		"on PUT of package, server should respond with a 303 redirect",
+	);
+	assert.strictEqual(
+		uploaded.headers.get("location"),
+		`/pkg/@cuz/fuzz/8.4.1`,
+		"on PUT of package, server should respond with a location header",
+	);
+
+	// PUT alias on server
+	const aliasFormData = new FormData();
+	aliasFormData.append("version", "8.4.1");
+
+	const alias = await fetch(`${address}/pkg/@cuz/fuzz/v8`, {
+		method: "PUT",
+		body: aliasFormData,
+		headers: { ...headers },
+	});
+
+	const aliasResponse = /** @type {{ version: string; name: String; }} */ (
+		await alias.json()
+	);
+
+	assert.strictEqual(
+		aliasResponse.version,
+		"8.4.1",
+		'on PUT of alias, alias should redirect to set "version"',
+	);
+	assert.strictEqual(
+		aliasResponse.name,
+		"@cuz/fuzz",
+		'on PUT of alias, alias should redirect to set "name"',
+	);
+
+	// DELETE alias on server
+	const deleted = await fetch(`${address}/pkg/@cuz/fuzz/v8`, {
+		method: "DELETE",
+		headers,
+	});
+
+	assert.strictEqual(
+		deleted.status,
+		204,
+		"on DELETE of alias, server should respond with a 204 Deleted",
+	);
+
+	// GET file through alias from server
+	const errored = await fetch(`${address}/pkg/@cuz/fuzz/v8/main/index.js`, {
+		method: "GET",
+		redirect: "manual",
+	});
+
+	assert.strictEqual(
+		errored.status,
+		404,
+		"on GET of file through deleted alias, server should respond with a 404 Not Found",
+	);
+});
+
+test("alias package - put alias, then delete alias, then get file through alias - non scoped", async () => {
+	const pkgFormData = new FormData();
+	pkgFormData.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
+
+	// PUT files on server
+	const uploaded = await fetch(`${address}/pkg/fuzz/8.4.1`, {
+		method: "PUT",
+		body: pkgFormData,
+		headers: { ...headers },
+		redirect: "manual",
+	});
+
+	assert.strictEqual(
+		uploaded.status,
+		303,
+		"on PUT of package, server should respond with a 303 redirect",
+	);
+	assert.strictEqual(
+		uploaded.headers.get("location"),
+		`/pkg/fuzz/8.4.1`,
+		"on PUT of package, server should respond with a location header",
+	);
+
+	// PUT alias on server
+	const aliasFormData = new FormData();
+	aliasFormData.append("version", "8.4.1");
+
+	const alias = await fetch(`${address}/pkg/fuzz/v8`, {
+		method: "PUT",
+		body: aliasFormData,
+		headers: { ...headers },
+	});
+
+	const aliasResponse = /** @type {{ version: string; name: String; }} */ (
+		await alias.json()
+	);
+
+	assert.strictEqual(
+		aliasResponse.version,
+		"8.4.1",
+		'on PUT of alias, alias should redirect to set "version"',
+	);
+	assert.strictEqual(
+		aliasResponse.name,
+		"fuzz",
+		'on PUT of alias, alias should redirect to set "name"',
+	);
+
+	// DELETE alias on server
+	const deleted = await fetch(`${address}/pkg/fuzz/v8`, {
+		method: "DELETE",
+		headers,
+	});
+
+	assert.strictEqual(
+		deleted.status,
+		204,
+		"on DELETE of alias, server should respond with a 204 Deleted",
+	);
+
+	// GET file through alias from server
+	const errored = await fetch(`${address}/pkg/fuzz/v8/main/index.js`, {
+		method: "GET",
+		redirect: "manual",
+	});
+
+	assert.strictEqual(
+		errored.status,
+		404,
+		"on GET of file through deleted alias, server should respond with a 404 Not Found",
+	);
+});

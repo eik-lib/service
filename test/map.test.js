@@ -1,6 +1,7 @@
 import fastify from "fastify";
 import path from "path";
-import tap from "tap";
+import { test, before, after, afterEach } from "node:test";
+import assert from "node:assert/strict";
 import url from "url";
 import fs from "fs";
 
@@ -15,6 +16,7 @@ const FIXTURE_MAP = path.resolve(
 	"fixtures",
 	"import-map.json",
 );
+
 /** @type {import('fastify').FastifyInstance} */
 let app;
 /** @type {string} */
@@ -24,12 +26,12 @@ let headers;
 /** @type {Sink} */
 let sink;
 
-tap.before(async () => {
+before(async () => {
 	sink = new Sink();
 	const service = new Server({ sink });
 
 	app = fastify({
-		ignoreTrailingSlash: true,
+		routerOptions: { ignoreTrailingSlash: true },
 		forceCloseConnections: true,
 	});
 	app.register(service.api());
@@ -46,15 +48,15 @@ tap.before(async () => {
 	headers = { Authorization: `Bearer ${login.token}` };
 });
 
-tap.afterEach(() => {
+afterEach(() => {
 	sink.clear();
 });
 
-tap.teardown(async () => {
+after(async () => {
 	await app.close();
 });
 
-tap.test("import-map - no auth token on PUT - scoped", async (t) => {
+test("import-map - no auth token on PUT - scoped", async () => {
 	const formData = new FormData();
 	formData.append("map", new Blob([fs.readFileSync(FIXTURE_MAP)]));
 
@@ -65,14 +67,14 @@ tap.test("import-map - no auth token on PUT - scoped", async (t) => {
 		redirect: "manual",
 	});
 
-	t.equal(
+	assert.strictEqual(
 		uploaded.status,
 		401,
 		"on PUT of map, server should respond with a 401 Unauthorized",
 	);
 });
 
-tap.test("import-map - no auth token on PUT - non scoped", async (t) => {
+test("import-map - no auth token on PUT - non scoped", async () => {
 	const formData = new FormData();
 	formData.append("map", new Blob([fs.readFileSync(FIXTURE_MAP)]));
 
@@ -83,102 +85,90 @@ tap.test("import-map - no auth token on PUT - non scoped", async (t) => {
 		redirect: "manual",
 	});
 
-	t.equal(
+	assert.strictEqual(
 		uploaded.status,
 		401,
 		"on PUT of map, server should respond with a 401 Unauthorized",
 	);
 });
 
-tap.test(
-	"import-map - put map -> get map - scoped successfully uploaded",
-	async (t) => {
-		const formData = new FormData();
-		formData.append("map", new Blob([fs.readFileSync(FIXTURE_MAP)]));
+test("import-map - put map -> get map - scoped successfully uploaded", async (t) => {
+	const formData = new FormData();
+	formData.append("map", new Blob([fs.readFileSync(FIXTURE_MAP)]));
 
-		// PUT map on server
-		const uploaded = await fetch(`${address}/map/@cuz/buzz/4.2.2`, {
-			method: "PUT",
-			body: formData,
-			headers: { ...headers },
-			redirect: "manual",
-		});
+	// PUT map on server
+	const uploaded = await fetch(`${address}/map/@cuz/buzz/4.2.2`, {
+		method: "PUT",
+		body: formData,
+		headers: { ...headers },
+		redirect: "manual",
+	});
 
-		t.equal(
-			uploaded.status,
-			303,
-			"on PUT of map, server should respond with a 303 redirect",
-		);
-		t.equal(
-			uploaded.headers.get("location"),
-			`/map/@cuz/buzz/4.2.2`,
-			"on PUT of map, server should respond with a location header",
-		);
+	assert.strictEqual(
+		uploaded.status,
+		303,
+		"on PUT of map, server should respond with a 303 redirect",
+	);
+	assert.strictEqual(
+		uploaded.headers.get("location"),
+		`/map/@cuz/buzz/4.2.2`,
+		"on PUT of map, server should respond with a location header",
+	);
 
-		// GET map from server
-		const downloaded = await fetch(`${address}/map/@cuz/buzz/4.2.2`, {
-			method: "GET",
-		});
+	// GET map from server
+	const downloaded = await fetch(`${address}/map/@cuz/buzz/4.2.2`, {
+		method: "GET",
+	});
 
-		const downloadedResponse = await downloaded.json();
+	const downloadedResponse = await downloaded.json();
 
-		t.equal(
-			downloaded.status,
-			200,
-			"on GET of map, server should respond with 200 ok",
-		);
-		t.matchSnapshot(
-			downloadedResponse,
-			"on GET of map, response should match snapshot",
-		);
-	},
-);
+	assert.strictEqual(
+		downloaded.status,
+		200,
+		"on GET of map, server should respond with 200 ok",
+	);
+	t.assert.snapshot(JSON.stringify(downloadedResponse));
+});
 
-tap.test(
-	"import-map - put map -> get map - non scoped successfully uploaded",
-	async (t) => {
-		const formData = new FormData();
-		formData.append("map", new Blob([fs.readFileSync(FIXTURE_MAP)]));
+test("import-map - put map -> get map - non scoped successfully uploaded", async (t) => {
+	const formData = new FormData();
+	formData.append("map", new Blob([fs.readFileSync(FIXTURE_MAP)]));
 
-		// PUT map on server
-		const uploaded = await fetch(`${address}/map/buzz/4.2.2`, {
-			method: "PUT",
-			body: formData,
-			headers: { ...headers },
-			redirect: "manual",
-		});
+	// PUT map on server
+	const uploaded = await fetch(`${address}/map/buzz/4.2.2`, {
+		method: "PUT",
+		body: formData,
+		headers: { ...headers },
+		redirect: "manual",
+	});
 
-		t.equal(
-			uploaded.status,
-			303,
-			"on PUT of map, server should respond with a 303 redirect",
-		);
-		t.equal(
-			uploaded.headers.get("location"),
-			`/map/buzz/4.2.2`,
-			"on PUT of map, server should respond with a location header",
-		);
+	assert.strictEqual(
+		uploaded.status,
+		303,
+		"on PUT of map, server should respond with a 303 redirect",
+	);
+	assert.strictEqual(
+		uploaded.headers.get("location"),
+		`/map/buzz/4.2.2`,
+		"on PUT of map, server should respond with a location header",
+	);
 
-		// GET map from server
-		const downloaded = await fetch(`${address}/map/buzz/4.2.2`, {
-			method: "GET",
-		});
+	// GET map from server
+	const downloaded = await fetch(`${address}/map/buzz/4.2.2`, {
+		method: "GET",
+	});
 
-		const downloadedResponse = await downloaded.json();
+	const downloadedResponse = await downloaded.json();
 
-		t.equal(
-			downloaded.status,
-			200,
-			"on GET of map, server should respond with 200 ok",
-		);
-		t.matchSnapshot(
-			downloadedResponse,
-			"on GET of map, response should match snapshot",
-		);
-	},
-);
+	assert.strictEqual(
+		downloaded.status,
+		200,
+		"on GET of map, server should respond with 200 ok",
+	);
+	t.assert.snapshot(JSON.stringify(downloadedResponse));
+});
 
-tap.test("import-map - get map versions - scoped", async (t) => {
+test("import-map - get map versions - scoped", async (t) => {
 	// PUT map on server
 
 	const formDataA = new FormData();
@@ -215,18 +205,15 @@ tap.test("import-map - get map versions - scoped", async (t) => {
 
 	const downloadedResponse = await downloaded.json();
 
-	t.equal(
+	assert.strictEqual(
 		downloaded.status,
 		200,
 		"on GET of map versions, server should respond with 200 ok",
 	);
-	t.matchSnapshot(
-		downloadedResponse,
-		"on GET of map versions, response should match snapshot",
-	);
+	t.assert.snapshot(JSON.stringify(downloadedResponse));
 });
 
-tap.test("import-map - get map versions - non scoped", async (t) => {
+test("import-map - get map versions - non scoped", async (t) => {
 	// PUT map on server
 
 	const formDataA = new FormData();
@@ -263,13 +250,10 @@ tap.test("import-map - get map versions - non scoped", async (t) => {
 
 	const downloadedResponse = await downloaded.json();
 
-	t.equal(
+	assert.strictEqual(
 		downloaded.status,
 		200,
 		"on GET of map versions, server should respond with 200 ok",
 	);
-	t.matchSnapshot(
-		downloadedResponse,
-		"on GET of map versions, response should match snapshot",
-	);
+	t.assert.snapshot(JSON.stringify(downloadedResponse));
 });

@@ -1,5 +1,6 @@
 import fastify from "fastify";
-import tap from "tap";
+import { test, before, after, afterEach } from "node:test";
+import assert from "node:assert/strict";
 
 import Sink from "./utils/sink.js";
 import Server from "../lib/main.js";
@@ -11,12 +12,12 @@ let address;
 /** @type {Sink} */
 let sink;
 
-tap.before(async () => {
+before(async () => {
 	sink = new Sink();
 	const service = new Server({ sink });
 
 	app = fastify({
-		ignoreTrailingSlash: true,
+		routerOptions: { ignoreTrailingSlash: true },
 		forceCloseConnections: true,
 	});
 	app.register(service.api());
@@ -24,15 +25,15 @@ tap.before(async () => {
 	address = await app.listen({ port: 0, host: "127.0.0.1" });
 });
 
-tap.afterEach(() => {
+afterEach(() => {
 	sink.clear();
 });
 
-tap.teardown(async () => {
+after(async () => {
 	await app.close();
 });
 
-tap.test("404 - POST request to non existing pathname", async (t) => {
+test("404 - POST request to non existing pathname", async () => {
 	const formData = new FormData();
 	formData.append("key", "change_me");
 
@@ -41,19 +42,27 @@ tap.test("404 - POST request to non existing pathname", async (t) => {
 		body: formData,
 	});
 
-	t.equal(response.status, 404, "server should respond with a 404 Not found");
-	t.equal(
+	assert.strictEqual(
+		response.status,
+		404,
+		"server should respond with a 404 Not found",
+	);
+	assert.strictEqual(
 		response.headers.get("cache-control"),
 		"public, max-age=5",
 		'should contain "cache-control" set to "public, max-age=5"',
 	);
 });
 
-tap.test("404 - GET request to non existing pathname", async (t) => {
+test("404 - GET request to non existing pathname", async () => {
 	const response = await fetch(`${address}/non/existent`);
 
-	t.equal(response.status, 404, "server should respond with a 404 Not found");
-	t.equal(
+	assert.strictEqual(
+		response.status,
+		404,
+		"server should respond with a 404 Not found",
+	);
+	assert.strictEqual(
 		response.headers.get("cache-control"),
 		"public, max-age=5",
 		'should contain "cache-control" set to "public, max-age=5"',

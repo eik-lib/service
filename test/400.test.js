@@ -1,7 +1,8 @@
 import http from "node:http";
 import fastify from "fastify";
 import path from "path";
-import tap from "tap";
+import { test, before, after, afterEach } from "node:test";
+import assert from "node:assert/strict";
 import url from "url";
 import fs from "fs";
 
@@ -19,12 +20,12 @@ let address;
 /** @type {Sink} */
 let sink;
 
-tap.before(async () => {
+before(async () => {
 	sink = new Sink();
 	const service = new Server({ sink });
 
 	app = fastify({
-		ignoreTrailingSlash: true,
+		routerOptions: { ignoreTrailingSlash: true },
 		forceCloseConnections: true,
 	});
 	app.register(service.api());
@@ -32,15 +33,15 @@ tap.before(async () => {
 	address = await app.listen({ port: 0, host: "127.0.0.1" });
 });
 
-tap.afterEach(() => {
+afterEach(() => {
 	sink.clear();
 });
 
-tap.teardown(async () => {
+after(async () => {
 	await app.close();
 });
 
-tap.test("400 - GET request with non-existing hostname", async (t) => {
+test("400 - GET request with non-existing hostname", async () => {
 	let formData = new FormData();
 	formData.append("key", "change_me");
 
@@ -62,12 +63,12 @@ tap.test("400 - GET request with non-existing hostname", async (t) => {
 		headers: { Authorization: `Bearer ${token}` },
 	});
 
-	t.equal(
+	assert.strictEqual(
 		uploaded.status,
 		303,
 		"on PUT of package, server should respond with a 303 redirect",
 	);
-	t.equal(
+	assert.strictEqual(
 		uploaded.headers.get("location"),
 		`/pkg/@cuz/fuzz/1.4.8`,
 		"on PUT of package, server should respond with a location header",
@@ -90,5 +91,9 @@ tap.test("400 - GET request with non-existing hostname", async (t) => {
 		req.end();
 	});
 
-	t.equal(status, 400, "server should respond with a 400 Bad Request");
+	assert.strictEqual(
+		status,
+		400,
+		"server should respond with a 400 Bad Request",
+	);
 });

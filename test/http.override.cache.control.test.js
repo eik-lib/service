@@ -1,6 +1,7 @@
 import fastify from "fastify";
 import path from "path";
-import tap from "tap";
+import { test, before, after, afterEach } from "node:test";
+import assert from "node:assert/strict";
 import url from "url";
 import fs from "fs";
 
@@ -11,12 +12,6 @@ const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
 const FIXTURE_PKG = path.resolve(__dirname, "..", "fixtures", "archive.tgz");
 
-// Ignore the timestamp for "created" field in the snapshots
-tap.cleanSnapshot = (s) => {
-	const regex = /"created": [0-9]+,/gi;
-	return s.replace(regex, '"created": -1,');
-};
-
 /** @type {import('fastify').FastifyInstance} */
 let app;
 /** @type {string} */
@@ -26,7 +21,7 @@ let headers;
 /** @type {Sink} */
 let sink;
 
-tap.before(async () => {
+before(async () => {
 	sink = new Sink();
 	const service = new Server({
 		sink,
@@ -34,7 +29,7 @@ tap.before(async () => {
 	});
 
 	app = fastify({
-		ignoreTrailingSlash: true,
+		routerOptions: { ignoreTrailingSlash: true },
 		forceCloseConnections: true,
 	});
 	app.register(service.api());
@@ -51,15 +46,15 @@ tap.before(async () => {
 	headers = { Authorization: `Bearer ${login.token}` };
 });
 
-tap.afterEach(() => {
+afterEach(() => {
 	sink.clear();
 });
 
-tap.teardown(async () => {
+after(async () => {
 	await app.close();
 });
 
-tap.test("cache-control - alias package - scoped", async (t) => {
+test("cache-control - alias package - scoped", async () => {
 	const formDataA = new FormData();
 	formDataA.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 
@@ -92,7 +87,7 @@ tap.test("cache-control - alias package - scoped", async (t) => {
 		headers: { ...headers },
 		redirect: "manual",
 	});
-	t.equal(
+	assert.strictEqual(
 		alias.headers.get("cache-control"),
 		"no-store",
 		'should be "no-store"',
@@ -104,7 +99,7 @@ tap.test("cache-control - alias package - scoped", async (t) => {
 		redirect: "manual",
 	});
 
-	t.equal(
+	assert.strictEqual(
 		redirect.headers.get("cache-control"),
 		"public, max-age=600",
 		'should be "public, max-age=600"',
@@ -115,7 +110,7 @@ tap.test("cache-control - alias package - scoped", async (t) => {
 		method: "DELETE",
 		headers,
 	});
-	t.equal(
+	assert.strictEqual(
 		deleted.headers.get("cache-control"),
 		"no-store",
 		'should be "no-cache"',
