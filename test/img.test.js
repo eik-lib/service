@@ -1,6 +1,7 @@
 import fastify from "fastify";
 import path from "path";
-import tap from "tap";
+import { test, before, after, afterEach } from "node:test";
+import assert from "node:assert/strict";
 import url from "url";
 import fs from "fs";
 
@@ -11,11 +12,7 @@ const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
 const FIXTURE_PKG = path.resolve(__dirname, "..", "fixtures", "archive.tgz");
 
-// Ignore the timestamp for "created" field in the snapshots
-tap.cleanSnapshot = (s) => {
-	const regex = /"created": [0-9]+,/gi;
-	return s.replace(regex, '"created": -1,');
-};
+const RE_CREATED = /"created":[0-9]+,/gi;
 
 /** @type {import('fastify').FastifyInstance} */
 let app;
@@ -26,12 +23,12 @@ let headers;
 /** @type {Sink} */
 let sink;
 
-tap.before(async () => {
+before(async () => {
 	sink = new Sink();
 	const service = new Server({ sink });
 
 	app = fastify({
-		ignoreTrailingSlash: true,
+		routerOptions: { ignoreTrailingSlash: true },
 		forceCloseConnections: true,
 	});
 	app.register(service.api());
@@ -48,15 +45,15 @@ tap.before(async () => {
 	headers = { Authorization: `Bearer ${login.token}` };
 });
 
-tap.afterEach(() => {
+afterEach(() => {
 	sink.clear();
 });
 
-tap.teardown(async () => {
+after(async () => {
 	await app.close();
 });
 
-tap.test("img packages - no auth token on PUT - scoped", async (t) => {
+test("img packages - no auth token on PUT - scoped", async () => {
 	const formData = new FormData();
 	formData.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 
@@ -67,14 +64,14 @@ tap.test("img packages - no auth token on PUT - scoped", async (t) => {
 		redirect: "manual",
 	});
 
-	t.equal(
+	assert.strictEqual(
 		uploaded.status,
 		401,
 		"on PUT of package, server should respond with a 401 Unauthorized",
 	);
 });
 
-tap.test("img packages - no auth token on PUT - non scoped", async (t) => {
+test("img packages - no auth token on PUT - non scoped", async () => {
 	const formData = new FormData();
 	formData.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 
@@ -85,103 +82,91 @@ tap.test("img packages - no auth token on PUT - non scoped", async (t) => {
 		redirect: "manual",
 	});
 
-	t.equal(
+	assert.strictEqual(
 		uploaded.status,
 		401,
 		"on PUT of package, server should respond with a 401 Unauthorized",
 	);
 });
 
-tap.test(
-	"img packages - put pkg -> get file - scoped successfully uploaded",
-	async (t) => {
-		const formData = new FormData();
-		formData.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
+test("img packages - put pkg -> get file - scoped successfully uploaded", async (t) => {
+	const formData = new FormData();
+	formData.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 
-		// PUT files on server
-		const uploaded = await fetch(`${address}/img/@cuz/fuzz/1.4.8`, {
-			method: "PUT",
-			body: formData,
-			redirect: "manual",
-			headers: { ...headers },
-		});
+	// PUT files on server
+	const uploaded = await fetch(`${address}/img/@cuz/fuzz/1.4.8`, {
+		method: "PUT",
+		body: formData,
+		redirect: "manual",
+		headers: { ...headers },
+	});
 
-		t.equal(
-			uploaded.status,
-			303,
-			"on PUT of package, server should respond with a 303 redirect",
-		);
-		t.equal(
-			uploaded.headers.get("location"),
-			`/img/@cuz/fuzz/1.4.8`,
-			"on PUT of package, server should respond with a location header",
-		);
+	assert.strictEqual(
+		uploaded.status,
+		303,
+		"on PUT of package, server should respond with a 303 redirect",
+	);
+	assert.strictEqual(
+		uploaded.headers.get("location"),
+		`/img/@cuz/fuzz/1.4.8`,
+		"on PUT of package, server should respond with a location header",
+	);
 
-		// GET file from server
-		const downloaded = await fetch(
-			`${address}/img/@cuz/fuzz/1.4.8/main/index.js`,
-			{
-				method: "GET",
-			},
-		);
-		const downloadedResponse = await downloaded.text();
-
-		t.equal(
-			downloaded.status,
-			200,
-			"on GET of file, server should respond with 200 ok",
-		);
-		t.matchSnapshot(
-			downloadedResponse,
-			"on GET of package, response should match snapshot",
-		);
-	},
-);
-
-tap.test(
-	"img packages - put pkg -> get file - non scoped successfully uploaded",
-	async (t) => {
-		const formData = new FormData();
-		formData.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
-
-		// PUT files on server
-		const uploaded = await fetch(`${address}/img/fuzz/8.4.1`, {
-			method: "PUT",
-			body: formData,
-			headers: { ...headers },
-			redirect: "manual",
-		});
-
-		t.equal(
-			uploaded.status,
-			303,
-			"on PUT of package, server should respond with a 303 redirect",
-		);
-		t.equal(
-			uploaded.headers.get("location"),
-			`/img/fuzz/8.4.1`,
-			"on PUT of package, server should respond with a location header",
-		);
-
-		// GET file from server
-		const downloaded = await fetch(`${address}/img/fuzz/8.4.1/main/index.js`, {
+	// GET file from server
+	const downloaded = await fetch(
+		`${address}/img/@cuz/fuzz/1.4.8/main/index.js`,
+		{
 			method: "GET",
-		});
-		const downloadedResponse = await downloaded.text();
+		},
+	);
+	const downloadedResponse = await downloaded.text();
 
-		t.equal(
-			downloaded.status,
-			200,
-			"on GET of file, server should respond with 200 ok",
-		);
-		t.matchSnapshot(
-			downloadedResponse,
-			"on GET of package, response should match snapshot",
-		);
-	},
-);
+	assert.strictEqual(
+		downloaded.status,
+		200,
+		"on GET of file, server should respond with 200 ok",
+	);
+	t.assert.snapshot(downloadedResponse);
+});
 
-tap.test("img packages - get package overview - scoped", async (t) => {
+test("img packages - put pkg -> get file - non scoped successfully uploaded", async (t) => {
+	const formData = new FormData();
+	formData.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
+
+	// PUT files on server
+	const uploaded = await fetch(`${address}/img/fuzz/8.4.1`, {
+		method: "PUT",
+		body: formData,
+		headers: { ...headers },
+		redirect: "manual",
+	});
+
+	assert.strictEqual(
+		uploaded.status,
+		303,
+		"on PUT of package, server should respond with a 303 redirect",
+	);
+	assert.strictEqual(
+		uploaded.headers.get("location"),
+		`/img/fuzz/8.4.1`,
+		"on PUT of package, server should respond with a location header",
+	);
+
+	// GET file from server
+	const downloaded = await fetch(`${address}/img/fuzz/8.4.1/main/index.js`, {
+		method: "GET",
+	});
+	const downloadedResponse = await downloaded.text();
+
+	assert.strictEqual(
+		downloaded.status,
+		200,
+		"on GET of file, server should respond with 200 ok",
+	);
+	t.assert.snapshot(downloadedResponse);
+});
+
+test("img packages - get package overview - scoped", async (t) => {
 	const formData = new FormData();
 	formData.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 
@@ -193,12 +178,12 @@ tap.test("img packages - get package overview - scoped", async (t) => {
 		redirect: "manual",
 	});
 
-	t.equal(
+	assert.strictEqual(
 		uploaded.status,
 		303,
 		"on PUT of package, server should respond with a 303 redirect",
 	);
-	t.equal(
+	assert.strictEqual(
 		uploaded.headers.get("location"),
 		`/img/@cuz/fuzz/8.4.1`,
 		"on PUT of package, server should respond with a location header",
@@ -210,11 +195,17 @@ tap.test("img packages - get package overview - scoped", async (t) => {
 	});
 	const downloadedResponse = await downloaded.json();
 
-	t.equal(downloaded.status, 200, "on GET, server should respond with 200 ok");
-	t.matchSnapshot(downloadedResponse, "on GET, response should match snapshot");
+	assert.strictEqual(
+		downloaded.status,
+		200,
+		"on GET, server should respond with 200 ok",
+	);
+	t.assert.snapshot(
+		JSON.stringify(downloadedResponse).replace(RE_CREATED, '"created": -1,'),
+	);
 });
 
-tap.test("img packages - get package overview - non scoped", async (t) => {
+test("img packages - get package overview - non scoped", async (t) => {
 	const formData = new FormData();
 	formData.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
 
@@ -226,12 +217,12 @@ tap.test("img packages - get package overview - non scoped", async (t) => {
 		redirect: "manual",
 	});
 
-	t.equal(
+	assert.strictEqual(
 		uploaded.status,
 		303,
 		"on PUT of package, server should respond with a 303 redirect",
 	);
-	t.equal(
+	assert.strictEqual(
 		uploaded.headers.get("location"),
 		`/img/fuzz/8.4.1`,
 		"on PUT of package, server should respond with a location header",
@@ -243,11 +234,17 @@ tap.test("img packages - get package overview - non scoped", async (t) => {
 	});
 	const downloadedResponse = await downloaded.json();
 
-	t.equal(downloaded.status, 200, "on GET, server should respond with 200 ok");
-	t.matchSnapshot(downloadedResponse, "on GET, response should match snapshot");
+	assert.strictEqual(
+		downloaded.status,
+		200,
+		"on GET, server should respond with 200 ok",
+	);
+	t.assert.snapshot(
+		JSON.stringify(downloadedResponse).replace(RE_CREATED, '"created": -1,'),
+	);
 });
 
-tap.test("img packages - get package versions - scoped", async (t) => {
+test("img packages - get package versions - scoped", async (t) => {
 	// PUT files on server
 
 	const formDataA = new FormData();
@@ -283,11 +280,17 @@ tap.test("img packages - get package versions - scoped", async (t) => {
 	});
 	const downloadedResponse = await downloaded.json();
 
-	t.equal(downloaded.status, 200, "on GET, server should respond with 200 ok");
-	t.matchSnapshot(downloadedResponse, "on GET, response should match snapshot");
+	assert.strictEqual(
+		downloaded.status,
+		200,
+		"on GET, server should respond with 200 ok",
+	);
+	t.assert.snapshot(
+		JSON.stringify(downloadedResponse).replace(RE_CREATED, '"created": -1,'),
+	);
 });
 
-tap.test("img packages - get package versions - non scoped", async (t) => {
+test("img packages - get package versions - non scoped", async (t) => {
 	// PUT files on server
 
 	const formDataA = new FormData();
@@ -323,6 +326,12 @@ tap.test("img packages - get package versions - non scoped", async (t) => {
 	});
 	const downloadedResponse = await downloaded.json();
 
-	t.equal(downloaded.status, 200, "on GET, server should respond with 200 ok");
-	t.matchSnapshot(downloadedResponse, "on GET, response should match snapshot");
+	assert.strictEqual(
+		downloaded.status,
+		200,
+		"on GET, server should respond with 200 ok",
+	);
+	t.assert.snapshot(
+		JSON.stringify(downloadedResponse).replace(RE_CREATED, '"created": -1,'),
+	);
 });

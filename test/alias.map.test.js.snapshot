@@ -1,0 +1,7 @@
+exports[`alias map - put alias, then get map through alias - non scoped 1`] = `
+"{\\"imports\\":{\\"fuzz\\":\\"http://localhost:4001/finn/pkg/fuzz/v8\\"}}"
+`;
+
+exports[`alias map - put alias, then get map through alias - scoped 1`] = `
+"{\\"imports\\":{\\"fuzz\\":\\"http://localhost:4001/finn/pkg/fuzz/v8\\"}}"
+`;

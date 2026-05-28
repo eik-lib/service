@@ -1,5 +1,6 @@
 import fastify from "fastify";
-import tap from "tap";
+import { test, before, after, afterEach } from "node:test";
+import assert from "node:assert/strict";
 
 import Sink from "./utils/sink.js";
 import Server from "../lib/main.js";
@@ -11,12 +12,12 @@ let address;
 /** @type {Sink} */
 let sink;
 
-tap.before(async () => {
+before(async () => {
 	sink = new Sink();
 	const service = new Server({ sink });
 
 	app = fastify({
-		ignoreTrailingSlash: true,
+		routerOptions: { ignoreTrailingSlash: true },
 		forceCloseConnections: true,
 	});
 	app.register(service.api());
@@ -24,15 +25,15 @@ tap.before(async () => {
 	address = await app.listen({ port: 0, host: "127.0.0.1" });
 });
 
-tap.afterEach(() => {
+afterEach(() => {
 	sink.clear();
 });
 
-tap.teardown(async () => {
+after(async () => {
 	await app.close();
 });
 
-tap.test('auth - authenticate - legal "key" value', async (t) => {
+test('auth - authenticate - legal "key" value', async () => {
 	const formData = new FormData();
 	formData.append("key", "change_me");
 
@@ -43,18 +44,18 @@ tap.test('auth - authenticate - legal "key" value', async (t) => {
 
 	const { token } = /** @type {{ token: string }} */ (await response.json());
 
-	t.equal(
+	assert.strictEqual(
 		response.status,
 		200,
 		"on POST of valid key, server should respond with a 200 OK",
 	);
-	t.ok(
+	assert.ok(
 		token.length > 5,
 		"on POST of valid key, server should respond with a body with a token",
 	);
 });
 
-tap.test('auth - authenticate - illegal "key" value', async (t) => {
+test('auth - authenticate - illegal "key" value', async () => {
 	const formData = new FormData();
 	formData.append("key", "error_me");
 
@@ -63,7 +64,7 @@ tap.test('auth - authenticate - illegal "key" value', async (t) => {
 		body: formData,
 	});
 
-	t.equal(
+	assert.strictEqual(
 		response.status,
 		401,
 		"on POST of valid key, server should respond with a 401 Unauthorized",

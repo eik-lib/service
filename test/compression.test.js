@@ -1,6 +1,7 @@
 import fastify from "fastify";
 import path from "path";
-import tap from "tap";
+import { test, after } from "node:test";
+import assert from "node:assert/strict";
 import url from "url";
 import fs from "fs";
 
@@ -11,38 +12,28 @@ const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
 const FIXTURE_PKG = path.resolve(__dirname, "..", "fixtures", "archive.tgz");
 
-// Ignore the timestamp for "created" field in the snapshots
-tap.cleanSnapshot = (s) => {
-	const regex = /"created": [0-9]+,/gi;
-	return s.replace(regex, '"created": -1,');
-};
-
 /** @type {import('fastify').FastifyInstance} */
 let app;
-/** @type {string} */
-let address;
-/** @type {Record<string, string>} */
-let headers;
 /** @type {Sink} */
 let sink;
 
-tap.teardown(async () => {
+after(async () => {
 	sink.clear();
 	await app.close();
 });
 
-tap.test("compression - assets should have content-encoding: br", async (t) => {
+test("compression - assets should have content-encoding: br", async () => {
 	sink = new Sink();
 	const service = new Server({ sink });
 
 	app = fastify({
-		ignoreTrailingSlash: true,
+		routerOptions: { ignoreTrailingSlash: true },
 		forceCloseConnections: true,
 	});
 
 	await app.register(service.api());
 
-	address = await app.listen({ port: 0, host: "127.0.0.1" });
+	const address = await app.listen({ port: 0, host: "127.0.0.1" });
 
 	let formData = new FormData();
 	formData.append("key", "change_me");
@@ -51,7 +42,7 @@ tap.test("compression - assets should have content-encoding: br", async (t) => {
 		body: formData,
 	});
 	const login = /** @type {{ token: string }} */ (await res.json());
-	headers = { Authorization: `Bearer ${login.token}` };
+	const headers = { Authorization: `Bearer ${login.token}` };
 
 	formData = new FormData();
 	formData.append("package", new Blob([fs.readFileSync(FIXTURE_PKG)]));
@@ -63,13 +54,13 @@ tap.test("compression - assets should have content-encoding: br", async (t) => {
 		redirect: "manual",
 		headers: { ...headers },
 	});
-	t.equal(res.status, 303, "Expected to PUT OK");
+	assert.strictEqual(res.status, 303, "Expected to PUT OK");
 
 	res = await fetch(`${address}/pkg/@cuz/fuzz/1.4.8/main/index.js`, {
 		headers: {
 			"accept-encoding": "br",
 		},
 	});
-	t.equal(res.status, 200, "Expected to GET OK");
-	t.equal(res.headers.get("content-encoding"), "br");
+	assert.strictEqual(res.status, 200, "Expected to GET OK");
+	assert.strictEqual(res.headers.get("content-encoding"), "br");
 });

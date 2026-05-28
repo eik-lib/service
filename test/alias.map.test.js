@@ -1,6 +1,7 @@
 import fastify from "fastify";
 import path from "path";
-import tap from "tap";
+import { test, before, after, afterEach } from "node:test";
+import assert from "node:assert/strict";
 import url from "url";
 import fs from "fs";
 
@@ -31,12 +32,12 @@ let headers;
 /** @type {Sink} */
 let sink;
 
-tap.before(async () => {
+before(async () => {
 	sink = new Sink();
 	const service = new Server({ sink });
 
 	app = fastify({
-		ignoreTrailingSlash: true,
+		routerOptions: { ignoreTrailingSlash: true },
 		forceCloseConnections: true,
 	});
 	app.register(service.api());
@@ -53,15 +54,15 @@ tap.before(async () => {
 	headers = { Authorization: `Bearer ${login.token}` };
 });
 
-tap.afterEach(() => {
+afterEach(() => {
 	sink.clear();
 });
 
-tap.teardown(async () => {
+after(async () => {
 	await app.close();
 });
 
-tap.test("alias map - no auth token on PUT - scoped", async (t) => {
+test("alias map - no auth token on PUT - scoped", async () => {
 	// PUT alias on server
 	const aliasFormData = new FormData();
 	aliasFormData.append("version", "8.4.1");
@@ -71,14 +72,14 @@ tap.test("alias map - no auth token on PUT - scoped", async (t) => {
 		body: aliasFormData,
 	});
 
-	t.equal(
+	assert.strictEqual(
 		alias.status,
 		401,
 		"on PUT of alias, server should respond with a 401 Unauthorized",
 	);
 });
 
-tap.test("alias map - no auth token on PUT - non scoped", async (t) => {
+test("alias map - no auth token on PUT - non scoped", async () => {
 	// PUT alias on server
 	const aliasFormData = new FormData();
 	aliasFormData.append("version", "8.4.1");
@@ -88,14 +89,14 @@ tap.test("alias map - no auth token on PUT - non scoped", async (t) => {
 		body: aliasFormData,
 	});
 
-	t.equal(
+	assert.strictEqual(
 		alias.status,
 		401,
 		"on PUT of alias, server should respond with a 401 Unauthorized",
 	);
 });
 
-tap.test("alias map - no auth token on POST - scoped", async (t) => {
+test("alias map - no auth token on POST - scoped", async () => {
 	// POST alias on server
 	const aliasFormData = new FormData();
 	aliasFormData.append("version", "8.4.1");
@@ -105,14 +106,14 @@ tap.test("alias map - no auth token on POST - scoped", async (t) => {
 		body: aliasFormData,
 	});
 
-	t.equal(
+	assert.strictEqual(
 		alias.status,
 		401,
 		"on POST of alias, server should respond with a 401 Unauthorized",
 	);
 });
 
-tap.test("alias map - no auth token on POST - non scoped", async (t) => {
+test("alias map - no auth token on POST - non scoped", async () => {
 	// PUT alias on server
 	const aliasFormData = new FormData();
 	aliasFormData.append("version", "8.4.1");
@@ -122,479 +123,455 @@ tap.test("alias map - no auth token on POST - non scoped", async (t) => {
 		body: aliasFormData,
 	});
 
-	t.equal(
+	assert.strictEqual(
 		alias.status,
 		401,
 		"on POST of alias, server should respond with a 401 Unauthorized",
 	);
 });
 
-tap.test("alias map - no auth token on DELETE - scoped", async (t) => {
+test("alias map - no auth token on DELETE - scoped", async () => {
 	// DELETE alias on server
 
 	const alias = await fetch(`${address}/map/@cuz/fuzz/v8`, {
 		method: "DELETE",
 	});
 
-	t.equal(
+	assert.strictEqual(
 		alias.status,
 		401,
 		"on POST of alias, server should respond with a 401 Unauthorized",
 	);
 });
 
-tap.test("alias map - no auth token on POST - non scoped", async (t) => {
+test("alias map - no auth token on POST - non scoped (delete)", async () => {
 	// PUT alias on server
 
 	const alias = await fetch(`${address}/map/fuzz/v8`, {
 		method: "DELETE",
 	});
 
-	t.equal(
+	assert.strictEqual(
 		alias.status,
 		401,
 		"on POST of alias, server should respond with a 401 Unauthorized",
 	);
 });
 
-tap.test(
-	"alias map - put alias, then get map through alias - scoped",
-	async (t) => {
-		// PUT map on server
-		const pkgFormData = new FormData();
-		pkgFormData.append("map", new Blob([fs.readFileSync(FIXTURE_MAP)]));
+test("alias map - put alias, then get map through alias - scoped", async (t) => {
+	// PUT map on server
+	const pkgFormData = new FormData();
+	pkgFormData.append("map", new Blob([fs.readFileSync(FIXTURE_MAP)]));
 
-		const uploaded = await fetch(`${address}/map/@cuz/fuzz/8.4.1`, {
-			method: "PUT",
-			body: pkgFormData,
-			headers: { ...headers },
-			redirect: "manual",
-		});
+	const uploaded = await fetch(`${address}/map/@cuz/fuzz/8.4.1`, {
+		method: "PUT",
+		body: pkgFormData,
+		headers: { ...headers },
+		redirect: "manual",
+	});
 
-		t.equal(
-			uploaded.status,
-			303,
-			"on PUT of map, server should respond with a 303 redirect",
-		);
-		t.equal(
-			uploaded.headers.get("location"),
-			`/map/@cuz/fuzz/8.4.1`,
-			"on PUT of map, server should respond with a location header",
-		);
+	assert.strictEqual(
+		uploaded.status,
+		303,
+		"on PUT of map, server should respond with a 303 redirect",
+	);
+	assert.strictEqual(
+		uploaded.headers.get("location"),
+		`/map/@cuz/fuzz/8.4.1`,
+		"on PUT of map, server should respond with a location header",
+	);
 
-		// PUT alias on server
-		const aliasFormData = new FormData();
-		aliasFormData.append("version", "8.4.1");
+	// PUT alias on server
+	const aliasFormData = new FormData();
+	aliasFormData.append("version", "8.4.1");
 
-		const alias = await fetch(`${address}/map/@cuz/fuzz/v8`, {
-			method: "PUT",
-			body: aliasFormData,
-			headers: { ...headers },
-			redirect: "manual",
-		});
+	const alias = await fetch(`${address}/map/@cuz/fuzz/v8`, {
+		method: "PUT",
+		body: aliasFormData,
+		headers: { ...headers },
+		redirect: "manual",
+	});
 
-		t.equal(
-			alias.status,
-			303,
-			"on PUT of alias, server should respond with a 303 redirect",
-		);
-		t.equal(
-			alias.headers.get("location"),
-			`/map/@cuz/fuzz/v8`,
-			"on PUT of alias, server should respond with a location header",
-		);
+	assert.strictEqual(
+		alias.status,
+		303,
+		"on PUT of alias, server should respond with a 303 redirect",
+	);
+	assert.strictEqual(
+		alias.headers.get("location"),
+		`/map/@cuz/fuzz/v8`,
+		"on PUT of alias, server should respond with a location header",
+	);
 
-		// GET map through alias from server
-		const redirect = await fetch(`${address}${alias.headers.get("location")}`, {
+	// GET map through alias from server
+	const redirect = await fetch(`${address}${alias.headers.get("location")}`, {
+		method: "GET",
+		redirect: "manual",
+	});
+
+	assert.strictEqual(
+		redirect.status,
+		302,
+		"on GET of map through alias, server should respond with a 302 redirect",
+	);
+	assert.strictEqual(
+		redirect.headers.get("location"),
+		`/map/@cuz/fuzz/8.4.1`,
+		"on GET of map through alias, server should respond with a location header",
+	);
+
+	// GET map from server
+	const downloaded = await fetch(
+		`${address}${redirect.headers.get("location")}`,
+		{
 			method: "GET",
-			redirect: "manual",
-		});
+		},
+	);
 
-		t.equal(
-			redirect.status,
-			302,
-			"on GET of map through alias, server should respond with a 302 redirect",
-		);
-		t.equal(
-			redirect.headers.get("location"),
-			`/map/@cuz/fuzz/8.4.1`,
-			"on GET of map through alias, server should respond with a location header",
-		);
+	const downloadedResponse = await downloaded.json();
 
-		// GET map from server
-		const downloaded = await fetch(
-			`${address}${redirect.headers.get("location")}`,
-			{
-				method: "GET",
-			},
-		);
+	assert.strictEqual(
+		downloaded.status,
+		200,
+		"on GET of map, server should respond with 200 ok",
+	);
+	t.assert.snapshot(JSON.stringify(downloadedResponse));
+});
 
-		const downloadedResponse = await downloaded.json();
+test("alias map - put alias, then get map through alias - non scoped", async (t) => {
+	// PUT map on server
+	const pkgFormData = new FormData();
+	pkgFormData.append("map", new Blob([fs.readFileSync(FIXTURE_MAP)]));
 
-		t.equal(
-			downloaded.status,
-			200,
-			"on GET of map, server should respond with 200 ok",
-		);
-		t.matchSnapshot(
-			downloadedResponse,
-			"on GET of file, response should match snapshot",
-		);
-	},
-);
+	const uploaded = await fetch(`${address}/map/fuzz/8.4.1`, {
+		method: "PUT",
+		body: pkgFormData,
+		headers: { ...headers },
+		redirect: "manual",
+	});
 
-tap.test(
-	"alias map - put alias, then get map through alias - non scoped",
-	async (t) => {
-		// PUT map on server
-		const pkgFormData = new FormData();
-		pkgFormData.append("map", new Blob([fs.readFileSync(FIXTURE_MAP)]));
+	assert.strictEqual(
+		uploaded.status,
+		303,
+		"on PUT of map, server should respond with a 303 redirect",
+	);
+	assert.strictEqual(
+		uploaded.headers.get("location"),
+		`/map/fuzz/8.4.1`,
+		"on PUT of map, server should respond with a location header",
+	);
 
-		const uploaded = await fetch(`${address}/map/fuzz/8.4.1`, {
-			method: "PUT",
-			body: pkgFormData,
-			headers: { ...headers },
-			redirect: "manual",
-		});
+	// PUT alias on server
+	const aliasFormData = new FormData();
+	aliasFormData.append("version", "8.4.1");
 
-		t.equal(
-			uploaded.status,
-			303,
-			"on PUT of map, server should respond with a 303 redirect",
-		);
-		t.equal(
-			uploaded.headers.get("location"),
-			`/map/fuzz/8.4.1`,
-			"on PUT of map, server should respond with a location header",
-		);
+	const alias = await fetch(`${address}/map/fuzz/v8`, {
+		method: "PUT",
+		body: aliasFormData,
+		headers: { ...headers },
+		redirect: "manual",
+	});
 
-		// PUT alias on server
-		const aliasFormData = new FormData();
-		aliasFormData.append("version", "8.4.1");
+	assert.strictEqual(
+		alias.status,
+		303,
+		"on PUT of alias, server should respond with a 303 redirect",
+	);
+	assert.strictEqual(
+		alias.headers.get("location"),
+		`/map/fuzz/v8`,
+		"on PUT of alias, server should respond with a location header",
+	);
 
-		const alias = await fetch(`${address}/map/fuzz/v8`, {
-			method: "PUT",
-			body: aliasFormData,
-			headers: { ...headers },
-			redirect: "manual",
-		});
+	// GET file through alias from server
+	const redirect = await fetch(`${address}${alias.headers.get("location")}`, {
+		method: "GET",
+		redirect: "manual",
+	});
 
-		t.equal(
-			alias.status,
-			303,
-			"on PUT of alias, server should respond with a 303 redirect",
-		);
-		t.equal(
-			alias.headers.get("location"),
-			`/map/fuzz/v8`,
-			"on PUT of alias, server should respond with a location header",
-		);
+	assert.strictEqual(
+		redirect.status,
+		302,
+		"on GET of map through alias, server should respond with a 302 redirect",
+	);
+	assert.strictEqual(
+		redirect.headers.get("location"),
+		`/map/fuzz/8.4.1`,
+		"on GET of map through alias, server should respond with a location header",
+	);
 
-		// GET file through alias from server
-		const redirect = await fetch(`${address}${alias.headers.get("location")}`, {
+	// GET file from server
+	const downloaded = await fetch(
+		`${address}${redirect.headers.get("location")}`,
+		{
 			method: "GET",
-			redirect: "manual",
-		});
+		},
+	);
 
-		t.equal(
-			redirect.status,
-			302,
-			"on GET of map through alias, server should respond with a 302 redirect",
-		);
-		t.equal(
-			redirect.headers.get("location"),
-			`/map/fuzz/8.4.1`,
-			"on GET of map through alias, server should respond with a location header",
-		);
+	const downloadedResponse = await downloaded.json();
 
-		// GET file from server
-		const downloaded = await fetch(
-			`${address}${redirect.headers.get("location")}`,
-			{
-				method: "GET",
-			},
-		);
+	assert.strictEqual(
+		downloaded.status,
+		200,
+		"on GET of map, server should respond with 200 ok",
+	);
+	t.assert.snapshot(JSON.stringify(downloadedResponse));
+});
 
-		const downloadedResponse = await downloaded.json();
+test("alias map - put alias, then update alias, then get map through alias - scoped", async () => {
+	// PUT maps on server
+	const pkgFormDataA = new FormData();
+	pkgFormDataA.append("map", new Blob([fs.readFileSync(FIXTURE_MAP)]));
+	await fetch(`${address}/map/@cuz/fuzz/8.4.1`, {
+		method: "PUT",
+		body: pkgFormDataA,
+		headers: { ...headers },
+		redirect: "manual",
+	});
 
-		t.equal(
-			downloaded.status,
-			200,
-			"on GET of map, server should respond with 200 ok",
-		);
-		t.matchSnapshot(
-			downloadedResponse,
-			"on GET of file, response should match snapshot",
-		);
-	},
-);
+	const pkgFormDataB = new FormData();
+	pkgFormDataB.append("map", new Blob([fs.readFileSync(FIXTURE_MAP_B)]));
+	await fetch(`${address}/map/@cuz/fuzz/8.8.9`, {
+		method: "PUT",
+		body: pkgFormDataB,
+		headers: { ...headers },
+		redirect: "manual",
+	});
 
-tap.test(
-	"alias map - put alias, then update alias, then get map through alias - scoped",
-	async (t) => {
-		// PUT maps on server
-		const pkgFormDataA = new FormData();
-		pkgFormDataA.append("map", new Blob([fs.readFileSync(FIXTURE_MAP)]));
-		await fetch(`${address}/map/@cuz/fuzz/8.4.1`, {
-			method: "PUT",
-			body: pkgFormDataA,
-			headers: { ...headers },
-			redirect: "manual",
-		});
+	// PUT alias on server
+	const aliasFormDataA = new FormData();
+	aliasFormDataA.append("version", "8.4.1");
 
-		const pkgFormDataB = new FormData();
-		pkgFormDataB.append("map", new Blob([fs.readFileSync(FIXTURE_MAP_B)]));
-		await fetch(`${address}/map/@cuz/fuzz/8.8.9`, {
-			method: "PUT",
-			body: pkgFormDataB,
-			headers: { ...headers },
-			redirect: "manual",
-		});
+	const aliasA = await fetch(`${address}/map/@cuz/fuzz/v8`, {
+		method: "PUT",
+		body: aliasFormDataA,
+		headers: { ...headers },
+	});
 
-		// PUT alias on server
-		const aliasFormDataA = new FormData();
-		aliasFormDataA.append("version", "8.4.1");
+	const aliasResponseA = /** @type {{ imports: { fuzz: string }}} */ (
+		await aliasA.json()
+	);
 
-		const aliasA = await fetch(`${address}/map/@cuz/fuzz/v8`, {
-			method: "PUT",
-			body: aliasFormDataA,
-			headers: { ...headers },
-		});
+	assert.strictEqual(
+		aliasResponseA.imports.fuzz,
+		"http://localhost:4001/finn/pkg/fuzz/v8",
+		'on PUT of alias, alias should redirect to set "version"',
+	);
 
-		const aliasResponseA = /** @type {{ imports: { fuzz: string }}} */ (
-			await aliasA.json()
-		);
+	// POST alias on server
+	const aliasFormDataB = new FormData();
+	aliasFormDataB.append("version", "8.8.9");
 
-		t.equal(
-			aliasResponseA.imports.fuzz,
-			"http://localhost:4001/finn/pkg/fuzz/v8",
-			'on PUT of alias, alias should redirect to set "version"',
-		);
+	const aliasB = await fetch(`${address}/map/@cuz/fuzz/v8`, {
+		method: "POST",
+		body: aliasFormDataB,
+		headers: { ...headers },
+	});
 
-		// POST alias on server
-		const aliasFormDataB = new FormData();
-		aliasFormDataB.append("version", "8.8.9");
+	const aliasResponseB = /** @type {{ imports: { fuzz: string }}} */ (
+		await aliasB.json()
+	);
 
-		const aliasB = await fetch(`${address}/map/@cuz/fuzz/v8`, {
-			method: "POST",
-			body: aliasFormDataB,
-			headers: { ...headers },
-		});
+	assert.strictEqual(
+		aliasResponseB.imports.fuzz,
+		"http://localhost:4001/finn/pkg/fuzz/v9",
+		'on POST of alias, alias should redirect to set "version"',
+	);
+});
 
-		const aliasResponseB = /** @type {{ imports: { fuzz: string }}} */ (
-			await aliasB.json()
-		);
+test("alias map - put alias, then update alias, then get map through alias - non scoped", async () => {
+	// PUT maps on server
+	const pkgFormDataA = new FormData();
+	pkgFormDataA.append("map", new Blob([fs.readFileSync(FIXTURE_MAP)]));
+	await fetch(`${address}/map/fuzz/8.4.1`, {
+		method: "PUT",
+		body: pkgFormDataA,
+		headers: { ...headers },
+		redirect: "manual",
+	});
 
-		t.equal(
-			aliasResponseB.imports.fuzz,
-			"http://localhost:4001/finn/pkg/fuzz/v9",
-			'on POST of alias, alias should redirect to set "version"',
-		);
-	},
-);
+	const pkgFormDataB = new FormData();
+	pkgFormDataB.append("map", new Blob([fs.readFileSync(FIXTURE_MAP_B)]));
+	await fetch(`${address}/map/fuzz/8.8.9`, {
+		method: "PUT",
+		body: pkgFormDataB,
+		headers: { ...headers },
+		redirect: "manual",
+	});
 
-tap.test(
-	"alias map - put alias, then update alias, then get map through alias - non scoped",
-	async (t) => {
-		// PUT maps on server
-		const pkgFormDataA = new FormData();
-		pkgFormDataA.append("map", new Blob([fs.readFileSync(FIXTURE_MAP)]));
-		await fetch(`${address}/map/fuzz/8.4.1`, {
-			method: "PUT",
-			body: pkgFormDataA,
-			headers: { ...headers },
-			redirect: "manual",
-		});
+	// PUT alias on server
+	const aliasFormDataA = new FormData();
+	aliasFormDataA.append("version", "8.4.1");
 
-		const pkgFormDataB = new FormData();
-		pkgFormDataB.append("map", new Blob([fs.readFileSync(FIXTURE_MAP_B)]));
-		await fetch(`${address}/map/fuzz/8.8.9`, {
-			method: "PUT",
-			body: pkgFormDataB,
-			headers: { ...headers },
-			redirect: "manual",
-		});
+	const aliasA = await fetch(`${address}/map/fuzz/v8`, {
+		method: "PUT",
+		body: aliasFormDataA,
+		headers: { ...headers },
+	});
 
-		// PUT alias on server
-		const aliasFormDataA = new FormData();
-		aliasFormDataA.append("version", "8.4.1");
+	const aliasResponseA = /** @type {{ imports: { fuzz: string }}} */ (
+		await aliasA.json()
+	);
 
-		const aliasA = await fetch(`${address}/map/fuzz/v8`, {
-			method: "PUT",
-			body: aliasFormDataA,
-			headers: { ...headers },
-		});
+	assert.strictEqual(
+		aliasResponseA.imports.fuzz,
+		"http://localhost:4001/finn/pkg/fuzz/v8",
+		'on PUT of alias, alias should redirect to set "version"',
+	);
 
-		const aliasResponseA = /** @type {{ imports: { fuzz: string }}} */ (
-			await aliasA.json()
-		);
+	// POST alias on server
+	const aliasFormDataB = new FormData();
+	aliasFormDataB.append("version", "8.8.9");
 
-		t.equal(
-			aliasResponseA.imports.fuzz,
-			"http://localhost:4001/finn/pkg/fuzz/v8",
-			'on PUT of alias, alias should redirect to set "version"',
-		);
+	const aliasB = await fetch(`${address}/map/fuzz/v8`, {
+		method: "POST",
+		body: aliasFormDataB,
+		headers: { ...headers },
+	});
 
-		// POST alias on server
-		const aliasFormDataB = new FormData();
-		aliasFormDataB.append("version", "8.8.9");
+	const aliasResponseB = /** @type {{ imports: { fuzz: string }}} */ (
+		await aliasB.json()
+	);
 
-		const aliasB = await fetch(`${address}/map/fuzz/v8`, {
-			method: "POST",
-			body: aliasFormDataB,
-			headers: { ...headers },
-		});
+	assert.strictEqual(
+		aliasResponseB.imports.fuzz,
+		"http://localhost:4001/finn/pkg/fuzz/v9",
+		'on POST of alias, alias should redirect to set "version"',
+	);
+});
 
-		const aliasResponseB = /** @type {{ imports: { fuzz: string }}} */ (
-			await aliasB.json()
-		);
+test("alias map - put alias, then delete alias, then get map through alias - scoped", async () => {
+	// PUT map on server
+	const pkgFormData = new FormData();
+	pkgFormData.append("map", new Blob([fs.readFileSync(FIXTURE_MAP)]));
 
-		t.equal(
-			aliasResponseB.imports.fuzz,
-			"http://localhost:4001/finn/pkg/fuzz/v9",
-			'on POST of alias, alias should redirect to set "version"',
-		);
-	},
-);
+	const uploaded = await fetch(`${address}/map/@cuz/fuzz/8.4.1`, {
+		method: "PUT",
+		body: pkgFormData,
+		headers: { ...headers },
+		redirect: "manual",
+	});
 
-tap.test(
-	"alias map - put alias, then delete alias, then get map through alias - scoped",
-	async (t) => {
-		// PUT map on server
-		const pkgFormData = new FormData();
-		pkgFormData.append("map", new Blob([fs.readFileSync(FIXTURE_MAP)]));
+	assert.strictEqual(
+		uploaded.status,
+		303,
+		"on PUT of map, server should respond with a 303 redirect",
+	);
+	assert.strictEqual(
+		uploaded.headers.get("location"),
+		`/map/@cuz/fuzz/8.4.1`,
+		"on PUT of map, server should respond with a location header",
+	);
 
-		const uploaded = await fetch(`${address}/map/@cuz/fuzz/8.4.1`, {
-			method: "PUT",
-			body: pkgFormData,
-			headers: { ...headers },
-			redirect: "manual",
-		});
+	// PUT alias on server
+	const aliasFormData = new FormData();
+	aliasFormData.append("version", "8.4.1");
 
-		t.equal(
-			uploaded.status,
-			303,
-			"on PUT of map, server should respond with a 303 redirect",
-		);
-		t.equal(
-			uploaded.headers.get("location"),
-			`/map/@cuz/fuzz/8.4.1`,
-			"on PUT of map, server should respond with a location header",
-		);
+	const alias = await fetch(`${address}/map/@cuz/fuzz/v8`, {
+		method: "PUT",
+		body: aliasFormData,
+		headers: { ...headers },
+	});
 
-		// PUT alias on server
-		const aliasFormData = new FormData();
-		aliasFormData.append("version", "8.4.1");
+	const aliasResponse = /** @type {{ imports: { fuzz: string }}} */ (
+		await alias.json()
+	);
 
-		const alias = await fetch(`${address}/map/@cuz/fuzz/v8`, {
-			method: "PUT",
-			body: aliasFormData,
-			headers: { ...headers },
-		});
+	assert.strictEqual(
+		aliasResponse.imports.fuzz,
+		"http://localhost:4001/finn/pkg/fuzz/v8",
+		'on PUT of alias, alias should redirect to set "version"',
+	);
 
-		const aliasResponse = /** @type {{ imports: { fuzz: string }}} */ (
-			await alias.json()
-		);
+	// DELETE alias on server
+	const deleted = await fetch(`${address}/map/@cuz/fuzz/v8`, {
+		method: "DELETE",
+		headers,
+	});
 
-		t.equal(
-			aliasResponse.imports.fuzz,
-			"http://localhost:4001/finn/pkg/fuzz/v8",
-			'on PUT of alias, alias should redirect to set "version"',
-		);
+	assert.strictEqual(
+		deleted.status,
+		204,
+		"on DELETE of alias, server should respond with a 204 Deleted",
+	);
 
-		// DELETE alias on server
-		const deleted = await fetch(`${address}/map/@cuz/fuzz/v8`, {
-			method: "DELETE",
-			headers,
-		});
+	// GET map through alias from server
+	const errored = await fetch(`${address}/map/@cuz/fuzz/v8`, {
+		method: "GET",
+		redirect: "manual",
+	});
 
-		t.equal(
-			deleted.status,
-			204,
-			"on DELETE of alias, server should respond with a 204 Deleted",
-		);
+	assert.strictEqual(
+		errored.status,
+		404,
+		"on GET of map through deleted alias, server should respond with a 404 Not Found",
+	);
+});
 
-		// GET map through alias from server
-		const errored = await fetch(`${address}/map/@cuz/fuzz/v8`, {
-			method: "GET",
-			redirect: "manual",
-		});
+test("alias map - put alias, then delete alias, then get map through alias - non scoped", async () => {
+	// PUT map on server
+	const pkgFormData = new FormData();
+	pkgFormData.append("map", new Blob([fs.readFileSync(FIXTURE_MAP)]));
 
-		t.equal(
-			errored.status,
-			404,
-			"on GET of map through deleted alias, server should respond with a 404 Not Found",
-		);
-	},
-);
+	const uploaded = await fetch(`${address}/map/fuzz/8.4.1`, {
+		method: "PUT",
+		body: pkgFormData,
+		headers: { ...headers },
+		redirect: "manual",
+	});
 
-tap.test(
-	"alias map - put alias, then delete alias, then get map through alias - non scoped",
-	async (t) => {
-		// PUT map on server
-		const pkgFormData = new FormData();
-		pkgFormData.append("map", new Blob([fs.readFileSync(FIXTURE_MAP)]));
+	assert.strictEqual(
+		uploaded.status,
+		303,
+		"on PUT of map, server should respond with a 303 redirect",
+	);
+	assert.strictEqual(
+		uploaded.headers.get("location"),
+		`/map/fuzz/8.4.1`,
+		"on PUT of map, server should respond with a location header",
+	);
 
-		const uploaded = await fetch(`${address}/map/fuzz/8.4.1`, {
-			method: "PUT",
-			body: pkgFormData,
-			headers: { ...headers },
-			redirect: "manual",
-		});
+	// PUT alias on server
+	const aliasFormData = new FormData();
+	aliasFormData.append("version", "8.4.1");
 
-		t.equal(
-			uploaded.status,
-			303,
-			"on PUT of map, server should respond with a 303 redirect",
-		);
-		t.equal(
-			uploaded.headers.get("location"),
-			`/map/fuzz/8.4.1`,
-			"on PUT of map, server should respond with a location header",
-		);
+	const alias = await fetch(`${address}/map/fuzz/v8`, {
+		method: "PUT",
+		body: aliasFormData,
+		headers: { ...headers },
+	});
 
-		// PUT alias on server
-		const aliasFormData = new FormData();
-		aliasFormData.append("version", "8.4.1");
+	const aliasResponse = /** @type {{ imports: { fuzz: string }}} */ (
+		await alias.json()
+	);
 
-		const alias = await fetch(`${address}/map/fuzz/v8`, {
-			method: "PUT",
-			body: aliasFormData,
-			headers: { ...headers },
-		});
+	assert.strictEqual(
+		aliasResponse.imports.fuzz,
+		"http://localhost:4001/finn/pkg/fuzz/v8",
+		'on PUT of alias, alias should redirect to set "version"',
+	);
 
-		const aliasResponse = /** @type {{ imports: { fuzz: string }}} */ (
-			await alias.json()
-		);
+	// DELETE alias on server
+	const deleted = await fetch(`${address}/map/fuzz/v8`, {
+		method: "DELETE",
+		headers,
+	});
 
-		t.equal(
-			aliasResponse.imports.fuzz,
-			"http://localhost:4001/finn/pkg/fuzz/v8",
-			'on PUT of alias, alias should redirect to set "version"',
-		);
+	assert.strictEqual(
+		deleted.status,
+		204,
+		"on DELETE of alias, server should respond with a 204 Deleted",
+	);
 
-		// DELETE alias on server
-		const deleted = await fetch(`${address}/map/fuzz/v8`, {
-			method: "DELETE",
-			headers,
-		});
+	// GET map through alias from server
+	const errored = await fetch(`${address}/map/fuzz/v8`, {
+		method: "GET",
+		redirect: "manual",
+	});
 
-		t.equal(
-			deleted.status,
-			204,
-			"on DELETE of alias, server should respond with a 204 Deleted",
-		);
-
-		// GET map through alias from server
-		const errored = await fetch(`${address}/map/fuzz/v8`, {
-			method: "GET",
-			redirect: "manual",
-		});
-
-		t.equal(
-			errored.status,
-			404,
-			"on GET of map through deleted alias, server should respond with a 404 Not Found",
-		);
-	},
-);
+	assert.strictEqual(
+		errored.status,
+		404,
+		"on GET of map through deleted alias, server should respond with a 404 Not Found",
+	);
+});

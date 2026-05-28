@@ -1,0 +1,15 @@
+exports[`import-map - get map versions - non scoped 1`] = `
+"{\\"versions\\":[[5,{\\"version\\":\\"5.2.2\\",\\"integrity\\":\\"sha512-Xsex3JB8ymI7lc30kdrQ2FZYKVh25UQxpRo38HW5L6Ldnu4f5nQ0ZtDEG4AsKXT8FAbg0DGrfxV7grC2AI/RRQ==\\"}],[4,{\\"version\\":\\"4.9.2\\",\\"integrity\\":\\"sha512-Xsex3JB8ymI7lc30kdrQ2FZYKVh25UQxpRo38HW5L6Ldnu4f5nQ0ZtDEG4AsKXT8FAbg0DGrfxV7grC2AI/RRQ==\\"}]],\\"type\\":\\"map\\",\\"name\\":\\"buzz\\",\\"org\\":\\"local\\"}"
+`;
+
+exports[`import-map - get map versions - scoped 1`] = `
+"{\\"versions\\":[[5,{\\"version\\":\\"5.2.2\\",\\"integrity\\":\\"sha512-Xsex3JB8ymI7lc30kdrQ2FZYKVh25UQxpRo38HW5L6Ldnu4f5nQ0ZtDEG4AsKXT8FAbg0DGrfxV7grC2AI/RRQ==\\"}],[4,{\\"version\\":\\"4.9.2\\",\\"integrity\\":\\"sha512-Xsex3JB8ymI7lc30kdrQ2FZYKVh25UQxpRo38HW5L6Ldnu4f5nQ0ZtDEG4AsKXT8FAbg0DGrfxV7grC2AI/RRQ==\\"}]],\\"type\\":\\"map\\",\\"name\\":\\"@cuz/buzz\\",\\"org\\":\\"local\\"}"
+`;
+
+exports[`import-map - put map -> get map - non scoped successfully uploaded 1`] = `
+"{\\"imports\\":{\\"fuzz\\":\\"http://localhost:4001/finn/pkg/fuzz/v8\\"}}"
+`;
+
+exports[`import-map - put map -> get map - scoped successfully uploaded 1`] = `
+"{\\"imports\\":{\\"fuzz\\":\\"http://localhost:4001/finn/pkg/fuzz/v8\\"}}"
+`;
