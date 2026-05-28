@@ -18,9 +18,9 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "start": "node ./bin/eik-server.js | pino-pretty",
-    "test": "LOG_LEVEL=fatal node --test 'test/**/*.test.js'",
-    "test:ci": "LOG_LEVEL=trace node --test 'test/**/*.test.js'",
-    "test:snapshots": "LOG_LEVEL=fatal node --test --test-update-snapshots 'test/**/*.test.js'",
+    "test": "cross-env LOG_LEVEL=fatal node --test 'test/**/*.test.js'",
+    "test:ci": "cross-env LOG_LEVEL=trace node --test 'test/**/*.test.js'",
+    "test:snapshots": "cross-env LOG_LEVEL=fatal node --test --test-update-snapshots 'test/**/*.test.js'",
     "types": "run-s types:module types:test",
     "types:module": "tsc",
     "types:test": "tsc --project tsconfig.test.json"
@@ -58,6 +58,7 @@
   },
   "devDependencies": {
     "@eik/eslint-config": "2.0.6",
+    "cross-env": "10.1.0",
     "@eik/prettier-config": "1.0.2",
     "@eik/semantic-release-config": "1.0.17",
     "@eik/typescript-config": "1.0.2",
