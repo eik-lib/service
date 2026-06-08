@@ -44,7 +44,7 @@
   "homepage": "https://github.com/eik-lib/service#readme",
   "dependencies": {
     "@eik/core": "2.1.47",
-    "@eik/sink": "1.2.6",
+    "@eik/sink": "1.2.7",
     "@eik/sink-file-system": "2.0.33",
     "@eik/sink-memory": "2.0.30",
     "@fastify/compress": "8.3.1",
