@@ -1,3 +1,10 @@
+## [5.1.54](https://github.com/eik-lib/service/compare/v5.1.53...v5.1.54) (2026-06-10)
+
+
+### Bug Fixes
+
+* Dump all dependencies ([#763](https://github.com/eik-lib/service/issues/763)) ([164ccb4](https://github.com/eik-lib/service/commit/164ccb4127df6a1957da556de0e528d86c1966c3))
+
 ## [5.1.53](https://github.com/eik-lib/service/compare/v5.1.52...v5.1.53) (2026-05-28)
 
 
