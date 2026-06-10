@@ -43,11 +43,11 @@
   },
   "homepage": "https://github.com/eik-lib/service#readme",
   "dependencies": {
-    "@eik/core": "2.1.47",
-    "@eik/sink": "1.2.6",
-    "@eik/sink-file-system": "2.0.33",
-    "@eik/sink-memory": "2.0.30",
-    "@fastify/compress": "8.3.1",
+    "@eik/core": "2.1.60",
+    "@eik/sink": "1.2.7",
+    "@eik/sink-file-system": "2.0.38",
+    "@eik/sink-memory": "2.0.35",
+    "@fastify/compress": "9.0.0",
     "@fastify/cors": "11.2.0",
     "@fastify/jwt": "10.1.0",
     "convict": "6.2.5",
@@ -57,17 +57,17 @@
     "pino": "10.3.1"
   },
   "devDependencies": {
-    "@eik/eslint-config": "2.0.6",
+    "@eik/eslint-config": "2.0.7",
     "cross-env": "10.1.0",
     "@eik/prettier-config": "1.0.2",
     "@eik/semantic-release-config": "1.0.17",
     "@eik/typescript-config": "1.0.2",
     "@types/readable-stream": "4.0.23",
-    "eslint": "10.4.0",
+    "eslint": "10.4.1",
     "npm-run-all2": "9.0.1",
     "pino-pretty": "13.1.3",
-    "prettier": "3.8.3",
-    "semantic-release": "25.0.3",
+    "prettier": "3.8.4",
+    "semantic-release": "25.0.5",
     "typescript": "6.0.3"
   }
 }
