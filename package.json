@@ -57,7 +57,7 @@
     "pino": "10.3.1"
   },
   "devDependencies": {
-    "@eik/eslint-config": "2.0.7",
+    "@eik/eslint-config": "2.0.9",
     "cross-env": "10.1.0",
     "@eik/prettier-config": "1.0.2",
     "@eik/semantic-release-config": "1.0.17",
