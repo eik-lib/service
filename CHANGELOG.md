@@ -1,3 +1,10 @@
+## [5.1.62](https://github.com/eik-lib/service/compare/v5.1.61...v5.1.62) (2026-07-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @eik/core to v2.1.67 ([#773](https://github.com/eik-lib/service/issues/773)) ([0e94508](https://github.com/eik-lib/service/commit/0e945088fe837ea9ebc141e4c035eaa4deebd050))
+
 ## [5.1.61](https://github.com/eik-lib/service/compare/v5.1.60...v5.1.61) (2026-07-06)
 
 
