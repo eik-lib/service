@@ -2,7 +2,7 @@ import { Writable, Readable } from "node:stream";
 import { ReadFile } from "@eik/common";
 import Metrics from "@metrics/client";
 import Sink from "@eik/sink";
-import mime from "mime";
+import { lookup } from "mrmime";
 import path from "node:path";
 import Entry from "./mem-entry.js";
 
@@ -50,7 +50,7 @@ export default class SinkTest extends Sink {
 	 */
 	set(filePath, payload) {
 		const pathname = toUrlPathname(path.join(this._rootPath, filePath));
-		const mimeType = mime.getType(pathname) || "application/octet-stream";
+		const mimeType = lookup(pathname) || "application/octet-stream";
 
 		let entry;
 
