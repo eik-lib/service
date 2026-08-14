@@ -1,3 +1,10 @@
+# [5.2.0](https://github.com/eik-lib/service/compare/v5.1.69...v5.2.0) (2026-08-14)
+
+
+### Features
+
+* bump @eik/core to 2.1.72 ([#784](https://github.com/eik-lib/service/issues/784)) ([6089b38](https://github.com/eik-lib/service/commit/6089b3867b346ad66f080723284af1ba17e133bd))
+
 ## [5.1.69](https://github.com/eik-lib/service/compare/v5.1.68...v5.1.69) (2026-08-10)
 
 
