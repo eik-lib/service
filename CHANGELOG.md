@@ -1,3 +1,10 @@
+## [5.2.8](https://github.com/eik-lib/service/compare/v5.2.7...v5.2.8) (2026-08-17)
+
+
+### Bug Fixes
+
+* close stalled upload connections after configurable bodyTimeout ([#789](https://github.com/eik-lib/service/issues/789)) ([e765fe7](https://github.com/eik-lib/service/commit/e765fe74fae91b75467477f20110bf83f33b4e0e))
+
 ## [5.2.7](https://github.com/eik-lib/service/compare/v5.2.6...v5.2.7) (2026-08-17)
 
 
