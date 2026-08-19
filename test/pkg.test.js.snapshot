@@ -7,11 +7,11 @@ exports[`packages - get package overview - scoped 1`] = `
 `;
 
 exports[`packages - get package versions - non scoped 1`] = `
-"{\\"versions\\":[[8,{\\"version\\":\\"8.5.1\\",\\"integrity\\":\\"sha512-U2Td6LmVFziblukoOo+jO85mVjn2rgvCY8VTsQwyw4X/M5CWMF7KCAj7OVgPxoA/m3Z7/vDgwQ/vEfcX7WnuyQ==\\"}],[7,{\\"version\\":\\"7.3.2\\",\\"integrity\\":\\"sha512-gzFMCrAr5pcj8ERDzf9mfGjuSIG6HECJkA05xyGKL848uWcVShEk7knVmWQn4cMVaqPUVsctlgL1AGkKo/Cw4w==\\"}]],\\"type\\":\\"pkg\\",\\"name\\":\\"fuzz\\",\\"org\\":\\"local\\"}"
+"{\\"versions\\":[],\\"type\\":\\"pkg\\",\\"name\\":\\"fuzz\\",\\"org\\":\\"local\\"}"
 `;
 
 exports[`packages - get package versions - scoped 1`] = `
-"{\\"versions\\":[[8,{\\"version\\":\\"8.5.1\\",\\"integrity\\":\\"sha512-rvXx4jmWA0jHAspcMkQN81l530ruQzCnunaqigMzqLw0c5JP/mUmq78CAo9JafHizy4UAhK14Dcy0+t8bKhcpQ==\\"}],[7,{\\"version\\":\\"7.3.2\\",\\"integrity\\":\\"sha512-Oa7PAsqBj1nW+qvgnhJDM+dFGmEl/M3AuelZrsjjmV5w3PVOvHnEAq+z3XX1S7TwPa6REqaOijMouoljy6apKg==\\"}]],\\"type\\":\\"pkg\\",\\"name\\":\\"@cuz/fuzz\\",\\"org\\":\\"local\\"}"
+"{\\"versions\\":[],\\"type\\":\\"pkg\\",\\"name\\":\\"@cuz/fuzz\\",\\"org\\":\\"local\\"}"
 `;
 
 exports[`packages - put pkg -> get file - non scoped successfully uploaded 1`] = `
