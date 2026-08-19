@@ -1,3 +1,10 @@
+# [5.3.0](https://github.com/eik-lib/service/compare/v5.2.9...v5.3.0) (2026-08-19)
+
+
+### Features
+
+* bump @eik/core, @eik/sink-memory and @eik/sink-file-system ([#794](https://github.com/eik-lib/service/issues/794)) ([4b34929](https://github.com/eik-lib/service/commit/4b34929ab5c86492dece09f86eb36558d955b956))
+
 ## [5.2.9](https://github.com/eik-lib/service/compare/v5.2.8...v5.2.9) (2026-08-17)
 
 
