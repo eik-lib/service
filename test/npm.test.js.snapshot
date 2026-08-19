@@ -7,11 +7,11 @@ exports[`npm packages - get package overview - scoped 1`] = `
 `;
 
 exports[`npm packages - get package versions - non scoped 1`] = `
-"{\\"versions\\":[[8,{\\"version\\":\\"8.5.1\\",\\"integrity\\":\\"sha512-hFybX/vy4/LkIqKC6nHqC0CSlxHYgcbGOy+sr81vzWqdnw5wGj7UH5IBJIM0BFbfqj8Oi39TDEkR+qBgjPumXQ==\\"}],[7,{\\"version\\":\\"7.3.2\\",\\"integrity\\":\\"sha512-JzCo9ZnmfJDacIZcEk+V/Z/2a8vm1/guADci2qxkM/+paYKyI6o6sH859f3YZbn6i5UhoD1ytKwXLMXu6Q+wkA==\\"}]],\\"type\\":\\"npm\\",\\"name\\":\\"fuzz\\",\\"org\\":\\"local\\"}"
+"{\\"versions\\":[],\\"type\\":\\"npm\\",\\"name\\":\\"fuzz\\",\\"org\\":\\"local\\"}"
 `;
 
 exports[`npm packages - get package versions - scoped 1`] = `
-"{\\"versions\\":[[8,{\\"version\\":\\"8.5.1\\",\\"integrity\\":\\"sha512-7Uf6bRrPch6WEN2Ioh9cR1ddfe6xeVjn21qfsqj4xntNWE2arG/+L2hYJaPYBy6aL6tXqowVwfebOPDtw1JiKQ==\\"}],[7,{\\"version\\":\\"7.3.2\\",\\"integrity\\":\\"sha512-XhtxldL7jzxpxwNF3CG0QYBusuexh6Q2symjZSeu9nINt1I6/v38YFRFLNZ81icb95VyECmBbRcUt9+NBDAqBQ==\\"}]],\\"type\\":\\"npm\\",\\"name\\":\\"@cuz/fuzz\\",\\"org\\":\\"local\\"}"
+"{\\"versions\\":[],\\"type\\":\\"npm\\",\\"name\\":\\"@cuz/fuzz\\",\\"org\\":\\"local\\"}"
 `;
 
 exports[`npm packages - put pkg -> get file - non scoped successfully uploaded 1`] = `
