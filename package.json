@@ -1,6 +1,6 @@
 {
   "name": "@eik/service",
-  "version": "5.3.2",
+  "version": "5.2.9",
   "description": "Eik REST API as a standalone HTTP service",
   "type": "module",
   "main": "./lib/main.js",
@@ -43,10 +43,10 @@
   },
   "homepage": "https://github.com/eik-lib/service#readme",
   "dependencies": {
-    "@eik/core": "2.1.83",
+    "@eik/core": "2.2.0",
     "@eik/sink": "1.2.7",
-    "@eik/sink-file-system": "2.1.0",
-    "@eik/sink-memory": "2.1.0",
+    "@eik/sink-file-system": "2.2.0",
+    "@eik/sink-memory": "2.2.0",
     "@fastify/compress": "9.2.0",
     "@fastify/cors": "11.3.0",
     "@fastify/jwt": "10.2.2",
