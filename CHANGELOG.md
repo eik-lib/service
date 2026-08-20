@@ -1,3 +1,10 @@
+# [5.4.0](https://github.com/eik-lib/service/compare/v5.3.2...v5.4.0) (2026-08-20)
+
+
+### Features
+
+* revert to pre-atomic-write implementation ([#798](https://github.com/eik-lib/service/issues/798)) ([06e434b](https://github.com/eik-lib/service/commit/06e434b97d630b61ba41144a9d0bc1b683c8a296))
+
 ## [5.2.9](https://github.com/eik-lib/service/compare/v5.2.8...v5.2.9) (2026-08-17)
 
 
