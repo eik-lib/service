@@ -1,3 +1,10 @@
+## [5.4.2](https://github.com/eik-lib/service/compare/v5.4.1...v5.4.2) (2026-08-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @eik/core to v2.2.3 ([#800](https://github.com/eik-lib/service/issues/800)) ([468bfcc](https://github.com/eik-lib/service/commit/468bfcc1f7c6df37d0a2965381ca00f6b064bf84))
+
 ## [5.4.1](https://github.com/eik-lib/service/compare/v5.4.0...v5.4.1) (2026-08-21)
 
 
