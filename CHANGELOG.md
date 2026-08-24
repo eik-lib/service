@@ -1,3 +1,10 @@
+# [5.5.0](https://github.com/eik-lib/service/compare/v5.4.3...v5.5.0) (2026-08-24)
+
+
+### Features
+
+* set traceId on every incoming request ([#802](https://github.com/eik-lib/service/issues/802)) ([23ce91f](https://github.com/eik-lib/service/commit/23ce91fec7cb2532bb99093539f57cbe79b65987))
+
 ## [5.4.3](https://github.com/eik-lib/service/compare/v5.4.2...v5.4.3) (2026-08-24)
 
 
