@@ -1,3 +1,10 @@
+# [5.6.0](https://github.com/eik-lib/service/compare/v5.5.0...v5.6.0) (2026-08-25)
+
+
+### Features
+
+* bump @eik/core to 2.4.0 and add writeBuffer/readBuffer to test sink ([#803](https://github.com/eik-lib/service/issues/803)) ([0855079](https://github.com/eik-lib/service/commit/0855079ec015e19ca9ebc8f3904ebb29da6f3be3))
+
 # [5.5.0](https://github.com/eik-lib/service/compare/v5.4.3...v5.5.0) (2026-08-24)
 
 
