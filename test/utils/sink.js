@@ -331,6 +331,66 @@ export default class SinkTest extends Sink {
 		});
 	}
 
+	/**
+	 * @param {string} filePath
+	 * @param {string} contentType
+	 * @param {Buffer} buffer
+	 * @param {{ traceId?: string }} [options]
+	 * @returns {Promise<void>}
+	 */
+	// eslint-disable-next-line no-unused-vars
+	async writeBuffer(filePath, contentType, buffer, options = {}) {
+		const operation = "write";
+		try {
+			Sink.validateFilePath(filePath);
+			Sink.validateContentType(contentType);
+		} catch (error) {
+			this._counter.inc({ labels: { operation } });
+			throw error;
+		}
+
+		const pathname = toUrlPathname(path.join(this._rootPath, filePath));
+		if (pathname.indexOf(this._rootPath) !== 0) {
+			this._counter.inc({ labels: { operation } });
+			throw new Error(`Directory traversal - ${filePath}`);
+		}
+
+		const mimeType = contentType;
+		const entry = new Entry({ mimeType, payload: [buffer] });
+		this._state.set(pathname, entry);
+
+		this._counter.inc({ labels: { success: true, access: true, operation } });
+	}
+
+	/**
+	 * @param {string} filePath
+	 * @returns {Promise<Buffer>}
+	 */
+	async readBuffer(filePath) {
+		const operation = "read";
+		try {
+			Sink.validateFilePath(filePath);
+		} catch (error) {
+			this._counter.inc({ labels: { operation } });
+			throw error;
+		}
+
+		const pathname = toUrlPathname(path.join(this._rootPath, filePath));
+		if (pathname.indexOf(this._rootPath) !== 0) {
+			this._counter.inc({ labels: { operation } });
+			throw new Error(`Directory traversal - ${filePath}`);
+		}
+
+		const entry = this._state.get(pathname);
+		if (!entry) {
+			this._counter.inc({ labels: { access: true, operation } });
+			throw new Error(`${filePath} does not exist`);
+		}
+
+		this._counter.inc({ labels: { success: true, access: true, operation } });
+		return Buffer.concat(entry.payload || []);
+	}
+
 	get [Symbol.toStringTag]() {
 		return "SinkTest";
 	}
