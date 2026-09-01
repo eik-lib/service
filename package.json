@@ -61,7 +61,7 @@
     "@eik/prettier-config": "1.0.2",
     "@eik/semantic-release-config": "1.0.19",
     "@eik/typescript-config": "1.0.2",
-    "@types/readable-stream": "4.0.23",
+    "@types/readable-stream": "4.0.24",
     "cross-env": "10.1.0",
     "eslint": "10.4.1",
     "mrmime": "2.0.1",
