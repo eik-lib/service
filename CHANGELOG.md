@@ -1,3 +1,10 @@
+## [5.6.4](https://github.com/eik-lib/service/compare/v5.6.3...v5.6.4) (2026-09-14)
+
+
+### Bug Fixes
+
+* **deps:** update dependency yaml to v2.9.1 ([#809](https://github.com/eik-lib/service/issues/809)) ([9d95d92](https://github.com/eik-lib/service/commit/9d95d92e9e0d3e5c4a1f84fb1d6673726869b065))
+
 ## [5.6.3](https://github.com/eik-lib/service/compare/v5.6.2...v5.6.3) (2026-09-14)
 
 
