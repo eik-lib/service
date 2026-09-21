@@ -1,3 +1,10 @@
+## [5.6.5](https://github.com/eik-lib/service/compare/v5.6.4...v5.6.5) (2026-09-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency fastify to v5.12.5 ([#810](https://github.com/eik-lib/service/issues/810)) ([89c9694](https://github.com/eik-lib/service/commit/89c96944c2133d7ed12d51279c25fb3b42d8d94a))
+
 ## [5.6.4](https://github.com/eik-lib/service/compare/v5.6.3...v5.6.4) (2026-09-14)
 
 
