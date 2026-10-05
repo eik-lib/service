@@ -1,3 +1,10 @@
+## [5.6.6](https://github.com/eik-lib/service/compare/v5.6.5...v5.6.6) (2026-10-05)
+
+
+### Bug Fixes
+
+* **deps:** update dependency pino to v10.4.0 ([#811](https://github.com/eik-lib/service/issues/811)) ([cc52c13](https://github.com/eik-lib/service/commit/cc52c13049c8affc5145bbb21db3ac1fb6e73e24))
+
 ## [5.6.5](https://github.com/eik-lib/service/compare/v5.6.4...v5.6.5) (2026-09-21)
 
 
