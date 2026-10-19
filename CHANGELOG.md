@@ -1,3 +1,10 @@
+## [5.6.10](https://github.com/eik-lib/service/compare/v5.6.9...v5.6.10) (2026-10-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @fastify/compress to v9.2.2 ([#815](https://github.com/eik-lib/service/issues/815)) ([11f093e](https://github.com/eik-lib/service/commit/11f093ea9b3accdbc4a77db3ebca60e840408476))
+
 ## [5.6.9](https://github.com/eik-lib/service/compare/v5.6.8...v5.6.9) (2026-10-19)
 
 
