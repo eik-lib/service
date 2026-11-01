@@ -57,7 +57,7 @@
     "yaml": "2.9.1"
   },
   "devDependencies": {
-    "@eik/eslint-config": "2.0.15",
+    "@eik/eslint-config": "2.0.19",
     "@eik/prettier-config": "1.0.2",
     "@eik/semantic-release-config": "1.0.19",
     "@eik/typescript-config": "1.0.2",
