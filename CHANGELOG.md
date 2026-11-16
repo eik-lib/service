@@ -1,3 +1,10 @@
+## [5.6.16](https://github.com/eik-lib/service/compare/v5.6.15...v5.6.16) (2026-11-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @fastify/jwt to v10.2.8 ([#824](https://github.com/eik-lib/service/issues/824)) ([5dce10d](https://github.com/eik-lib/service/commit/5dce10d033a27e60598c5e0a32d786ea355d8a86))
+
 ## [5.6.15](https://github.com/eik-lib/service/compare/v5.6.14...v5.6.15) (2026-11-09)
 
 
