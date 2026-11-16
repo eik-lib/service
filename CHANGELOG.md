@@ -1,3 +1,10 @@
+## [5.6.17](https://github.com/eik-lib/service/compare/v5.6.16...v5.6.17) (2026-11-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @eik/core to v2.4.2 ([#825](https://github.com/eik-lib/service/issues/825)) ([53b18b7](https://github.com/eik-lib/service/commit/53b18b78178b935e6973c62615e9660ebf9295c1))
+
 ## [5.6.16](https://github.com/eik-lib/service/compare/v5.6.15...v5.6.16) (2026-11-16)
 
 
