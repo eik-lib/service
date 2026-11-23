@@ -1,3 +1,10 @@
+## [5.6.20](https://github.com/eik-lib/service/compare/v5.6.19...v5.6.20) (2026-11-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @fastify/cors to v11.4.3 ([#828](https://github.com/eik-lib/service/issues/828)) ([5bd67c4](https://github.com/eik-lib/service/commit/5bd67c4b11389105241fa2c30f588fe509fb20f5))
+
 ## [5.6.19](https://github.com/eik-lib/service/compare/v5.6.18...v5.6.19) (2026-11-23)
 
 
